@@ -1,71 +1,60 @@
-# todo-board README
+# TODO Board
 
-This is the README for your extension "todo-board". After writing up a brief description, we recommend including the following sections.
+Extensão do VS Code para localizar comentários `@TODO` no workspace e salvar os resultados em `.todo-board/todos.json`, com foco em performance, organização e base para uma futura interface tipo “quadro Kanban/Trello”.
 
-## Features
+O diretório `.todo-board` é salvo no projeto para permitir versionamento e compartilhamento com o time de desenvolvimento, evitando a necessidade de reescanear toda vez que baixar o projeto.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Como usar
 
-For example if there is an image subfolder under your extension project workspace:
+- Use o comando “TODO Board: Scan @TODO” (Command Palette: Cmd+Shift+P) para escanear o workspace.
+- O progresso aparece como notificação; é possível cancelar.
+- Resultados são listados no Output Channel “TODO Board”.
+- Um arquivo `.todo-board/todos.json` é gerado com itens mínimos: `{ file, line }`.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Configurações
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- `todo-board.fileExtensions`: lista de extensões consideradas no scan (sem ponto). Padrão: `ts, tsx, js, jsx, mjs, cjs, md, json`.
 
-## Requirements
+## Checklist do que já foi feito
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- [x] Comando para escanear `@TODO` e exibir no log do Output Channel.
+- [x] Persistência dos resultados em `.todo-board/todos.json` (apenas `file` e `line`).
+- [x] Exclusões abrangentes (pastas ocultas e pesadas): `node_modules`, `.git`, `dist/out/build`, `coverage`, `tmp`, `.cache`, `.angular`, `assets`, etc.
+- [x] Otimizações de performance (concorrência, limite de arquivos, pulo de arquivos muito grandes).
+- [x] Filtro por extensões configuráveis via setting.
+- [x] Cache por mtime para reaproveitar resultados de arquivos inalterados.
+- [x] Barra de progresso com suporte a cancelamento.
+- [x] Refatoração em módulos com separação de responsabilidades (`types`, `config`, `cache`, `persist`, `scanner`, `extension`).
+- [ ] Limpeza do cache para arquivos deletados e ajustes de robustez.
+- [ ] Watcher para atualizações incrementais.
+- [ ] Interface Webview estilo board (TODO/doing/done) e ações.
+- [ ] Remover comentário da base ao mover para “done/cancel”.
+- [ ] Configurações adicionais (excludes customizados, limites por tamanho).
 
-## Extension Settings
+## Estrutura do código
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+- `src/extension.ts`: registra comandos e orquestra o fluxo (progresso, logs, persistência).
+- `src/scanner.ts`: motor de varredura com cache mtime e concorrência.
+- `src/persist.ts`: grava resultados mínimos em `.todo-board/todos.json`.
+- `src/cache.ts`: leitura/gravação do cache `.todo-board/cache.json`.
+- `src/config.ts`: glob de include/exclude e extensões alvo.
+- `src/types.ts`: tipos compartilhados.
 
-For example:
+## Notas de performance
 
-This extension contributes the following settings:
+- Varredura paralela com workers e atualização de progresso incremental.
+- Cache por mtime evita reprocessar arquivos inalterados.
+- Exclusões e filtros reduzem I/O e aceleram buscas.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Desenvolvimento
 
-## Known Issues
+Para compilar, assistir e rodar lint/testes:
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+```bash
+npm run compile
+npm run watch
+npm run lint
+npm test
+```
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Publicação/empacotamento da extensão não está coberto aqui.
