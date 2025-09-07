@@ -1,22 +1,23 @@
 import type { TextDocument } from "vscode";
-export const LINE_BREAK_TOKEN = "\n";
+
+import { LINE_BREAK_TOKEN, REGEX } from "./regex";
 
 export function sanitizeTodoExtract(raw: string): string {
   return raw
     .trim()
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, " ")
-    .replace(/\*\/\s*$/, "")
-    .replace(/-->\s*$/, "")
-    .replace(/""$/, '"');
+    .replace(REGEX.ESCAPED_QUOTE_REGEX, '"')
+    .replace(REGEX.ESCAPED_NEWLINE_REGEX, " ")
+    .replace(REGEX.TRAILING_BLOCK_END_REGEX, "")
+    .replace(REGEX.TRAILING_HTML_END_REGEX, "")
+    .replace(REGEX.DOUBLE_QUOTE_AT_END_REGEX, '"');
 }
 
 export function isLineComment(text: string): boolean {
-  return /^\s*(?:\/\/|#)/.test(text);
+  return REGEX.LINE_COMMENT_REGEX.test(text);
 }
 
 export function extractCommentContent(text: string): string {
-  return text.replace(/^\s*(?:\/\/|#)\s?/, "").trim();
+  return text.replace(REGEX.LINE_COMMENT_PREFIX_REGEX, "").trim();
 }
 
 export function isTodoLine(text: string, matchPattern: RegExp): boolean {
@@ -24,15 +25,21 @@ export function isTodoLine(text: string, matchPattern: RegExp): boolean {
 }
 
 export function isBlockStartWithoutEnd(text: string): boolean {
-  return text.includes("/*") && !text.includes("*/");
+  return (
+    text.includes(REGEX.BLOCK_COMMENT_START) &&
+    !text.includes(REGEX.BLOCK_COMMENT_END)
+  );
 }
 
 export function isHtmlBlockStartWithoutEnd(text: string): boolean {
-  return text.includes("<!--") && !text.includes("-->");
+  return (
+    text.includes(REGEX.HTML_COMMENT_START) &&
+    !text.includes(REGEX.HTML_COMMENT_END)
+  );
 }
 
 export function stripBlockLinePrefix(text: string): string {
-  return text.replace(/^\s*\*?\s?/, "");
+  return text.replace(REGEX.BLOCK_PREFIX_STRIP_REGEX, "");
 }
 
 export function collectBlockContinuation(
@@ -50,19 +57,19 @@ export function collectBlockContinuation(
     }
 
     const trimmed = nextText.trim();
-    if (trimmed.startsWith("*/")) {
+    if (trimmed.startsWith(REGEX.BLOCK_COMMENT_END)) {
       j++;
       break;
     }
 
-    if (trimmed.includes("*/")) {
-      const before = trimmed.split("*/")[0] ?? "";
+    if (trimmed.includes(REGEX.BLOCK_COMMENT_END)) {
+      const before = trimmed.split(REGEX.BLOCK_COMMENT_END)[0] ?? "";
       parts.push(sanitizeTodoExtract(stripBlockLinePrefix(before)));
       j++;
       break;
     }
 
-    if (/^\s*\*/.test(nextText) || /^\s*\/\*/.test(nextText)) {
+    if (REGEX.BLOCK_CONTENT_LINE_REGEX.test(nextText)) {
       const content = sanitizeTodoExtract(stripBlockLinePrefix(nextText));
       parts.push(content);
       j++;
@@ -90,8 +97,8 @@ export function collectHtmlBlockContinuation(
     }
 
     const trimmed = nextText.trim();
-    if (trimmed.includes("-->")) {
-      const before = trimmed.split("-->")[0] ?? "";
+    if (trimmed.includes(REGEX.HTML_COMMENT_END)) {
+      const before = trimmed.split(REGEX.HTML_COMMENT_END)[0] ?? "";
       parts.push(sanitizeTodoExtract(before));
       j++;
       break;

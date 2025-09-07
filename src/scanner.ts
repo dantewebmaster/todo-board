@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { readCache, writeCache } from "./cache";
 import { getExcludeGlob, getIncludeGlob } from "./config";
+import { LINE_BREAK_TOKEN, REGEX } from "./regex";
 import type { CacheData, ScanResult, TodoHit } from "./types";
 import {
   collectBlockContinuation,
@@ -9,7 +10,6 @@ import {
   isBlockStartWithoutEnd,
   isHtmlBlockStartWithoutEnd,
   isTodoLine,
-  LINE_BREAK_TOKEN,
   sanitizeTodoExtract,
 } from "./utils";
 
@@ -21,7 +21,7 @@ export async function scanWorkspace(
   let reused = 0;
   let scanned = 0;
   let filesProcessed = 0;
-  const pattern = /@TODO(?:\([^)]*\))?/;
+  const pattern = REGEX.TODO_PATTERN;
 
   const include = getIncludeGlob();
   const exclude = getExcludeGlob();
