@@ -2,17 +2,16 @@ import * as vscode from "vscode";
 import { readCache, writeCache } from "./cache";
 import { getExcludeGlob, getIncludeGlob } from "./config";
 import type { CacheData, ScanResult, TodoHit } from "./types";
-
-function sanitizeTodoExtract(raw: string): string {
-  // Basic cleanup: trim, unescape common sequences, and collapse double quotes at end
-  return raw
-    .trim()
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, " ")
-    .replace(/\*\/\s*$/, "")
-    .replace(/-->\s*$/, "")
-    .replace(/""$/, '"');
-}
+import {
+  collectBlockContinuation,
+  collectContinuation,
+  collectHtmlBlockContinuation,
+  isBlockStartWithoutEnd,
+  isHtmlBlockStartWithoutEnd,
+  isTodoLine,
+  LINE_BREAK_TOKEN,
+  sanitizeTodoExtract,
+} from "./utils";
 
 export async function scanWorkspace(
   progress?: vscode.Progress<{ message?: string; increment?: number }>,
@@ -38,128 +37,6 @@ export async function scanWorkspace(
   const concurrency = 25;
   let cursor = 0;
 
-  function isLineComment(text: string): boolean {
-    // Suporta // e # no início da linha
-    return /^\s*(?:\/\/|#)/.test(text);
-  }
-
-  function extractCommentContent(text: string): string {
-    // Remove prefix de comentário '//' ou '#' e espaços iniciais
-    return text.replace(/^\s*(?:\/\/|#)\s?/, "").trim();
-  }
-
-  function isTodoLine(text: string, matchPattern: RegExp): boolean {
-    return text.includes("@TODO") && matchPattern.test(text);
-  }
-
-  const LINE_BREAK_TOKEN = "\n";
-
-  function isBlockStartWithoutEnd(text: string): boolean {
-    return text.includes("/*") && !text.includes("*/");
-  }
-
-  function isHtmlBlockStartWithoutEnd(text: string): boolean {
-    return text.includes("<!--") && !text.includes("-->");
-  }
-
-  function stripBlockLinePrefix(text: string): string {
-    // Remove prefixo comum de linhas em bloco: * ou /**
-    return text.replace(/^\s*\*?\s?/, "");
-  }
-
-  function collectBlockContinuation(
-    doc: vscode.TextDocument,
-    startIndex: number,
-    matchPattern: RegExp,
-  ): { combinedSuffix: string; endIndex: number } {
-    let j = startIndex;
-    const parts: string[] = [];
-
-    while (j < doc.lineCount) {
-      const nextText = doc.lineAt(j).text;
-      if (isTodoLine(nextText, matchPattern)) {
-        break;
-      }
-
-      const trimmed = nextText.trim();
-      if (trimmed.startsWith("*/")) {
-        j++;
-        break;
-      }
-
-      if (trimmed.includes("*/")) {
-        const before = trimmed.split("*/")[0] ?? "";
-        parts.push(sanitizeTodoExtract(stripBlockLinePrefix(before)));
-        j++;
-        break;
-      }
-
-      if (/^\s*\*/.test(nextText) || /^\s*\/\*/.test(nextText)) {
-        const content = sanitizeTodoExtract(stripBlockLinePrefix(nextText));
-        parts.push(content);
-        j++;
-        continue;
-      }
-
-      break;
-    }
-
-    return { combinedSuffix: parts.join(LINE_BREAK_TOKEN), endIndex: j };
-  }
-
-  function collectHtmlBlockContinuation(
-    doc: vscode.TextDocument,
-    startIndex: number,
-    matchPattern: RegExp,
-  ): { combinedSuffix: string; endIndex: number } {
-    let j = startIndex;
-    const parts: string[] = [];
-
-    while (j < doc.lineCount) {
-      const nextText = doc.lineAt(j).text;
-      if (isTodoLine(nextText, matchPattern)) {
-        break;
-      }
-      const trimmed = nextText.trim();
-      if (trimmed.includes("-->")) {
-        const before = trimmed.split("-->")[0] ?? "";
-        parts.push(sanitizeTodoExtract(before));
-        j++;
-        break;
-      }
-      parts.push(sanitizeTodoExtract(nextText));
-      j++;
-    }
-
-    return { combinedSuffix: parts.join(LINE_BREAK_TOKEN), endIndex: j };
-  }
-
-  function collectContinuation(
-    doc: vscode.TextDocument,
-    startIndex: number,
-    matchPattern: RegExp,
-  ): { combinedSuffix: string; endIndex: number } {
-    let j = startIndex;
-    const parts: string[] = [];
-
-    while (j < doc.lineCount) {
-      const nextText = doc.lineAt(j).text;
-      if (isTodoLine(nextText, matchPattern)) {
-        break;
-      }
-      if (!isLineComment(nextText)) {
-        break;
-      }
-
-      const content = sanitizeTodoExtract(extractCommentContent(nextText));
-      parts.push(content);
-      j++;
-    }
-
-    const combinedSuffix = parts.join(LINE_BREAK_TOKEN);
-    return { combinedSuffix, endIndex: j };
-  }
-
   function scanDocumentForTasks(
     doc: vscode.TextDocument,
     matchPattern: RegExp,
@@ -182,9 +59,11 @@ export async function scanWorkspace(
           index + 1,
           matchPattern,
         );
+
         if (combinedSuffix.length > 0) {
           combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
         }
+
         return { text: combined, endIndex };
       }
 
@@ -194,9 +73,11 @@ export async function scanWorkspace(
           index + 1,
           matchPattern,
         );
+
         if (combinedSuffix.length > 0) {
           combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
         }
+
         return { text: combined, endIndex };
       }
 
@@ -205,9 +86,11 @@ export async function scanWorkspace(
         index + 1,
         matchPattern,
       );
+
       if (combinedSuffix.length > 0) {
         combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
       }
+
       return { text: combined, endIndex };
     }
 
