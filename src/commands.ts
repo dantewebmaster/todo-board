@@ -2,15 +2,7 @@ import * as vscode from "vscode";
 import { persistResults } from "./persist";
 import { scanWorkspace } from "./scanner";
 
-let output: vscode.OutputChannel | undefined;
-
 export async function scanTodos(): Promise<void> {
-  output ??= vscode.window.createOutputChannel("TODO Board");
-  output.clear();
-  output.appendLine("== Scan @TODO iniciado ==");
-
-  const started = Date.now();
-
   await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -19,43 +11,27 @@ export async function scanTodos(): Promise<void> {
     },
     async (progress, token) => {
       try {
-        const { hits, reused, scanned } = await scanWorkspace(progress, token);
+        const { hits, filesProcessed } = await scanWorkspace(progress, token);
 
-        if (!output) {
-          return;
-        }
+        // Não abrir o output; vamos notificar o usuário com os totais
 
         if (token.isCancellationRequested) {
-          output.appendLine("Operação cancelada.");
+          void vscode.window.showWarningMessage("Operação cancelada.");
           return;
         }
 
         await persistResults(hits);
 
-        if (hits.length === 0) {
-          output.appendLine("Nenhum @TODO encontrado.");
-        } else {
-          for (const r of hits) {
-            output.appendLine(`${r.file}:${r.line + 1}: ${r.text}`);
-          }
+        const message =
+          hits.length === 0
+            ? `Nenhum @TODO encontrado | Arquivos processados: ${filesProcessed}`
+            : `@TODOs encontrados: ${hits.length} em ${filesProcessed} arquivos processados`;
 
-          output.appendLine(`-- Total: ${hits.length}`);
-          output.appendLine("Arquivo salvo: .todo-board/todos.json");
-          output.appendLine(
-            `Cache: reutilizados ${reused}, reprocessados ${scanned}`,
-          );
-        }
+        void vscode.window.showInformationMessage(message);
       } catch (err) {
-        if (output) {
-          const message = err instanceof Error ? err.message : String(err);
-          output.appendLine(`Erro: ${message}`);
-        }
+        const message = err instanceof Error ? err.message : String(err);
+        void vscode.window.showErrorMessage(`Erro no scan: ${message}`);
       }
     },
   );
-
-  const elapsedSec = ((Date.now() - started) / 1000).toFixed(2);
-
-  output.appendLine(`== Fim (${elapsedSec}s) ==`);
-  output.show(true);
 }

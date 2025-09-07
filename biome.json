@@ -15,7 +15,8 @@
       "trailingCommas": "all",
       "quoteStyle": "double",
       "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded"
+      "quoteProperties": "asNeeded",
+      "lineWidth": 80
     }
   },
   "json": {

@@ -18,4 +18,5 @@ export interface ScanResult {
   hits: TodoHit[];
   reused: number;
   scanned: number;
+  filesProcessed: number;
 }

@@ -27,16 +27,35 @@
             "type": "string"
           },
           "default": [
+            "html",
+            "css",
+            "scss",
+            "sass",
             "ts",
             "tsx",
             "js",
             "jsx",
+            "vue",
             "mjs",
             "cjs",
             "md",
-            "json"
+            "mdx",
+            "json",
+            "yaml",
+            "yml",
+            "java",
+            "py",
+            "go",
+            "rb",
+            "php",
+            "rs",
+            "swift",
+            "kt",
+            "kts",
+            "dart",
+            "cs"
           ],
-          "description": "Lista de extensões (sem ponto) consideradas no scan."
+          "description": "Lista de extensões (sem ponto) consideradas no scan. Você pode adicionar/remover conforme sua necessidade."
         }
       }
     }
