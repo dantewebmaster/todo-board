@@ -9,7 +9,8 @@ export function sanitizeTodoExtract(raw: string): string {
     .replace(REGEX.ESCAPED_NEWLINE_REGEX, " ")
     .replace(REGEX.TRAILING_BLOCK_END_REGEX, "")
     .replace(REGEX.TRAILING_HTML_END_REGEX, "")
-    .replace(REGEX.DOUBLE_QUOTE_AT_END_REGEX, '"');
+    .replace(REGEX.DOUBLE_QUOTE_AT_END_REGEX, '"')
+    .trim();
 }
 
 export function isLineComment(text: string): boolean {
@@ -39,7 +40,9 @@ export function isHtmlBlockStartWithoutEnd(text: string): boolean {
 }
 
 export function stripBlockLinePrefix(text: string): string {
-  return text.replace(REGEX.BLOCK_PREFIX_STRIP_REGEX, "");
+  // Remove '/**', '/*' or leading '*' with one optional following space
+  // Prefer explicit pattern to handle both cases consistently
+  return text.replace(/^\s*(?:\/\*\*?|\*)\s?/, "");
 }
 
 export function collectBlockContinuation(
