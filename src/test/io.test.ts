@@ -12,14 +12,14 @@ suite("cache and persist", () => {
     const tmp = await createTempWorkspace();
     try {
       const empty = await readCache(tmp.uri);
-      assert.deepStrictEqual(empty, { version: 1, files: {} });
+      assert.deepStrictEqual(empty, { version: 2, files: {} });
 
       const sample = {
-        version: 1 as const,
+        version: 2 as const,
         files: {
           [path.join(tmp.fsPath, "a.ts")]: {
             mtime: 123,
-            hits: [{ line: 1, text: "@TODO x" }],
+            hits: [{ id: "dummy", line: 1, text: "@TODO x" }],
           },
         },
       };
@@ -53,8 +53,8 @@ suite("cache and persist", () => {
     }
 
     const results = [
-      { file: path.join(rootPath, "f1.ts"), line: 1, text: "@TODO a" },
-      { file: path.join(rootPath, "f2.ts"), line: 2, text: "@TODO b" },
+      { id: "id-a", file: path.join(rootPath, "f1.ts"), line: 1, text: "@TODO a" },
+      { id: "id-b", file: path.join(rootPath, "f2.ts"), line: 2, text: "@TODO b" },
     ];
     await persistResults(results);
     const uri = vscode.Uri.file(outFile);

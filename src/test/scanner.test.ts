@@ -41,6 +41,8 @@ suite("scanner", function () {
       assert.ok(result.filesProcessed >= files.length);
       // We expect at least one hit per file
       const filesWithHits = new Set(result.hits.map((h) => path.basename(h.file)));
+      // Ensure every hit has an id
+      assert.ok(result.hits.every((h) => typeof h.id === "string" && h.id.length > 0));
       assert.ok(filesWithHits.has("a.ts"));
       assert.ok(filesWithHits.has("b.py"));
       assert.ok(filesWithHits.has("c.java"));

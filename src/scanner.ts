@@ -7,6 +7,7 @@ import {
   collectBlockContinuation,
   collectContinuation,
   collectHtmlBlockContinuation,
+  generateTodoId,
   isBlockStartWithoutEnd,
   isHtmlBlockStartWithoutEnd,
   isTodoLine,
@@ -30,7 +31,7 @@ export async function scanWorkspace(
   const root = vscode.workspace.workspaceFolders?.[0]?.uri;
   const cache: CacheData = root
     ? await readCache(root)
-    : ({ version: 1, files: {} } as const satisfies CacheData);
+    : ({ version: 2, files: {} } as CacheData);
 
   const updated: string[] = [];
 
@@ -40,8 +41,8 @@ export async function scanWorkspace(
   function scanDocumentForTasks(
     doc: vscode.TextDocument,
     matchPattern: RegExp,
-  ): { localHits: { line: number; text: string }[] } {
-    const localHits: { line: number; text: string }[] = [];
+  ): { localHits: { id: string; line: number; text: string }[] } {
+    const localHits: { id: string; line: number; text: string }[] = [];
     let i = 0;
 
     function buildCombinedFromLine(index: number): {
@@ -99,7 +100,8 @@ export async function scanWorkspace(
 
       if (isTodoLine(lineText, matchPattern)) {
         const { text, endIndex } = buildCombinedFromLine(i);
-        localHits.push({ line: i, text });
+        const id = generateTodoId(doc.uri.fsPath, i, text);
+        localHits.push({ id, line: i, text });
         i = endIndex; // pular linhas agregadas
         continue;
       }
@@ -118,9 +120,8 @@ export async function scanWorkspace(
 
       if (prev && prev.mtime === stat.mtime) {
         for (const h of prev.hits) {
-          hits.push({ file: key, line: h.line, text: h.text });
+          hits.push({ id: h.id, file: key, line: h.line, text: h.text });
         }
-
         reused += prev.hits.length;
         return;
       }
@@ -133,7 +134,7 @@ export async function scanWorkspace(
 
       const { localHits } = scanDocumentForTasks(doc, pattern);
       for (const h of localHits) {
-        hits.push({ file: key, line: h.line, text: h.text });
+        hits.push({ id: h.id, file: key, line: h.line, text: h.text });
       }
 
       scanned += localHits.length;

@@ -1,4 +1,6 @@
+# TODO Board Copilot Instructions
 
+Este arquivo contém instruções para o GitHub Copilot, com o objetivo de ajudar na geração de código para a extensão TODO Board.
 
 ## Boas Práticas de Código
 
@@ -10,5 +12,5 @@
   documentação.
 - Evitar adicionar comentários desnecessários, o código deve ser
   autoexplicativo.
-- Evitar variáveis com nomes muito abreviados e genéricos como `data`, `info`, `item`.
+- Evitar variáveis com nomes muito curtos e genéricos como `data`, `info`, `item`, `h`, `x` etc.
 - Consultar o arquivo vsc-extension-quickstart.md para detalhes de como rodar e testar a extensão quando necessário.
