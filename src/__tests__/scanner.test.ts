@@ -1,7 +1,8 @@
+import { scanWorkspace } from "@services/scanner.service";
 import * as assert from "node:assert";
 import * as path from "node:path";
 import type { Progress } from "vscode";
-import { scanWorkspace } from "../scanner";
+import type { TodoHit } from "../types/todo.interface";
 import { createTempWorkspace } from "./test-helpers";
 
 suite("scanner", function () {
@@ -40,16 +41,16 @@ suite("scanner", function () {
       const result = await scanWorkspace(progress);
       assert.ok(result.filesProcessed >= files.length);
       // We expect at least one hit per file
-      const filesWithHits = new Set(result.hits.map((h) => path.basename(h.file)));
+      const filesWithHits = new Set(result.hits.map((hit: TodoHit) => path.basename(hit.file)));
       // Ensure every hit has an id
-      assert.ok(result.hits.every((h) => typeof h.id === "string" && h.id.length > 0));
+      assert.ok(result.hits.every((hit: TodoHit) => typeof hit.id === "string" && hit.id.length > 0));
       assert.ok(filesWithHits.has("a.ts"));
       assert.ok(filesWithHits.has("b.py"));
       assert.ok(filesWithHits.has("c.java"));
       assert.ok(filesWithHits.has("d.html"));
 
       // Validate continuation join token appears (newline) for a.ts
-      const aHit = result.hits.find((h) => h.file.endsWith("a.ts"));
+      const aHit = result.hits.find((hit: TodoHit) => hit.file.endsWith("a.ts"));
       const text = aHit?.text ?? "";
       assert.ok(text.includes("first") && text.includes("line two"));
     } finally {

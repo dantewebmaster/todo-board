@@ -65,11 +65,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "watch": "tsc -watch -p tsconfig.json",
+    "alias:watch": "tsc-alias -w -p tsconfig.json",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test",
+    "test": "vscode-test --extensionTestsPath=./out/__tests__",
     "biome:check": "biome check .",
     "format": "biome format --write .",
     "format:check": "biome format ."
@@ -84,6 +85,7 @@
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.32.0",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.9.2"
   }
 }

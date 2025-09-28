@@ -250,7 +250,7 @@ export function groupItems(items: BoardItem[]): TodoGroups {
   return groups;
 }
 
-function parseTodoStatus(text: string): {
+export function parseTodoStatus(text: string): {
   status: TodoStatus;
   description: string;
 } {
@@ -263,7 +263,7 @@ function parseTodoStatus(text: string): {
   const metadata = match[1] ?? "";
   const token = extractStatusToken(metadata);
   const status: TodoStatus = normalizeStatus(token);
-  const description = text.slice(match[0].length).trimStart();
+  const description = text.slice(match[0].length).trim();
 
   return {
     status,
