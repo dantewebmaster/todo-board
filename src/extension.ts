@@ -1,6 +1,6 @@
+import { openTodoBoard } from "@commands/open-board";
+import { scanTodos } from "@commands/scan-todos";
 import * as vscode from "vscode";
-import { openTodoBoard } from "./board";
-import { scanTodos } from "./commands";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "todo-board" is now active!');

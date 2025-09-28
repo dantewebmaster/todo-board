@@ -1,18 +1,19 @@
+import { readCache, writeCache } from "@services/cache.service";
+import { generateTodoId } from "@utils/generators.util";
 import * as vscode from "vscode";
-import { readCache, writeCache } from "./cache";
-import { getExcludeGlob, getIncludeGlob } from "./config";
-import { LINE_BREAK_TOKEN, REGEX } from "./regex";
-import type { CacheData, ScanResult, TodoHit } from "./types";
+import { getExcludeGlob, getIncludeGlob } from "../config";
+import { LINE_BREAK_TOKEN, REGEX } from "../regex";
+import type { CacheData } from "../types/cache.interface";
+import type { ScanResult, TodoHit } from "../types/todo.interface";
 import {
   collectBlockContinuation,
   collectContinuation,
   collectHtmlBlockContinuation,
-  generateTodoId,
   isBlockStartWithoutEnd,
   isHtmlBlockStartWithoutEnd,
   isTodoLine,
   sanitizeTodoExtract,
-} from "./utils";
+} from "../utils";
 
 export async function scanWorkspace(
   progress?: vscode.Progress<{ message?: string; increment?: number }>,

@@ -1,21 +1,5 @@
-import { createHash } from "node:crypto";
 import type { TextDocument } from "vscode";
 import { LINE_BREAK_TOKEN, REGEX } from "./regex";
-
-export function generateTodoId(
-  file: string,
-  line: number,
-  text: string,
-): string {
-  const h = createHash("sha1")
-    .update(file)
-    .update(":")
-    .update(String(line))
-    .update(":")
-    .update(text.trim());
-
-  return h.digest("hex").substring(0, 16);
-}
 
 export function sanitizeTodoExtract(raw: string): string {
   return raw

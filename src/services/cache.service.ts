@@ -1,6 +1,6 @@
+import { generateTodoId } from "@utils/generators.util";
 import * as vscode from "vscode";
-import type { CacheData } from "./types";
-import { generateTodoId } from "./utils";
+import type { CacheData } from "../types/cache.interface";
 
 export async function readCache(root: vscode.Uri): Promise<CacheData> {
   const cacheFile = vscode.Uri.joinPath(root, ".todo-board", "cache.json");

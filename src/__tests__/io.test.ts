@@ -3,8 +3,8 @@ import * as fscb from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as vscode from "vscode";
-import { readCache, writeCache } from "../cache";
-import { persistResults } from "../persist";
+import { readCache, writeCache } from "../services/cache.service";
+import { persistResults } from "../services/persist.service";
 import { createTempWorkspace } from "./test-helpers";
 
 suite("cache and persist", () => {

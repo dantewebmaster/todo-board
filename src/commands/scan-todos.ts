@@ -1,6 +1,6 @@
+import { persistResults } from "@services/persist.service";
+import { scanWorkspace } from "@services/scanner.service";
 import * as vscode from "vscode";
-import { persistResults } from "./persist";
-import { scanWorkspace } from "./scanner";
 
 export async function scanTodos(): Promise<void> {
   await vscode.window.withProgress(
