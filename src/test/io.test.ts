@@ -5,7 +5,7 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import { readCache, writeCache } from "../cache";
 import { persistResults } from "../persist";
-import { createTempWorkspace } from "./helpers";
+import { createTempWorkspace } from "./test-helpers";
 
 suite("cache and persist", () => {
   test("readCache returns empty when missing; writeCache persists", async () => {

@@ -2,7 +2,7 @@ import * as assert from "node:assert";
 import * as path from "node:path";
 import type { Progress } from "vscode";
 import { scanWorkspace } from "../scanner";
-import { createTempWorkspace } from "./helpers";
+import { createTempWorkspace } from "./test-helpers";
 
 suite("scanner", function () {
   this.timeout(8000);
