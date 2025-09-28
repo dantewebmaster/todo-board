@@ -1,14 +1,10 @@
-import { generateNonce } from "@utils/generators.util";
-import { escapeAttribute, escapeHtml } from "@utils/sanitize.util";
-import { extractStatusToken, normalizeStatus } from "@utils/status.utils";
-import { REGEX } from "regex";
 import * as vscode from "vscode";
-import type {
-  BoardItem,
-  TodoGroups,
-  TodoHit,
-  TodoStatus,
-} from "../types/todo.interface";
+
+import { REGEX } from "@/constants/regex";
+import { generateNonce } from "@/utils/generators";
+import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
+import { extractStatusToken, normalizeStatus } from "@/utils/status";
+import type { BoardItem, TodoGroups, TodoHit, TodoStatus } from "@/types/todo";
 
 const STATUS_ORDER: TodoStatus[] = ["todo", "doing", "done"];
 

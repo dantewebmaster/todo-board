@@ -1,5 +1,6 @@
-import { parseTodoStatus } from "@resources/board";
 import * as assert from "node:assert";
+
+import { parseTodoStatus } from "@/resources/board";
 
 suite("board helpers", () => {
   test("parseTodoStatus returns todo when metadata is missing", () => {

@@ -1,5 +1,6 @@
-import { generateTodoId } from "@utils/generators.util";
 import * as assert from "node:assert";
+
+import { generateTodoId } from "@/utils/generators";
 
 suite("id generation", () => {
   test("deterministic and stable", () => {

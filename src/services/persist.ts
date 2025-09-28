@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import type { TodoHit } from "../types/todo.interface";
+
+import type { TodoHit } from "@/types/todo";
 
 export async function persistResults(results: TodoHit[]): Promise<void> {
   if (!vscode.workspace.workspaceFolders?.length) {

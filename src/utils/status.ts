@@ -1,4 +1,4 @@
-import type { TodoStatus } from "../types/todo.interface";
+import type { TodoStatus } from "../types/todo";
 
 export function extractStatusToken(metadata: string): string {
   const firstSection = metadata.split(",")[0] ?? metadata;

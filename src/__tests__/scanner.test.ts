@@ -1,9 +1,10 @@
-import { scanWorkspace } from "@services/scanner.service";
 import * as assert from "node:assert";
 import * as path from "node:path";
 import type { Progress } from "vscode";
-import type { TodoHit } from "../types/todo.interface";
+
+import { scanWorkspace } from "@/services/scanner";
 import { createTempWorkspace } from "./test-helpers";
+import type { TodoHit } from "@/types/todo";
 
 suite("scanner", function () {
   this.timeout(8000);

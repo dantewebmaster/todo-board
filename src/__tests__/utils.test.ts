@@ -1,6 +1,7 @@
 import * as assert from "node:assert";
-import { REGEX } from "../regex";
-import { extractCommentContent, isLineComment, isTodoLine, sanitizeTodoExtract, stripBlockLinePrefix } from "../utils";
+
+import { REGEX } from "@/constants/regex";
+import { extractCommentContent, isLineComment, isTodoLine, sanitizeTodoExtract, stripBlockLinePrefix } from "@/utils";
 
 suite("utils helpers", () => {
   test("sanitizeTodoExtract removes escapes and endings", () => {

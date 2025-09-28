@@ -1,6 +1,12 @@
+interface CacheHit {
+  id: string;
+  line: number;
+  text: string;
+}
+
 export interface CacheEntry {
   mtime: number;
-  hits: { id: string; line: number; text: string }[];
+  hits: CacheHit[];
 }
 
 export interface CacheData {

@@ -1,4 +1,5 @@
 import * as assert from "node:assert";
+
 import { getExcludeGlob, getIncludeGlob, getTargetExtensions } from "../config";
 
 suite("config", () => {

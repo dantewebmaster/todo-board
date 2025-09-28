@@ -1,6 +1,7 @@
-import { buildBoardItems, groupItems, renderBoard } from "@resources/board";
-import { loadPersistedTodos } from "@services/persist.service";
 import * as vscode from "vscode";
+
+import { buildBoardItems, groupItems, renderBoard } from "@/resources/board";
+import { loadPersistedTodos } from "@/services/persist";
 
 export async function openTodoBoard(): Promise<void> {
   const panel = vscode.window.createWebviewPanel(

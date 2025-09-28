@@ -1,5 +1,6 @@
 import * as assert from "node:assert";
-import { REGEX } from "../regex";
+
+import { REGEX } from "@/constants/regex";
 
 suite("regex constants", () => {
   test("TODO_PATTERN matches variants", () => {

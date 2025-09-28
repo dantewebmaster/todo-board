@@ -1,5 +1,6 @@
 import type { TextDocument } from "vscode";
-import { LINE_BREAK_TOKEN, REGEX } from "./regex";
+
+import { LINE_BREAK_TOKEN, REGEX } from "@/constants/regex";
 
 export function sanitizeTodoExtract(raw: string): string {
   return raw
