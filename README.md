@@ -7,9 +7,10 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 ## Como usar
 
 - Use o comando “TODO Board: Scan @TODO” (Command Palette: Cmd+Shift+P) para escanear o workspace.
+- Use o comando “TODO Board: Open Board” para abrir o quadro Kanban com as colunas Todo/Doing/Done agrupando os itens encontrados.
 - O progresso aparece como notificação; é possível cancelar.
-- Resultados são listados no Output Channel “TODO Board”.
-- Um arquivo `.todo-board/todos.json` é gerado com itens mínimos: `{ file, line }`.
+- Resultados ficam disponíveis no quadro Kanban.
+- Um arquivo `.todo-board/todos.json` é gerado com informações `{ id, file, line, text }` e abastece o quadro Kanban.
 
 ## Configurações
 
@@ -27,7 +28,7 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 - [x] Refatoração em módulos com separação de responsabilidades (`types`, `config`, `cache`, `persist`, `scanner`, `extension`).
 - [ ] Limpeza do cache para arquivos deletados e ajustes de robustez.
 - [ ] Watcher para atualizações incrementais.
-- [ ] Interface Webview estilo board (TODO/doing/done) e ações.
+- [x] Interface Webview estilo board (Todo/Doing/Done) com ação para abrir o arquivo na linha correspondente.
 - [ ] Remover comentário da base ao mover para “done/cancel”.
 - [ ] Configurações adicionais (excludes customizados, limites por tamanho).
 
@@ -36,6 +37,7 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 - `src/extension.ts`: registra comandos e orquestra o fluxo (progresso, logs, persistência).
 - `src/scanner.ts`: motor de varredura com cache mtime e concorrência.
 - `src/persist.ts`: grava resultados mínimos em `.todo-board/todos.json`.
+- `src/board.ts`: gera a Webview do quadro e trata interações com os cartões.
 - `src/cache.ts`: leitura/gravação do cache `.todo-board/cache.json`.
 - `src/config.ts`: glob de include/exclude e extensões alvo.
 - `src/types.ts`: tipos compartilhados.

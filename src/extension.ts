@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { openTodoBoard } from "./board";
 import { scanTodos } from "./commands";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -9,7 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
     scanTodos,
   );
 
-  context.subscriptions.push(scanCmd);
+  const boardCmd = vscode.commands.registerCommand(
+    "todo-board.showBoard",
+    openTodoBoard,
+  );
+
+  context.subscriptions.push(scanCmd, boardCmd);
 }
 
 // This method is called when your extension is deactivated

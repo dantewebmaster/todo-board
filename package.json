@@ -9,13 +9,16 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "todo-board.scanTodos",
         "title": "TODO Board: Scan @TODO"
+      },
+      {
+        "command": "todo-board.showBoard",
+        "title": "TODO Board: Open Board"
       }
     ],
     "configuration": {
