@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { getExcludeGlob, getIncludeGlob } from "@/config";
 import { LINE_BREAK_TOKEN, REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
 import {
@@ -12,7 +13,6 @@ import {
   sanitizeTodoExtract,
 } from "@/utils";
 import { generateTodoId } from "@/utils/generators";
-import { getExcludeGlob, getIncludeGlob } from "../config";
 import type { CacheData } from "@/types/cache";
 import type { ScanResult, TodoHit } from "@/types/todo";
 

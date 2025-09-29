@@ -1,6 +1,6 @@
 import * as assert from "node:assert";
 
-import { getExcludeGlob, getIncludeGlob, getTargetExtensions } from "../config";
+import { getExcludeGlob, getIncludeGlob, getTargetExtensions } from "@/config";
 
 suite("config", () => {
   test("getTargetExtensions returns defaults including ts and html", () => {
