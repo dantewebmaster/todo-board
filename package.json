@@ -19,6 +19,20 @@
       {
         "command": "todo-board.showBoard",
         "title": "TODO Board: Open Board"
+      },
+      {
+        "command": "todo-board.insertTodo",
+        "title": "TODO Board: Insert TODO Comment"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "todo-board.insertTodo",
+        "key": "cmd+shift+t",
+        "mac": "cmd+shift+t",
+        "win": "ctrl+shift+t",
+        "linux": "ctrl+shift+t",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
@@ -66,8 +80,7 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
-    "watch": "tsc -watch -p tsconfig.json",
-    "alias:watch": "tsc-alias -w -p tsconfig.json",
+    "watch": "tsc-alias -p tsconfig.json",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test --extensionTestsPath=./out/__tests__",
