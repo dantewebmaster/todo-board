@@ -8,13 +8,13 @@ export function extractPriorityToken(metadata: string): string {
 }
 
 export function normalizePriority(token: string): TodoPriority {
-  if (token === "low") {
-    return "low";
+  if (token === "high") {
+    return "high";
   }
 
   if (token === "medium") {
     return "medium";
   }
 
-  return "high";
+  return "low";
 }
