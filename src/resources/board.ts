@@ -2,16 +2,21 @@ import * as vscode from "vscode";
 
 import { REGEX } from "@/constants/regex";
 import { generateNonce } from "@/utils/generators";
+import { extractPriorityToken, normalizePriority } from "@/utils/priority";
 import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
-import { extractStatusToken, normalizeStatus } from "@/utils/status";
-import type { BoardItem, TodoGroups, TodoHit, TodoStatus } from "@/types/todo";
+import type {
+  BoardItem,
+  TodoGroups,
+  TodoHit,
+  TodoPriority,
+} from "@/types/todo";
 
-const STATUS_ORDER: TodoStatus[] = ["todo", "doing", "done"];
+const PRIORITY_LEVELS: TodoPriority[] = ["low", "medium", "high"];
 
-const STATUS_LABELS: Record<TodoStatus, string> = {
-  todo: "Todo",
-  doing: "Doing",
-  done: "Done",
+const PRIORITY_LABELS: Record<TodoPriority, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
 };
 
 export function renderBoard(
@@ -19,7 +24,7 @@ export function renderBoard(
   groups: TodoGroups,
 ): string {
   const nonce = generateNonce();
-  const columns = STATUS_ORDER.map((status) =>
+  const columns = PRIORITY_LEVELS.map((status) =>
     renderColumn(status, groups[status]),
   ).join("");
 
@@ -101,14 +106,8 @@ export function renderBoard(
         transform: translateY(-1px);
       }
 
-      .card__summary {
-        font-weight: 600;
-        margin: 0 0 8px;
-        font-size: 14px;
-      }
-
       .card__description {
-        font-size: 13px;
+        font-size: 16px;
         margin: 0 0 8px;
         white-space: pre-wrap;
         word-break: break-word;
@@ -117,6 +116,22 @@ export function renderBoard(
       .card__meta {
         font-size: 12px;
         color: var(--vscode-descriptionForeground);
+      }
+
+      .card__labels {
+        margin-top: 8px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .card__labels .badge {
+        margin-top: 4px;
+        padding: 2px 4px;
+        background-color: var(--vscode-badge-background);
+        color: var(--vscode-badge-foreground);
+        border-radius: 4px;
+        font-size: 12px;
       }
 
       .badge {
@@ -152,8 +167,8 @@ export function renderBoard(
 </html>`;
 }
 
-function renderColumn(status: TodoStatus, items: BoardItem[]): string {
-  const title = STATUS_LABELS[status];
+function renderColumn(priority: TodoPriority, items: BoardItem[]): string {
+  const title = PRIORITY_LABELS[priority];
   const count = items.length;
   const cards =
     count === 0 ? renderEmptyColumn() : items.map(renderCard).join("");
@@ -170,16 +185,18 @@ function renderColumn(status: TodoStatus, items: BoardItem[]): string {
 }
 
 function renderCard(item: BoardItem): string {
-  const description =
-    item.description.length > 0 ? item.description : item.summary;
-  const summary = escapeHtml(item.summary);
+  const description = item.description;
   const formattedDescription = escapeHtml(description).replace(/\n/g, "<br />");
   const location = `${escapeHtml(item.relativePath)}:${item.line + 1}`;
 
   return `<article class="card" data-card="true" data-file="${escapeAttribute(item.filePath)}" data-line="${item.line}">
-    <h2 class="card__summary">${summary}</h2>
-    <p class="card__description">${formattedDescription}</p>
+    <h2 class="card__description">${formattedDescription}</h2>
     <p class="card__meta">${location}</p>
+    <div class="card__labels">
+      <span class="badge">refactor</span>
+      <span class="badge">cleanup</span>
+      <span class="badge">optimization</span>
+    </div>
   </article>`;
 }
 
@@ -198,17 +215,12 @@ export function buildBoardItems(hits: TodoHit[]): BoardItem[] {
 }
 
 function toBoardItem(hit: TodoHit, relativePath: string): BoardItem {
-  const { status, description } = parseTodoStatus(hit.text);
+  const { priority, description } = parseTodoPriority(hit.text);
   const normalizedDescription = description.replace(/\r\n/g, "\n");
-  const descriptionLines = normalizedDescription.split("\n");
-  const summaryCandidate = descriptionLines[0]?.trim() ?? "";
-  const summary =
-    summaryCandidate.length > 0 ? summaryCandidate : "No description provided.";
 
   return {
     id: hit.id,
-    status,
-    summary,
+    priority,
     description: normalizedDescription,
     filePath: hit.file,
     relativePath,
@@ -225,44 +237,44 @@ function compareBoardItems(left: BoardItem, right: BoardItem): number {
     return left.line - right.line;
   }
 
-  return left.summary.localeCompare(right.summary);
+  return left.description.localeCompare(right.description);
 }
 
 export function groupItems(items: BoardItem[]): TodoGroups {
   const groups: TodoGroups = {
-    todo: [],
-    doing: [],
-    done: [],
+    low: [],
+    medium: [],
+    high: [],
   };
 
   for (const item of items) {
-    groups[item.status].push(item);
+    groups[item.priority ?? "low"].push(item);
   }
 
-  for (const status of STATUS_ORDER) {
-    groups[status].sort(compareBoardItems);
+  for (const priority of PRIORITY_LEVELS) {
+    groups[priority].sort(compareBoardItems);
   }
 
   return groups;
 }
 
-export function parseTodoStatus(text: string): {
-  status: TodoStatus;
+export function parseTodoPriority(text: string): {
+  priority: TodoPriority;
   description: string;
 } {
-  const match = REGEX.STATUS_REGEX.exec(text);
+  const match = REGEX.PRIORITY_REGEX.exec(text);
 
   if (!match) {
-    return { status: "todo", description: text.trim() };
+    return { priority: "low", description: text.trim() };
   }
 
   const metadata = match[1] ?? "";
-  const token = extractStatusToken(metadata);
-  const status: TodoStatus = normalizeStatus(token);
+  const token = extractPriorityToken(metadata);
+  const priority: TodoPriority = normalizePriority(token);
   const description = text.slice(match[0].length).trim();
 
   return {
-    status,
-    description: description.length > 0 ? description : "",
+    priority,
+    description,
   };
 }

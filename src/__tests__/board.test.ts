@@ -1,36 +1,36 @@
 import * as assert from "node:assert";
 
-import { parseTodoStatus } from "@/resources/board";
+import { parseTodoPriority } from "@/resources/board";
 
 suite("board helpers", () => {
-  test("parseTodoStatus returns todo when metadata is missing", () => {
-    const result = parseTodoStatus("@TODO Implement feature");
+  test("parseTodoPriority returns low when metadata is missing", () => {
+    const result = parseTodoPriority("@TODO Implement feature");
     assert.deepStrictEqual(result, {
-      status: "todo",
+      priority: "low",
       description: "Implement feature",
     });
   });
 
-  test("parseTodoStatus extracts doing status", () => {
-    const result = parseTodoStatus("@TODO(doing)   Work in progress ");
+  test("parseTodoPriority extracts medium priority", () => {
+    const result = parseTodoPriority("@TODO(medium) Work in progress");
     assert.deepStrictEqual(result, {
-      status: "doing",
+      priority: "medium",
       description: "Work in progress",
     });
   });
 
-  test("parseTodoStatus allows empty description for done", () => {
-    const result = parseTodoStatus("@TODO(done)");
+  test("parseTodoPriority return low if no priority is specified", () => {
+    const result = parseTodoPriority("@TODO: testando sem prioridade");
     assert.deepStrictEqual(result, {
-      status: "done",
-      description: "",
+      priority: "low",
+      description: "testando sem prioridade",
     });
   });
 
-  test("parseTodoStatus ignores extra metadata tokens", () => {
-    const result = parseTodoStatus("@TODO(doing,owner:jane) Finalize work");
+  test("parseTodoPriority ignores extra metadata tokens", () => {
+    const result = parseTodoPriority("@TODO(high,owner:jane) Finalize work");
     assert.deepStrictEqual(result, {
-      status: "doing",
+      priority: "high",
       description: "Finalize work",
     });
   });

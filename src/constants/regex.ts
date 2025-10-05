@@ -1,6 +1,6 @@
 // Centralized regex and markers for scanners
 const TODO_PATTERN: RegExp = /@TODO(?:\([^)]*\))?/;
-const STATUS_REGEX: RegExp = /^@TODO(?:\(([^)]+)\))?/i;
+const PRIORITY_REGEX: RegExp = /^@TODO(?:\(([^)]+)\))?/i;
 
 const LINE_COMMENT_REGEX: RegExp = /^\s*(?:\/\/|#)/;
 const LINE_COMMENT_PREFIX_REGEX: RegExp = /^\s*(?:\/\/|#)\s?/;
@@ -37,5 +37,5 @@ export const REGEX = {
   TRAILING_BLOCK_END_REGEX,
   TRAILING_HTML_END_REGEX,
   DOUBLE_QUOTE_AT_END_REGEX,
-  STATUS_REGEX,
+  PRIORITY_REGEX,
 } as const;

@@ -1,19 +1,19 @@
-export type TodoStatus = "todo" | "doing" | "done";
+export type TodoPriority = "low" | "medium" | "high";
 
 export interface BoardItem {
   id: string;
-  status: TodoStatus;
-  summary: string;
+  priority: TodoPriority;
   description: string;
   filePath: string;
   relativePath: string;
   line: number;
+  labels?: string[];
 }
 
 export interface TodoGroups {
-  todo: BoardItem[];
-  doing: BoardItem[];
-  done: BoardItem[];
+  low: BoardItem[];
+  medium: BoardItem[];
+  high: BoardItem[];
 }
 
 export interface TodoHit {
