@@ -2,7 +2,7 @@
   "name": "todo-board",
   "displayName": "todo-board",
   "description": "",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "engines": {
     "vscode": "^1.103.0"
   },
