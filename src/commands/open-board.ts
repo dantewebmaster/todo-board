@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import { buildBoardItems, groupItems, renderBoard } from "@/resources/board";
 import { loadPersistedTodos } from "@/services/persist";
+import { buildBoardItems, groupItems, renderBoard } from "@/ui/board/board";
 
 let currentPanel: vscode.WebviewPanel | undefined;
 

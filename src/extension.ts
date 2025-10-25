@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
-import { registerTodoSidebar } from "@/views/todo-sidebar";
+import { registerTodoSidebar } from "@/ui/sidebar/todo-sidebar";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "todo-board" is now active!');

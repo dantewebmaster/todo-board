@@ -1,20 +1,148 @@
 # TODO Board
 
-Extensão do VS Code para localizar comentários `@TODO` no workspace e salvar os resultados em `.todo-board/todos.json`, com foco em performance, organização e base para uma futura interface tipo “quadro Kanban/Trello”.
+Extensão do VS Code para localizar comentários `@TODO` no workspace e organizá-los em um quadro Kanban visual, com prioridades, labels e busca.
 
 O diretório `.todo-board` é salvo no projeto para permitir versionamento e compartilhamento com o time de desenvolvimento, evitando a necessidade de reescanear toda vez que baixar o projeto.
 
-## Como usar
+## ✨ Funcionalidades
 
-- Use o comando “TODO Board: Scan @TODO” (Command Palette: Cmd+Shift+P) para escanear o workspace.
-- Use o comando “TODO Board: Open Board” para abrir o quadro Kanban com as colunas Todo/Doing/Done agrupando os itens encontrados.
-- O progresso aparece como notificação; é possível cancelar.
-- Resultados ficam disponíveis no quadro Kanban.
-- Um arquivo `.todo-board/todos.json` é gerado com informações `{ id, file, line, text }` e abastece o quadro Kanban.
+### 📊 Board Interativo
+- Quadro Kanban visual com colunas Low/Medium/High
+- Cards clicáveis que abrem o arquivo na linha correta
+- Atualização automática ao escanear novos TODOs
 
-## Configurações
+### 🏷️ Sistema de Prioridades e Labels
+- **Prioridades**: `low`, `medium`, `high` para Low, Medium, High
+- **Labels**: Tags customizadas com cores
+  - Exemplo: `@TODO(medium): [refactor, cleanup] Corrigir validação`
+- Cores automáticas para labels comuns: bug, refactor, etc.
 
-- `todo-board.fileExtensions`: lista de extensões consideradas no scan (sem ponto). Padrão: `ts, tsx, js, jsx, mjs, cjs, md, json`.
+### 🔍 Busca Avançada
+- Filtro instantâneo enquanto digita
+- Busca em descrições, localizações e labels
+- Atalho ESC para limpar
+- Botão de limpar integrado
+
+### 📁 Sidebar Integrada
+- Visualização rápida de estatísticas
+- Contagem total de TODOs
+- Breakdown por labels
+- Botões de ação rápida
+- Ícone customizado na Activity Bar
+
+## 🚀 Como usar
+
+1. **Escanear TODOs**
+   - Command Palette: `TODO Board: Scan @TODO`
+   - Botão "Scan TODOs" na sidebar
+   - Atalho: Configure nas preferências
+
+2. **Visualizar Board**
+   - Command Palette: `TODO Board: Open Board`
+   - Botão "Open TODO Board" na sidebar
+   - Clique no ícone da sidebar
+
+3. **Inserir TODOs**
+   - Command Palette: `TODO Board: Insert TODO Comment`
+   - Atalho: `Cmd+Shift+T` (Mac) / `Ctrl+Shift+T` (Win/Linux)
+   - Formatos suportados:
+     ```javascript
+     // @TODO: Descrição simples
+     // @TODO(low): Prioridade baixa
+     // @TODO(medium): Prioridade média
+     // @TODO(high): Prioridade alta
+     // @TODO(medium): [refactor, exemplo] Exemplo com labels e prioridade
+     ```
+
+## ⚙️ Configurações
+
+```json
+{
+  "todo-board.fileExtensions": [
+    "html", "css", "scss", "ts", "tsx", "js", "jsx",
+    "vue", "md", "json", "yaml", "java", "py", "go", "rb"
+  ]
+}
+```
+
+## ✅ Checklist de Funcionalidades
+
+### Concluído
+- [x] Comando para escanear `@TODO` no workspace
+- [x] Persistência em `.todo-board/todos.json`
+- [x] Exclusões inteligentes (node_modules, .git, dist, etc)
+- [x] Otimizações de performance (concorrência, cache)
+- [x] Filtro por extensões configuráveis
+- [x] Cache por mtime para arquivos inalterados
+- [x] Barra de progresso com cancelamento
+- [x] Refatoração modular com separação de responsabilidades
+- [x] Interface Webview estilo board (Low/Medium/High)
+- [x] Sistema de prioridades (low, medium, high)
+- [x] Sistema de labels com cores customizadas
+- [x] Sidebar com estatísticas e ações
+- [x] Atualização automática do board ao escanear
+- [x] Ícones customizados (Activity Bar, Sidebar, Webview)
+- [x] Componentes modulares e organizados
+
+### Planejado
+- [ ] Limpeza automática do cache
+- [ ] Watcher para atualizações incrementais
+- [ ] Remover comentário ao marcar como concluído
+- [ ] Filtros avançados (por arquivo, data, autor)
+- [ ] Exportação de relatórios
+- [ ] Temas customizados para o board
+
+## 📂 Estrutura do Código
+
+```
+src/
+├── commands/          # Comandos da extensão
+│   ├── insert-todo.ts
+│   ├── open-board.ts
+│   └── scan-todos.ts
+├── config/           # Configurações
+│   └── index.ts
+├── constants/        # Constantes e regex
+│   └── regex.ts
+├── services/         # Serviços core
+│   ├── cache.ts
+│   ├── persist.ts
+│   └── scanner.ts
+├── types/           # TypeScript types
+│   ├── cache.ts
+│   └── todo.ts
+├── ui/              # Interface do usuário
+│   ├── board/
+│   │   ├── board.ts      # Renderização principal
+│   │   ├── header.ts     # Componente header
+│   │   ├── icons.ts      # Ícones SVG
+│   │   ├── scripts.ts    # JavaScript
+│   │   └── styles.ts     # CSS
+│   └── sidebar/
+│       └── todo-sidebar.ts
+├── utils/           # Utilitários
+│   ├── generators.ts
+│   ├── label.ts
+│   ├── priority.ts
+│   └── sanitize.ts
+└── extension.ts     # Entry point
+```
+
+## 🎨 Sistema de Labels
+
+Labels suportadas com cores automáticas:
+- 🔵 **refactor** - Azul
+- 🔴 **bug** / **cleanup** - Vermelho
+- 🟢 **feature** - Verde
+- 🟡 **docs** - Âmbar
+- 🔵 **test** - Ciano
+- 🩷 **security** - Rosa
+- 🟣 **optimization** / **performance** - Roxo
+- 🔵 **ui** / **ux** - Teal
+- 🟠 **api** - Laranja
+
+Customize as cores em `src/utils/label.ts`
+```
 
 ## Checklist do que já foi feito
 
@@ -28,35 +156,53 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 - [x] Refatoração em módulos com separação de responsabilidades (`types`, `config`, `cache`, `persist`, `scanner`, `extension`).
 - [ ] Limpeza do cache para arquivos deletados e ajustes de robustez.
 - [ ] Watcher para atualizações incrementais.
-- [x] Interface Webview estilo board (Todo/Doing/Done) com ação para abrir o arquivo na linha correspondente.
-- [ ] Remover comentário da base ao mover para “done/cancel”.
+- [x] Interface Webview estilo board (Low/Medium/High) com ação para abrir o arquivo na linha correspondente.
+- [ ] Atualizar comentário e item na base ao mover o card entre colunas.
 - [ ] Configurações adicionais (excludes customizados, limites por tamanho).
+- [ ] Configuração para definir o estilo do comentario a buscar (@TODO, FIXME...).
 
-## Estrutura do código
+## ⚡ Performance
 
-- `src/extension.ts`: registra comandos e orquestra o fluxo (progresso, logs, persistência).
-- `src/scanner.ts`: motor de varredura com cache mtime e concorrência.
-- `src/persist.ts`: grava resultados mínimos em `.todo-board/todos.json`.
-- `src/board.ts`: gera a Webview do quadro e trata interações com os cartões.
-- `src/cache.ts`: leitura/gravação do cache `.todo-board/cache.json`.
-- `src/config.ts`: glob de include/exclude e extensões alvo.
-- `src/types.ts`: tipos compartilhados.
+- **Varredura paralela** com workers e progresso incremental
+- **Cache inteligente** por mtime evita reprocessar arquivos inalterados
+- **Exclusões automáticas** reduzem I/O (node_modules, .git, dist, etc)
+- **Filtros configuráveis** por extensão de arquivo
+- **Atualização em tempo real** do board ao escanear
 
-## Notas de performance
+## 🛠️ Desenvolvimento
 
-- Varredura paralela com workers e atualização de progresso incremental.
-- Cache por mtime evita reprocessar arquivos inalterados.
-- Exclusões e filtros reduzem I/O e aceleram buscas.
-
-## Desenvolvimento
-
-Para compilar, assistir e rodar lint/testes:
+### Compilar e assistir
 
 ```bash
-npm run compile
-npm run watch
-npm run lint
-npm test
+npm run compile  # Compilar uma vez
+npm run watch    # Assistir mudanças
 ```
 
-Publicação/empacotamento da extensão não está coberto aqui.
+### Testes e qualidade
+
+```bash
+npm run lint     # Verificar código
+npm test         # Executar testes
+```
+
+### Estrutura de pastas
+
+- `src/` - Código fonte TypeScript
+- `out/` - Código compilado JavaScript
+- `resources/` - Ícones e assets
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Sinta-se à vontade para:
+- Reportar bugs
+- Sugerir novas funcionalidades
+- Enviar pull requests
+- Melhorar a documentação
+
+## 📄 Licença
+
+MIT
+
+---
+
+**Desenvolvido com ❤️ para melhorar a gestão de TODOs no VS Code**
