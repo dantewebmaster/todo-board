@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { REGEX } from "@/constants/regex";
 import { generateNonce } from "@/utils/generators";
+import { getLabelColor } from "@/utils/label";
 import { parseTodoPriority } from "@/utils/priority";
 import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
 import type {
@@ -99,6 +100,10 @@ export function renderBoard(
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         cursor: pointer;
         transition: border-color 120ms ease, transform 120ms ease;
+        display: flex;
+        flex-direction: column;
+        word-break: break-word;
+        overflow-wrap: break-word;
       }
 
       .card:hover {
@@ -107,7 +112,8 @@ export function renderBoard(
       }
 
       .card__description {
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: 500;
         margin: 0 0 8px;
         white-space: pre-wrap;
         word-break: break-word;
@@ -127,11 +133,13 @@ export function renderBoard(
 
       .card__labels .badge {
         margin-top: 4px;
-        padding: 2px 4px;
-        background-color: var(--vscode-badge-background);
-        color: var(--vscode-badge-foreground);
-        border-radius: 4px;
-        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       }
 
       .badge {
@@ -192,7 +200,12 @@ function renderCard(item: BoardItem): string {
   const labelsHtml =
     item.labels && item.labels.length > 0
       ? `<div class="card__labels">
-      ${item.labels.map((label) => `<span class="badge">${escapeHtml(label)}</span>`).join("")}
+      ${item.labels
+        .map((label) => {
+          const colors = getLabelColor(label);
+          return `<span class="badge" style="background-color: ${colors.background}; color: ${colors.text};">${escapeHtml(label)}</span>`;
+        })
+        .join("")}
     </div>`
       : "";
 

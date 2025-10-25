@@ -3,23 +3,23 @@ import * as vscode from "vscode";
 import { buildBoardItems, groupItems, renderBoard } from "@/resources/board";
 import { loadPersistedTodos } from "@/services/persist";
 
-export async function openTodoBoard(): Promise<void> {
-  const panel = vscode.window.createWebviewPanel(
-    "todoBoard",
-    "TODO Board",
-    vscode.ViewColumn.Active,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    },
-  );
+let currentPanel: vscode.WebviewPanel | undefined;
 
+export async function updateBoardContent(
+  webview: vscode.Webview,
+): Promise<void> {
   const hits = await loadPersistedTodos();
   const boardItems = buildBoardItems(hits);
   const grouped = groupItems(boardItems);
 
-  panel.webview.html = renderBoard(panel.webview, grouped);
+  webview.html = renderBoard(webview, grouped);
+}
 
+export function getCurrentPanel(): vscode.WebviewPanel | undefined {
+  return currentPanel;
+}
+
+function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
   panel.webview.onDidReceiveMessage(async (message) => {
     if (message?.type !== "open" || typeof message.file !== "string") {
       return;
@@ -45,4 +45,31 @@ export async function openTodoBoard(): Promise<void> {
       );
     }
   });
+}
+
+export async function openTodoBoard(): Promise<void> {
+  if (currentPanel) {
+    currentPanel.reveal(vscode.ViewColumn.Active);
+    await updateBoardContent(currentPanel.webview);
+    return;
+  }
+
+  const panel = vscode.window.createWebviewPanel(
+    "todoBoard",
+    "TODO Board",
+    vscode.ViewColumn.Active,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    },
+  );
+
+  currentPanel = panel;
+
+  panel.onDidDispose(() => {
+    currentPanel = undefined;
+  });
+
+  await updateBoardContent(panel.webview);
+  setupWebviewMessageHandler(panel);
 }

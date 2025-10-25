@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { getCurrentPanel, updateBoardContent } from "@/commands/open-board";
 import { persistResults } from "@/services/persist";
 import { scanWorkspace } from "@/services/scanner";
 
@@ -24,6 +25,11 @@ export async function scanTodos(): Promise<void> {
         await persistResults(hits);
 
         await vscode.commands.executeCommand("todo-board.refreshSidebar");
+
+        const panel = getCurrentPanel();
+        if (panel) {
+          await updateBoardContent(panel.webview);
+        }
 
         const message =
           hits.length === 0

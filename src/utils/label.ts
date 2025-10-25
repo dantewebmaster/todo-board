@@ -43,6 +43,33 @@ export function getLabelIcon(label: string): string {
   return iconMap[label.toLowerCase()] || "tag";
 }
 
+export function getLabelColor(label: string): {
+  background: string;
+  text: string;
+} {
+  const colorMap: Record<string, { background: string; text: string }> = {
+    refactor: { background: "#3B82F6", text: "#FFFFFF" }, // blue
+    cleanup: { background: "#EF4444", text: "#FFFFFF" }, // red
+    optimization: { background: "#8B5CF6", text: "#FFFFFF" }, // purple
+    bug: { background: "#DC2626", text: "#FFFFFF" }, // dark red
+    feature: { background: "#10B981", text: "#FFFFFF" }, // green
+    docs: { background: "#F59E0B", text: "#000000" }, // amber
+    test: { background: "#06B6D4", text: "#FFFFFF" }, // cyan
+    security: { background: "#EC4899", text: "#FFFFFF" }, // pink
+    improvement: { background: "#6366F1", text: "#FFFFFF" }, // indigo
+    performance: { background: "#8B5CF6", text: "#FFFFFF" }, // purple
+    ui: { background: "#14B8A6", text: "#FFFFFF" }, // teal
+    ux: { background: "#14B8A6", text: "#FFFFFF" }, // teal
+    api: { background: "#F97316", text: "#FFFFFF" }, // orange
+    database: { background: "#7C3AED", text: "#FFFFFF" }, // violet
+    config: { background: "#64748B", text: "#FFFFFF" }, // slate
+  };
+
+  return (
+    colorMap[label.toLowerCase()] || { background: "#6B7280", text: "#FFFFFF" }
+  );
+}
+
 export function extractLabelsFromText(text: string): string[] | undefined {
   const match = text.match(REGEX.LABEL_PATTERN);
 
