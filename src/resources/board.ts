@@ -50,9 +50,105 @@ export function renderBoard(
         color: var(--vscode-foreground);
       }
 
+      body * {
+        box-sizing: border-box;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        background-color: var(--vscode-editor-background);
+        z-index: 2;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
       h1 {
         font-size: 18px;
-        margin: 0 0 16px;
+        margin: 0;
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        max-width: 344px;
+        height: 40px;
+        padding: 4px;
+
+        background-color: var(--vscode-input-background);
+        border: 1px solid var(--vscode-input-border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .search-icon {
+        height: 32px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.6;
+      }
+
+      .search-icon svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+
+      .search-input {
+        background: transparent;
+        color: var(--vscode-input-foreground);
+        flex: 1;
+        padding: 8px 4px;
+        font-size: 14px;
+        outline: none;
+        height: 40px;
+        border: none;
+        transition: border-color 120ms ease;
+      }
+
+      .search-input:focus {
+        border-color: var(--vscode-focusBorder);
+      }
+
+      .search-input::placeholder {
+        color: var(--vscode-input-placeholderForeground);
+      }
+
+      .search-clear {
+        height: 32px;
+        width: 32px;
+        background-color: transparent;
+        color: var(--vscode-input-foreground);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .search-clear svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+
+      .search-clear:hover:not(:disabled) {
+        background-color: var(--vscode-toolbar-hoverBackground);
+      }
+
+      .search-clear:disabled {
+        display: none;
       }
 
       .board {
@@ -75,10 +171,11 @@ export function renderBoard(
         border-bottom: 1px solid var(--vscode-widget-border);
         font-weight: 600;
         display: flex;
+        border-radius: 8px 8px 0 0;
         justify-content: space-between;
         align-items: center;
         position: sticky;
-        top: 0;
+        top: 54px;
         background-color: var(--vscode-sideBar-background);
         z-index: 1;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -109,6 +206,10 @@ export function renderBoard(
       .card:hover {
         border-color: var(--vscode-focusBorder);
         transform: translateY(-1px);
+      }
+
+      .card.hidden {
+        display: none;
       }
 
       .card__description {
@@ -157,18 +258,93 @@ export function renderBoard(
     </style>
   </head>
   <body>
-    <h1>TODO Board</h1>
+    <div class="header">
+      <h1>TODO Board</h1>
+      <div class="search-container">
+        <span class="search-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"/>
+          </svg>
+        </span>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Search TODOs..."
+          autocomplete="off"
+        />
+        <button class="search-clear" id="clearButton" disabled title="Clear search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M8 8.707l3.646 3.647.708-.707L8.707 8l3.647-3.646-.707-.708L8 7.293 4.354 3.646l-.707.708L7.293 8l-3.646 3.646.707.708L8 8.707z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
     <div class="board">
       ${columns}
     </div>
     <script nonce="${nonce}">
       const vscode = acquireVsCodeApi();
-      document.querySelectorAll('[data-card="true"]').forEach((element) => {
+      const searchInput = document.getElementById('searchInput');
+      const clearButton = document.getElementById('clearButton');
+      const cards = document.querySelectorAll('[data-card="true"]');
+
+      // Handle card clicks
+      cards.forEach((element) => {
         element.addEventListener('click', () => {
           const file = element.getAttribute('data-file');
           const line = Number(element.getAttribute('data-line') ?? '0');
           vscode.postMessage({ type: 'open', file, line });
         });
+      });
+
+      // Filter cards based on search input
+      function filterCards(searchText) {
+        const query = searchText.toLowerCase().trim();
+
+        cards.forEach((card) => {
+          if (!query) {
+            card.classList.remove('hidden');
+            return;
+          }
+
+          const description = card.querySelector('.card__description')?.textContent?.toLowerCase() || '';
+          const location = card.querySelector('.card__meta')?.textContent?.toLowerCase() || '';
+          const labels = Array.from(card.querySelectorAll('.card__labels .badge'))
+            .map(badge => badge.textContent?.toLowerCase() || '')
+            .join(' ');
+
+          const searchableText = \`\${description} \${location} \${labels}\`;
+
+          if (searchableText.includes(query)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        // Update clear button state
+        clearButton.disabled = !query;
+      }
+
+      // Search input event
+      searchInput.addEventListener('input', (e) => {
+        filterCards(e.target.value);
+      });
+
+      // Clear button event
+      clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        filterCards('');
+        searchInput.focus();
+      });
+
+      // Allow clearing with Escape key
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          searchInput.value = '';
+          filterCards('');
+        }
       });
     </script>
   </body>
