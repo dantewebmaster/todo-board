@@ -1,6 +1,6 @@
 import type { TextDocument } from "vscode";
 
-import { LINE_BREAK_TOKEN, REGEX } from "@/constants/regex";
+import { REGEX } from "@/constants/regex";
 
 export function sanitizeTodoExtract(raw: string): string {
   return raw
@@ -82,7 +82,7 @@ export function collectBlockContinuation(
     break;
   }
 
-  return { combinedSuffix: parts.join(LINE_BREAK_TOKEN), endIndex: j };
+  return { combinedSuffix: parts.join(REGEX.LINE_BREAK_TOKEN), endIndex: j };
 }
 
 export function collectHtmlBlockContinuation(
@@ -111,7 +111,7 @@ export function collectHtmlBlockContinuation(
     j++;
   }
 
-  return { combinedSuffix: parts.join(LINE_BREAK_TOKEN), endIndex: j };
+  return { combinedSuffix: parts.join(REGEX.LINE_BREAK_TOKEN), endIndex: j };
 }
 
 export function collectContinuation(
@@ -136,6 +136,6 @@ export function collectContinuation(
     j++;
   }
 
-  const combinedSuffix = parts.join(LINE_BREAK_TOKEN);
+  const combinedSuffix = parts.join(REGEX.LINE_BREAK_TOKEN);
   return { combinedSuffix, endIndex: j };
 }

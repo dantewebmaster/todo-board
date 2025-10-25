@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { REGEX } from "@/constants/regex";
 import { generateNonce } from "@/utils/generators";
-import { extractPriorityToken, normalizePriority } from "@/utils/priority";
+import { parseTodoPriority } from "@/utils/priority";
 import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
 import type {
   BoardItem,
@@ -189,14 +189,17 @@ function renderCard(item: BoardItem): string {
   const formattedDescription = escapeHtml(description).replace(/\n/g, "<br />");
   const location = `${escapeHtml(item.relativePath)}:${item.line + 1}`;
 
+  const labelsHtml =
+    item.labels && item.labels.length > 0
+      ? `<div class="card__labels">
+      ${item.labels.map((label) => `<span class="badge">${escapeHtml(label)}</span>`).join("")}
+    </div>`
+      : "";
+
   return `<article class="card" data-card="true" data-file="${escapeAttribute(item.filePath)}" data-line="${item.line}">
     <h2 class="card__description">${formattedDescription}</h2>
     <p class="card__meta">${location}</p>
-    <div class="card__labels">
-      <span class="badge">refactor</span>
-      <span class="badge">cleanup</span>
-      <span class="badge">optimization</span>
-    </div>
+    ${labelsHtml}
   </article>`;
 }
 
@@ -215,8 +218,11 @@ export function buildBoardItems(hits: TodoHit[]): BoardItem[] {
 }
 
 function toBoardItem(hit: TodoHit, relativePath: string): BoardItem {
-  const { priority, description } = parseTodoPriority(hit.text);
-  const normalizedDescription = description.replace(/\r\n/g, "\n");
+  const { priority, description, labels } = parseTodoPriority(hit.text);
+  const normalizedDescription = description.replace(
+    REGEX.LINE_BREAK_REGEX,
+    REGEX.LINE_BREAK_TOKEN,
+  );
 
   return {
     id: hit.id,
@@ -225,6 +231,7 @@ function toBoardItem(hit: TodoHit, relativePath: string): BoardItem {
     filePath: hit.file,
     relativePath,
     line: hit.line,
+    labels,
   };
 }
 
@@ -256,25 +263,4 @@ export function groupItems(items: BoardItem[]): TodoGroups {
   }
 
   return groups;
-}
-
-export function parseTodoPriority(text: string): {
-  priority: TodoPriority;
-  description: string;
-} {
-  const match = REGEX.PRIORITY_REGEX.exec(text);
-
-  if (!match) {
-    return { priority: "low", description: text.trim() };
-  }
-
-  const metadata = match[1] ?? "";
-  const token = extractPriorityToken(metadata);
-  const priority: TodoPriority = normalizePriority(token);
-  const description = text.slice(match[0].length).trim();
-
-  return {
-    priority,
-    description,
-  };
 }

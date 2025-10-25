@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { getExcludeGlob, getIncludeGlob } from "@/config";
-import { LINE_BREAK_TOKEN, REGEX } from "@/constants/regex";
+import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
 import {
   collectBlockContinuation,
@@ -64,7 +64,7 @@ export async function scanWorkspace(
         );
 
         if (combinedSuffix.length > 0) {
-          combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
+          combined = `${combined}${REGEX.LINE_BREAK_TOKEN}${combinedSuffix}`;
         }
 
         return { text: combined, endIndex };
@@ -78,7 +78,7 @@ export async function scanWorkspace(
         );
 
         if (combinedSuffix.length > 0) {
-          combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
+          combined = `${combined}${REGEX.LINE_BREAK_TOKEN}${combinedSuffix}`;
         }
 
         return { text: combined, endIndex };
@@ -91,7 +91,7 @@ export async function scanWorkspace(
       );
 
       if (combinedSuffix.length > 0) {
-        combined = `${combined}${LINE_BREAK_TOKEN}${combinedSuffix}`;
+        combined = `${combined}${REGEX.LINE_BREAK_TOKEN}${combinedSuffix}`;
       }
 
       return { text: combined, endIndex };

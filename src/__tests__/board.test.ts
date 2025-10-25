@@ -1,6 +1,6 @@
 import * as assert from "node:assert";
 
-import { parseTodoPriority } from "@/resources/board";
+import { parseTodoPriority } from "@/utils/priority";
 
 suite("board helpers", () => {
   test("parseTodoPriority returns low when metadata is missing", () => {

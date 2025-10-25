@@ -1,6 +1,9 @@
 // Centralized regex and markers for scanners
 const TODO_PATTERN: RegExp = /@TODO(?:\([^)]*\))?/;
+const LABEL_PATTERN: RegExp = /\[(.*?)\]/;
 const PRIORITY_REGEX: RegExp = /^@TODO(?:\(([^)]+)\))?/i;
+
+const LINE_BREAK_REGEX: RegExp = /\r\n|\n/g;
 
 const LINE_COMMENT_REGEX: RegExp = /^\s*(?:\/\/|#)/;
 const LINE_COMMENT_PREFIX_REGEX: RegExp = /^\s*(?:\/\/|#)\s?/;
@@ -19,13 +22,16 @@ const TRAILING_BLOCK_END_REGEX: RegExp = /\*\/\s*$/;
 const TRAILING_HTML_END_REGEX: RegExp = /-->\s*$/;
 const DOUBLE_QUOTE_AT_END_REGEX: RegExp = /""$/;
 
-export const LINE_BREAK_TOKEN = "\n";
+const LINE_BREAK_TOKEN = "\n";
 
 // Barrel-style grouped export for convenience
 export const REGEX = {
   TODO_PATTERN,
+  LABEL_PATTERN,
   LINE_COMMENT_REGEX,
   LINE_COMMENT_PREFIX_REGEX,
+  LINE_BREAK_REGEX,
+  LINE_BREAK_TOKEN,
   BLOCK_COMMENT_START,
   BLOCK_COMMENT_END,
   BLOCK_CONTENT_LINE_REGEX,
