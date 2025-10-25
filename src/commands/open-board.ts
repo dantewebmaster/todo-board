@@ -47,7 +47,9 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
   });
 }
 
-export async function openTodoBoard(): Promise<void> {
+export async function openTodoBoard(
+  context?: vscode.ExtensionContext,
+): Promise<void> {
   if (currentPanel) {
     currentPanel.reveal(vscode.ViewColumn.Active);
     await updateBoardContent(currentPanel.webview);
@@ -63,6 +65,23 @@ export async function openTodoBoard(): Promise<void> {
       retainContextWhenHidden: true,
     },
   );
+
+  if (context) {
+    const lightIconPath = vscode.Uri.joinPath(
+      context.extensionUri,
+      "resources",
+      "list-checks-light.svg",
+    );
+    const darkIconPath = vscode.Uri.joinPath(
+      context.extensionUri,
+      "resources",
+      "list-checks-dark.svg",
+    );
+    panel.iconPath = {
+      light: lightIconPath,
+      dark: darkIconPath,
+    };
+  }
 
   currentPanel = panel;
 

@@ -36,7 +36,7 @@
         {
           "id": "todo-board-sidebar",
           "title": "TODO Board",
-          "icon": "$(checklist)"
+          "icon": "resources/list-checks-light.svg"
         }
       ]
     },
@@ -45,7 +45,7 @@
         {
           "id": "todoBoard",
           "name": "TODO Board",
-          "icon": "$(checklist)",
+          "icon": "resources/list-checks-light.svg",
           "contextualTitle": "TODO Board"
         }
       ]

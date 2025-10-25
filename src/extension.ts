@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openBoardCmd = vscode.commands.registerCommand(
     "todo-board.showBoard",
-    openTodoBoard,
+    () => openTodoBoard(context),
   );
 
   const insertTodoCmd = vscode.commands.registerCommand(
