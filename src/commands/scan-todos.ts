@@ -23,6 +23,8 @@ export async function scanTodos(): Promise<void> {
 
         await persistResults(hits);
 
+        await vscode.commands.executeCommand("todo-board.refreshSidebar");
+
         const message =
           hits.length === 0
             ? `Nenhum @TODO encontrado | Arquivos processados: ${filesProcessed}`

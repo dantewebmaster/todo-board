@@ -18,13 +18,47 @@
       },
       {
         "command": "todo-board.showBoard",
-        "title": "TODO Board: Open Board"
+        "title": "TODO Board: Open Board",
+        "icon": "$(list-tree)"
       },
       {
         "command": "todo-board.insertTodo",
         "title": "TODO Board: Insert TODO Comment"
+      },
+      {
+        "command": "todo-board.refreshSidebar",
+        "title": "TODO Board: Refresh Sidebar",
+        "icon": "$(refresh)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "todo-board-sidebar",
+          "title": "TODO Board",
+          "icon": "$(checklist)"
+        }
+      ]
+    },
+    "views": {
+      "todo-board-sidebar": [
+        {
+          "id": "todoBoard",
+          "name": "TODO Board",
+          "icon": "$(checklist)",
+          "contextualTitle": "TODO Board"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "todo-board.refreshSidebar",
+          "when": "view == todoBoard",
+          "group": "navigation"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "todo-board.insertTodo",

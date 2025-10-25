@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
+import { registerTodoSidebar } from "@/views/todo-sidebar";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "todo-board" is now active!');
@@ -22,7 +23,9 @@ export function activate(context: vscode.ExtensionContext) {
     insertTodoComment,
   );
 
-  context.subscriptions.push(scanCmd, openBoardCmd, insertTodoCmd);
+  const sidebarView = registerTodoSidebar(context);
+
+  context.subscriptions.push(scanCmd, openBoardCmd, insertTodoCmd, sidebarView);
 }
 
 // This method is called when your extension is deactivated
