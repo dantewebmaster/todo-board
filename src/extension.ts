@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { filterByLabel } from "@/commands/filter-by-label";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
@@ -23,9 +24,20 @@ export function activate(context: vscode.ExtensionContext) {
     insertTodoComment,
   );
 
+  const filterByLabelCmd = vscode.commands.registerCommand(
+    "todo-board.filterByLabel",
+    filterByLabel,
+  );
+
   const sidebarView = registerTodoSidebar(context);
 
-  context.subscriptions.push(scanCmd, openBoardCmd, insertTodoCmd, sidebarView);
+  context.subscriptions.push(
+    scanCmd,
+    openBoardCmd,
+    insertTodoCmd,
+    filterByLabelCmd,
+    sidebarView,
+  );
 }
 
 // This method is called when your extension is deactivated

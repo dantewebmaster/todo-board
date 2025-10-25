@@ -92,11 +92,15 @@ export class TodoSidebarProvider
           const item = new TodoTreeItem(
             `${label}: ${count}`,
             vscode.TreeItemCollapsibleState.None,
-            undefined,
+            {
+              command: "todo-board.filterByLabel",
+              title: "Filter by Label",
+              arguments: [label],
+            },
             "labelCount",
           );
           item.iconPath = new vscode.ThemeIcon(getLabelIcon(label));
-          item.tooltip = `${count} TODO${count !== 1 ? "s" : ""} with label "${label}"`;
+          item.tooltip = `Click to filter TODOs with label "${label}"`;
           return item;
         });
 

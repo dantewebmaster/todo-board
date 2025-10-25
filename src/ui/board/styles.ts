@@ -53,15 +53,44 @@ export function getBoardStyles(): string {
     .search-container {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
       flex: 1;
-      max-width: 344px;
+      max-width: 600px;
+      flex-wrap: wrap;
+    }
+
+    .search-container > .custom-search-input {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 280px;
       height: 40px;
       padding: 4px;
+      max-width: 344px;
 
       background-color: var(--vscode-input-background);
       border: 1px solid var(--vscode-input-border);
       border-radius: 4px;
       overflow: hidden;
+    }
+
+    .filter-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background-color: var(--vscode-button-secondaryBackground);
+      color: var(--vscode-button-secondaryForeground);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      height: 40px;
+    }
+
+    .filter-label {
+      display: flex;
+      align-items: center;
     }
 
     .search-icon {
@@ -100,7 +129,7 @@ export function getBoardStyles(): string {
       color: var(--vscode-input-placeholderForeground);
     }
 
-    .search-clear {
+    .button-clear {
       height: 32px;
       width: 32px;
       background-color: transparent;
@@ -115,17 +144,17 @@ export function getBoardStyles(): string {
       flex-shrink: 0;
     }
 
-    .search-clear svg {
+    .button-clear svg {
       width: 16px;
       height: 16px;
       fill: currentColor;
     }
 
-    .search-clear:hover:not(:disabled) {
+    .button-clear:hover:not(:disabled) {
       background-color: var(--vscode-toolbar-hoverBackground);
     }
 
-    .search-clear:disabled {
+    .button-clear:disabled {
       opacity: 0;
     }
 
@@ -152,7 +181,8 @@ export function getBoardStyles(): string {
       justify-content: space-between;
       align-items: center;
       position: sticky;
-      top: 0;
+      top: 56px;
+      border-radius: 8px 8px 0 0;
       background-color: var(--vscode-sideBar-background);
       z-index: 1;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -218,6 +248,20 @@ export function getBoardStyles(): string {
       letter-spacing: 0.3px;
       text-transform: uppercase;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge--clickable {
+      cursor: pointer;
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+
+    .badge--clickable:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+
+    .badge--clickable:active {
+      transform: scale(0.98);
     }
 
     .badge {

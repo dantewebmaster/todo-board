@@ -83,7 +83,7 @@ function renderCard(item: BoardItem): string {
       ${item.labels
         .map((label) => {
           const colors = getLabelColor(label);
-          return `<span class="badge" style="background-color: ${colors.background}; color: ${colors.text};">${escapeHtml(label)}</span>`;
+          return `<span class="badge badge--clickable" data-label="${escapeAttribute(label)}" style="background-color: ${colors.background}; color: ${colors.text};" title="Click to filter by '${escapeAttribute(label)}'">${escapeHtml(label)}</span>`;
         })
         .join("")}
     </div>`
