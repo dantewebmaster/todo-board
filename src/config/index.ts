@@ -42,3 +42,9 @@ export function getIncludeGlob(): string {
 export function getExcludeGlob(): string {
   return "{**/node_modules/**,**/assets/**,**/.git/**,**/.svn/**,**/.hg/**,**/.DS_Store,**/.idea/**,**/.vscode/**,**/.angular/**,**/dist/**,**/out/**,**/build/**,**/coverage/**,**/tmp/**,**/.cache/**,**/.todo-board/**}";
 }
+
+export function getMaxTodoLines(): number {
+  return vscode.workspace
+    .getConfiguration("todo-board")
+    .get<number>("maxTodoLines", 4);
+}

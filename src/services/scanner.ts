@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { getExcludeGlob, getIncludeGlob } from "@/config";
+import { getExcludeGlob, getIncludeGlob, getMaxTodoLines } from "@/config";
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
 import {
@@ -25,6 +25,7 @@ export async function scanWorkspace(
   let scanned = 0;
   let filesProcessed = 0;
   const pattern = REGEX.TODO_PATTERN;
+  const maxLines = getMaxTodoLines();
 
   const include = getIncludeGlob();
   const exclude = getExcludeGlob();
@@ -61,6 +62,7 @@ export async function scanWorkspace(
           doc,
           index + 1,
           matchPattern,
+          maxLines,
         );
 
         if (combinedSuffix.length > 0) {
@@ -75,6 +77,7 @@ export async function scanWorkspace(
           doc,
           index + 1,
           matchPattern,
+          maxLines,
         );
 
         if (combinedSuffix.length > 0) {
@@ -88,6 +91,7 @@ export async function scanWorkspace(
         doc,
         index + 1,
         matchPattern,
+        maxLines,
       );
 
       if (combinedSuffix.length > 0) {

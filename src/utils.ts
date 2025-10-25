@@ -49,11 +49,13 @@ export function collectBlockContinuation(
   doc: TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
   const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
 
-  while (j < doc.lineCount) {
+  while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
     if (isTodoLine(nextText, matchPattern)) {
       break;
@@ -89,11 +91,13 @@ export function collectHtmlBlockContinuation(
   doc: TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
   const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
 
-  while (j < doc.lineCount) {
+  while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
     if (isTodoLine(nextText, matchPattern)) {
       break;
@@ -118,11 +122,13 @@ export function collectContinuation(
   doc: TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
   const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
 
-  while (j < doc.lineCount) {
+  while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
     if (isTodoLine(nextText, matchPattern)) {
       break;
