@@ -87,7 +87,7 @@ export function getSidebarStyles(): string {
     }
 
     .section__title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -95,6 +95,11 @@ export function getSidebarStyles(): string {
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .section__title svg {
+      width: 16px;
+      height: 16px;
     }
 
     .section__badge {

@@ -13,7 +13,11 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
 
   constructor(private readonly extensionUri: vscode.Uri) {}
 
-  resolveWebviewView(webviewView: vscode.WebviewView): void {
+  resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    _context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken,
+  ): void {
     this.webviewView = webviewView;
     webviewView.webview.options = {
       enableScripts: true,
@@ -21,6 +25,31 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
     };
 
     this.updateWebviewContent(webviewView.webview);
+
+    // Open board automatically when sidebar becomes visible and board is not open
+    const openBoardIfNeeded = () => {
+      const boardPanel = vscode.window.tabGroups.all
+        .flatMap((group) => group.tabs)
+        .find(
+          (tab) =>
+            tab.label === "TODO Board" &&
+            tab.input instanceof vscode.TabInputWebview,
+        );
+
+      if (!boardPanel) {
+        void vscode.commands.executeCommand("todo-board.showBoard");
+      }
+    };
+
+    // Open on first load
+    openBoardIfNeeded();
+
+    // Open whenever sidebar becomes visible
+    webviewView.onDidChangeVisibility(() => {
+      if (webviewView.visible) {
+        openBoardIfNeeded();
+      }
+    });
 
     // Listen for filter changes
     filterState.onFilterChange((activeLabel) => {
@@ -33,14 +62,18 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage((message) => {
+      console.log("[Sidebar] Received message:", message);
       switch (message.type) {
         case "openBoard":
+          console.log("[Sidebar] Opening board...");
           void vscode.commands.executeCommand("todo-board.showBoard");
           break;
         case "scanTodos":
+          console.log("[Sidebar] Scanning todos...");
           void vscode.commands.executeCommand("todo-board.scanTodos");
           break;
         case "filterByLabel":
+          console.log("[Sidebar] Filtering by label:", message.label);
           void vscode.commands.executeCommand(
             "todo-board.filterByLabel",
             message.label,
@@ -88,11 +121,11 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
   </head>
   <body>
     <div class="actions">
-      <button class="btn btn--primary" data-action="openBoard">
+      <button class="btn btn--primary" id="openBoardBtn" data-action="openBoard">
         ${sidebarIcons.board}
         <span>Open Board</span>
       </button>
-      <button class="btn btn--secondary" data-action="scanTodos">
+      <button class="btn btn--secondary" id="scanTodosBtn" data-action="scanTodos">
         ${sidebarIcons.search}
         <span>Scan Workspace</span>
       </button>
@@ -126,6 +159,10 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
       </div>
     </div>
 
+    <script nonce="${nonce}">
+      console.log('[TEST] Script tag is executing!');
+      console.log('[TEST] Nonce value:', '${nonce}');
+    </script>
     <script nonce="${nonce}">
       ${getSidebarScripts()}
     </script>
