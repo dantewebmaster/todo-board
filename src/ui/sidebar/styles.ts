@@ -235,5 +235,14 @@ export function getSidebarStyles(): string {
     .text-orange {
       color: #FFA500;
     }
+
+    .sticky-container {
+      position: sticky;
+      top: 0;
+      background-color: var(--vscode-sideBar-background);
+      padding-top: 12px;
+      padding-bottom: 12px;
+      z-index: 10;
+    }
   `;
 }

@@ -97,28 +97,30 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
           <style>${getSidebarStyles()}</style>
         </head>
         <body>
-          <div class="actions">
-            <button class="btn btn--primary" id="openBoardBtn" data-action="openBoard">
-              ${iconsSvg.board}
-              <span>Open Board</span>
-            </button>
-            <button class="btn btn--secondary" id="scanTodosBtn" data-action="scanTodos">
-              ${iconsSvg.search}
-              <span>Scan Workspace</span>
-            </button>
-          </div>
+          <div class="sticky-container">
+            <div class="actions">
+              <button class="btn btn--primary" id="openBoardBtn" data-action="openBoard">
+                ${iconsSvg.board}
+                <span>Open Board</span>
+              </button>
+              <button class="btn btn--secondary" id="scanTodosBtn" data-action="scanTodos">
+                ${iconsSvg.search}
+                <span>Scan Workspace</span>
+              </button>
+            </div>
 
-          <div class="divider"></div>
+            <div class="divider"></div>
 
-          <div class="section">
-            <div class="totals-overview">
-              <div class="stats-card">
-                <div class="stats-card__value">${todoCount}</div>
-                <div class="stats-card__label">Total TODOs</div>
-              </div>
-              <div class="stats-card">
-                <div class="stats-card__value text-orange">${labelCounts.size}</div>
-                <div class="stats-card__label">Total Labels</div>
+            <div class="section">
+              <div class="totals-overview">
+                <div class="stats-card">
+                  <div class="stats-card__value">${todoCount}</div>
+                  <div class="stats-card__label">Total TODOs</div>
+                </div>
+                <div class="stats-card">
+                  <div class="stats-card__value text-orange">${labelCounts.size}</div>
+                  <div class="stats-card__label">Total Labels</div>
+                </div>
               </div>
             </div>
           </div>

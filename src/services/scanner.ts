@@ -44,6 +44,7 @@ export async function scanWorkspace(
   function scanDocumentForTasks(
     doc: vscode.TextDocument,
     matchPattern: RegExp,
+    patterns: string[],
   ): { localHits: { id: string; line: number; text: string }[] } {
     const localHits: { id: string; line: number; text: string }[] = [];
     let i = 0;
@@ -53,7 +54,7 @@ export async function scanWorkspace(
       endIndex: number;
     } {
       const lineText = doc.lineAt(index).text;
-      const idx = findFirstPatternIndex(lineText, searchPatterns);
+      const idx = findFirstPatternIndex(lineText, patterns);
       const raw = lineText.substring(idx).trim();
       let combined = sanitizeTodoExtract(raw);
 
@@ -62,6 +63,7 @@ export async function scanWorkspace(
           doc,
           index + 1,
           matchPattern,
+          patterns,
           maxLines,
         );
 
@@ -77,6 +79,7 @@ export async function scanWorkspace(
           doc,
           index + 1,
           matchPattern,
+          patterns,
           maxLines,
         );
 
@@ -91,6 +94,7 @@ export async function scanWorkspace(
         doc,
         index + 1,
         matchPattern,
+        patterns,
         maxLines,
       );
 
@@ -104,7 +108,7 @@ export async function scanWorkspace(
     while (i < doc.lineCount) {
       const lineText: string = doc.lineAt(i).text;
 
-      if (isTodoLine(lineText, matchPattern)) {
+      if (isTodoLine(lineText, matchPattern, patterns)) {
         const { text, endIndex } = buildCombinedFromLine(i);
         const id = generateTodoId(doc.uri.fsPath, i, text);
         localHits.push({ id, line: i, text });
@@ -138,7 +142,7 @@ export async function scanWorkspace(
         return;
       }
 
-      const { localHits } = scanDocumentForTasks(doc, pattern);
+      const { localHits } = scanDocumentForTasks(doc, pattern, searchPatterns);
       for (const h of localHits) {
         hits.push({ id: h.id, file: key, line: h.line, text: h.text });
       }
@@ -199,6 +203,7 @@ function collectBlockContinuation(
   doc: vscode.TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  patterns: string[],
   maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
@@ -207,7 +212,7 @@ function collectBlockContinuation(
 
   while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
-    if (isTodoLine(nextText, matchPattern)) {
+    if (isTodoLine(nextText, matchPattern, patterns)) {
       break;
     }
 
@@ -241,6 +246,7 @@ function collectHtmlBlockContinuation(
   doc: vscode.TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  patterns: string[],
   maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
@@ -249,7 +255,7 @@ function collectHtmlBlockContinuation(
 
   while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
-    if (isTodoLine(nextText, matchPattern)) {
+    if (isTodoLine(nextText, matchPattern, patterns)) {
       break;
     }
 
@@ -272,6 +278,7 @@ function collectContinuation(
   doc: vscode.TextDocument,
   startIndex: number,
   matchPattern: RegExp,
+  patterns: string[],
   maxLines = 4,
 ): { combinedSuffix: string; endIndex: number } {
   let j = startIndex;
@@ -280,7 +287,7 @@ function collectContinuation(
 
   while (j < doc.lineCount && j < maxEndIndex) {
     const nextText = doc.lineAt(j).text;
-    if (isTodoLine(nextText, matchPattern)) {
+    if (isTodoLine(nextText, matchPattern, patterns)) {
       break;
     }
     if (!isLineComment(nextText)) {
@@ -316,8 +323,14 @@ function isBlockStartWithoutEnd(text: string): boolean {
   );
 }
 
-function isTodoLine(text: string, matchPattern: RegExp): boolean {
-  return text.includes("@TODO") && matchPattern.test(text);
+function isTodoLine(
+  text: string,
+  matchPattern: RegExp,
+  patterns: string[],
+): boolean {
+  // Check if any of the search patterns exist in the text
+  const hasPattern = patterns.some((pattern) => text.includes(pattern));
+  return hasPattern && matchPattern.test(text);
 }
 
 function extractCommentContent(text: string): string {

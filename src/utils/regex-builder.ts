@@ -62,12 +62,11 @@ export function findFirstPatternIndex(
   text: string,
   searchPatterns: string[],
 ): number {
-  if (searchPatterns.length === 0) {
-    return text.indexOf("@TODO");
-  }
+  // Use first pattern as fallback if array is empty
+  const patterns = searchPatterns.length > 0 ? searchPatterns : ["@TODO"];
 
   let minIndex = text.length;
-  for (const pattern of searchPatterns) {
+  for (const pattern of patterns) {
     const index = text.indexOf(pattern);
     if (index !== -1 && index < minIndex) {
       minIndex = index;
