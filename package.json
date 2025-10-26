@@ -1,8 +1,8 @@
 {
   "name": "todo-board",
-  "displayName": "todo-board",
-  "description": "",
-  "version": "0.1.4",
+  "displayName": "TODO Board",
+  "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.103.0"
   },
