@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { filterState } from "@/services/filter-state";
 import { loadPersistedTodos } from "@/services/persist";
 import { buildBoardItems, groupItems, renderBoard } from "@/ui/board/board";
 
@@ -21,28 +22,29 @@ export function getCurrentPanel(): vscode.WebviewPanel | undefined {
 
 function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
   panel.webview.onDidReceiveMessage(async (message) => {
-    if (message?.type !== "open" || typeof message.file !== "string") {
-      return;
-    }
+    if (message?.type === "open" && typeof message.file === "string") {
+      const line = typeof message.line === "number" ? message.line : 0;
 
-    const line = typeof message.line === "number" ? message.line : 0;
+      try {
+        const resourceUri = vscode.Uri.file(message.file);
+        const document = await vscode.workspace.openTextDocument(resourceUri);
+        const position = new vscode.Position(line, 0);
+        const selection = new vscode.Selection(position, position);
 
-    try {
-      const resourceUri = vscode.Uri.file(message.file);
-      const document = await vscode.workspace.openTextDocument(resourceUri);
-      const position = new vscode.Position(line, 0);
-      const selection = new vscode.Selection(position, position);
-
-      await vscode.window.showTextDocument(document, {
-        selection,
-        preview: false,
-      });
-    } catch (error) {
-      const messageText =
-        error instanceof Error ? error.message : String(error);
-      void vscode.window.showErrorMessage(
-        `Unable to open TODO location: ${messageText}`,
-      );
+        await vscode.window.showTextDocument(document, {
+          selection,
+          preview: false,
+        });
+      } catch (error) {
+        const messageText =
+          error instanceof Error ? error.message : String(error);
+        void vscode.window.showErrorMessage(
+          `Unable to open TODO location: ${messageText}`,
+        );
+      }
+    } else if (message?.type === "clearFilter") {
+      // Clear the filter state
+      filterState.setActiveLabel(null);
     }
   });
 }

@@ -29,13 +29,30 @@ export function activate(context: vscode.ExtensionContext) {
     filterByLabel,
   );
 
-  const sidebarView = registerTodoSidebar(context);
+  const { disposable: sidebarView, provider: sidebarProvider } =
+    registerTodoSidebar(context);
+
+  // Refresh button calls scanTodos (full scan)
+  const refreshSidebarCmd = vscode.commands.registerCommand(
+    "todo-board.refreshSidebar",
+    scanTodos,
+  );
+
+  // Update sidebar after scan (just updates the webview)
+  const updateSidebarCmd = vscode.commands.registerCommand(
+    "todo-board.updateSidebar",
+    () => {
+      sidebarProvider.refresh();
+    },
+  );
 
   context.subscriptions.push(
     scanCmd,
     openBoardCmd,
     insertTodoCmd,
     filterByLabelCmd,
+    refreshSidebarCmd,
+    updateSidebarCmd,
     sidebarView,
   );
 }

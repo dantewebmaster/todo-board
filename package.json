@@ -27,7 +27,7 @@
       },
       {
         "command": "todo-board.refreshSidebar",
-        "title": "TODO Board: Refresh Sidebar",
+        "title": "TODO Board: Scan Workspace",
         "icon": "$(refresh)"
       }
     ],
@@ -43,6 +43,7 @@
     "views": {
       "todo-board-sidebar": [
         {
+          "type": "webview",
           "id": "todoBoard",
           "name": "TODO Board",
           "icon": "resources/list-checks-light.svg",

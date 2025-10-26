@@ -24,7 +24,8 @@ export async function scanTodos(): Promise<void> {
 
         await persistResults(hits);
 
-        await vscode.commands.executeCommand("todo-board.refreshSidebar");
+        // Refresh sidebar via command (will be handled by provider)
+        await vscode.commands.executeCommand("todo-board.updateSidebar");
 
         const panel = getCurrentPanel();
         if (panel) {

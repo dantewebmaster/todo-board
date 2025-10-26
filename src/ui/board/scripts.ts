@@ -50,6 +50,9 @@ export function getBoardScripts(): string {
       activeFilter = null;
       filterIndicator.style.display = 'none';
       applyFilters();
+
+      // Notify extension to clear filter state
+      vscode.postMessage({ type: 'clearFilter' });
     }
 
     // Apply all filters (search + label)
