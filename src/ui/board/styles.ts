@@ -276,6 +276,9 @@ export function getBoardStyles(): string {
     .empty {
       font-size: 13px;
       color: var(--vscode-descriptionForeground);
+      text-align: center;
+      padding: 20px;
+      margin: 0;
     }
   `;
 }

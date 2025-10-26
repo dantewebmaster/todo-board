@@ -55,6 +55,7 @@ export function getBoardScripts(): string {
     // Apply all filters (search + label)
     function applyFilters() {
       const searchQuery = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
 
       cards.forEach((card) => {
         let shouldShow = true;
@@ -80,6 +81,7 @@ export function getBoardScripts(): string {
 
         if (shouldShow) {
           card.classList.remove('hidden');
+          visibleCount++;
         } else {
           card.classList.add('hidden');
         }
@@ -87,6 +89,38 @@ export function getBoardScripts(): string {
 
       // Update clear button state
       clearButton.disabled = !searchQuery;
+
+      // Show/hide empty state for each column
+      updateEmptyStates();
+    }
+
+    // Update empty state messages for columns
+    function updateEmptyStates() {
+      const columns = document.querySelectorAll('.column');
+
+      columns.forEach((column) => {
+        const columnContent = column.querySelector('.column__content');
+        const cardsInColumn = columnContent.querySelectorAll('[data-card="true"]');
+        const visibleCardsInColumn = Array.from(cardsInColumn).filter(card => !card.classList.contains('hidden'));
+
+        // Remove existing empty state if present
+        let emptyState = columnContent.querySelector('.empty');
+
+        if (visibleCardsInColumn.length === 0) {
+          // Show empty state
+          if (!emptyState) {
+            emptyState = document.createElement('p');
+            emptyState.className = 'empty';
+            emptyState.textContent = 'No TODOs found.';
+            columnContent.appendChild(emptyState);
+          }
+        } else {
+          // Remove empty state
+          if (emptyState) {
+            emptyState.remove();
+          }
+        }
+      });
     }
 
     // Search input event
