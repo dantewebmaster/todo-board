@@ -45,6 +45,12 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
     } else if (message?.type === "clearFilter") {
       // Clear the filter state
       filterState.setActiveLabel(null);
+    } else if (
+      message?.type === "setFilter" &&
+      typeof message.label === "string"
+    ) {
+      // Update the filter state when a label is clicked in the board
+      filterState.setActiveLabel(message.label);
     }
   });
 }

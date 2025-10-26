@@ -43,6 +43,9 @@ export function getBoardScripts(): string {
       filterIndicator.style.display = 'flex';
       searchInput.value = '';
       applyFilters();
+
+      // Notify extension to update filter state
+      vscode.postMessage({ type: 'setFilter', label });
     }
 
     // Clear label filter
