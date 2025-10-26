@@ -139,12 +139,17 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
       bug: sidebarIcons.bug,
       feature: sidebarIcons.sparkle,
       refactor: sidebarIcons.code,
-      cleanup: sidebarIcons.tools,
+      cleanup: sidebarIcons.clean,
       docs: sidebarIcons.board,
-      ui: sidebarIcons.paintBrush,
-      ux: sidebarIcons.paintBrush,
+      ui: sidebarIcons.clean,
+      ux: sidebarIcons.clean,
       database: sidebarIcons.database,
       api: sidebarIcons.code,
+      security: sidebarIcons.security,
+      performance: sidebarIcons.rocket,
+      lint: sidebarIcons.lint,
+      "dead-code": sidebarIcons.trash,
+      "unused-code": sidebarIcons.trash,
     };
 
     return iconMap[label.toLowerCase()] || sidebarIcons.tag;
