@@ -75,11 +75,10 @@ export function getLabelIconSvg(label: string): string {
 
   const lowerLabel = label.toLowerCase() as CommonLabels;
 
-  if (Object.hasOwn(iconMap, lowerLabel)) {
-    return iconMap[lowerLabel];
-  }
-
-  return iconsSvg.tag;
+  // Return known icon or default tag icon
+  return Object.hasOwn(iconMap, lowerLabel)
+    ? iconMap[lowerLabel]
+    : iconsSvg.tag;
 }
 
 export function getLabelColor(label: string): {
@@ -109,13 +108,13 @@ export function getLabelColor(label: string): {
 
   const lowerLabel = label.toLowerCase();
 
+  // Return known color or default color for unknown labels
   if (Object.hasOwn(colorMap, lowerLabel)) {
     return colorMap[lowerLabel as CommonLabels];
   }
 
-  const defaultColor = { background: "#E5E7EB", text: "#000000" }; // light gray
-
-  return defaultColor;
+  // Better default: use a neutral blue-gray for unknown labels
+  return { background: "#6B7280", text: "#FFFFFF" };
 }
 
 export function extractLabelsFromText(text: string): string[] | undefined {

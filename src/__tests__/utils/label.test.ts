@@ -165,8 +165,8 @@ suite("utils/label", () => {
     test("should return default color for unknown label", () => {
       const color = getLabelColor("unknown-label");
 
-      assert.strictEqual(color.background, "#E5E7EB");
-      assert.strictEqual(color.text, "#000000");
+      assert.strictEqual(color.background, "#6B7280");
+      assert.strictEqual(color.text, "#FFFFFF");
     });
 
     test("should return colors for all common labels", () => {
