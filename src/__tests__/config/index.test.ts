@@ -1,6 +1,14 @@
 import * as assert from "node:assert";
 
-import { getExcludeGlob, getIncludeGlob, getMaxTodoLines, getTargetExtensions } from "@/config";
+import {
+  getExcludeGlob,
+  getIncludeGlob,
+  getMaxTodoLines,
+  getPriorityPattern,
+  getSearchPatterns,
+  getTargetExtensions,
+  getTodoPattern,
+} from "@/config";
 
 suite("config", () => {
   suite("getTargetExtensions", () => {
@@ -118,6 +126,62 @@ suite("config", () => {
       const maxLines = getMaxTodoLines();
 
       assert.strictEqual(maxLines, 4);
+    });
+  });
+
+  suite("getSearchPatterns", () => {
+    test("should return array of search patterns", () => {
+      const patterns = getSearchPatterns();
+
+      assert.ok(Array.isArray(patterns));
+      assert.ok(patterns.length > 0);
+    });
+
+    test("should have default pattern of @TODO", () => {
+      const patterns = getSearchPatterns();
+
+      assert.ok(patterns.includes("@TODO"));
+    });
+
+    test("should return only non-empty strings", () => {
+      const patterns = getSearchPatterns();
+
+      for (const pattern of patterns) {
+        assert.ok(typeof pattern === "string");
+        assert.ok(pattern.trim().length > 0);
+      }
+    });
+  });
+
+  suite("getTodoPattern", () => {
+    test("should return a RegExp", () => {
+      const pattern = getTodoPattern();
+
+      assert.ok(pattern instanceof RegExp);
+    });
+
+    test("should match default @TODO pattern", () => {
+      const pattern = getTodoPattern();
+
+      assert.ok(pattern.test("@TODO"));
+      assert.ok(pattern.test("@TODO: description"));
+      assert.ok(pattern.test("@TODO(high)"));
+    });
+  });
+
+  suite("getPriorityPattern", () => {
+    test("should return a RegExp", () => {
+      const pattern = getPriorityPattern();
+
+      assert.ok(pattern instanceof RegExp);
+    });
+
+    test("should match priority format", () => {
+      const pattern = getPriorityPattern();
+
+      assert.ok(pattern.test("@TODO(high)"));
+      assert.ok(pattern.test("@TODO(medium)"));
+      assert.ok(pattern.test("@TODO(low)"));
     });
   });
 });

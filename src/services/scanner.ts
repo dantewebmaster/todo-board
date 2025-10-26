@@ -1,9 +1,16 @@
 import * as vscode from "vscode";
 
-import { getExcludeGlob, getIncludeGlob, getMaxTodoLines } from "@/config";
+import {
+  getExcludeGlob,
+  getIncludeGlob,
+  getMaxTodoLines,
+  getSearchPatterns,
+  getTodoPattern,
+} from "@/config";
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
 import { generateTodoId } from "@/utils/generators";
+import { findFirstPatternIndex } from "@/utils/regex-builder";
 import { sanitizeTodoExtract } from "@/utils/sanitize";
 import type { CacheData } from "@/types/cache";
 import type { ScanResult, TodoHit } from "@/types/todo";
@@ -16,7 +23,8 @@ export async function scanWorkspace(
   let reused = 0;
   let scanned = 0;
   let filesProcessed = 0;
-  const pattern = REGEX.TODO_PATTERN;
+  const pattern = getTodoPattern();
+  const searchPatterns = getSearchPatterns();
   const maxLines = getMaxTodoLines();
 
   const include = getIncludeGlob();
@@ -45,7 +53,7 @@ export async function scanWorkspace(
       endIndex: number;
     } {
       const lineText = doc.lineAt(index).text;
-      const idx = lineText.indexOf("@TODO");
+      const idx = findFirstPatternIndex(lineText, searchPatterns);
       const raw = lineText.substring(idx).trim();
       let combined = sanitizeTodoExtract(raw);
 

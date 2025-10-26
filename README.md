@@ -52,7 +52,85 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
      // @TODO(medium): Prioridade média
      // @TODO(high): Prioridade alta
      // @TODO(medium): [refactor, exemplo] Exemplo com labels e prioridade
+
+     // Se configurado para FIXME:
+     // FIXME: Descrição
+     // FIXME(high): Corrigir bug crítico
      ```
+
+## 🔍 Padrões de Busca Customizáveis
+
+A extensão agora suporta padrões customizáveis para encontrar diferentes tipos de comentários. Por padrão, busca por `@TODO`, mas você pode configurar para buscar por qualquer padrão que desejar.
+
+**Exemplos de configuração:**
+
+1. **Buscar por múltiplos padrões:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["@TODO", "@FIXME", "BUG"]
+   }
+   ```
+   Isso irá encontrar: `@TODO`, `@FIXME`, `BUG` em qualquer lugar do comentário.
+
+2. **Buscar sem o símbolo @:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["TODO", "FIXME"]
+   }
+   ```
+   Isso irá encontrar: `TODO` e `FIXME` (útil para padrões mais genéricos).
+
+3. **Misturar padrões:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["@TODO", "FIXME", "[URGENT]"]
+   }
+   ```
+   Encontra todos os três padrões.
+
+**Como funcionam os padrões:**
+
+- Os padrões são **case-sensitive** (diferenciam maiúsculas de minúsculas)
+- Suporta **prioridades** entre parênteses: `@TODO(high)`, `FIXME(medium)`, etc.
+- O primeiro padrão encontrado em uma linha será usado
+- **Não use caracteres especiais de regex** (como `*`, `+`, `[`, `]`, `(`, `)`) - use apenas texto simples
+
+### 🔍 Padrões de Busca Customizáveis
+
+A extensão agora suporta padrões customizáveis para encontrar diferentes tipos de comentários. Por padrão, busca por `@TODO`, mas você pode configurar para buscar por qualquer padrão que desejar.
+
+**Exemplos de configuração:**
+
+1. **Buscar por múltiplos padrões:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["@TODO", "@FIXME", "BUG"]
+   }
+   ```
+   Isso irá encontrar: `@TODO`, `@FIXME`, `BUG` em qualquer lugar do comentário.
+
+2. **Buscar sem o símbolo @:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["TODO", "FIXME"]
+   }
+   ```
+   Isso irá encontrar: `TODO` e `FIXME` (útil para padrões mais genéricos).
+
+3. **Misturar padrões:**
+   ```json
+   {
+     "todo-board.searchPatterns": ["@TODO", "FIXME", "[URGENT]"]
+   }
+   ```
+   Encontra todos os três padrões.
+
+**Como funcionam os padrões:**
+
+- Os padrões são **case-sensitive** (diferenciam maiúsculas de minúsculas)
+- Suporta **prioridades** entre parênteses: `@TODO(high)`, `FIXME(medium)`, etc.
+- O primeiro padrão encontrado em uma linha será usado
+- **Não use caracteres especiais de regex** (como `*`, `+`, `[`, `]`, `(`, `)`) - use apenas texto simples
 
 ## ⚙️ Configurações
 
@@ -61,9 +139,20 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
   "todo-board.fileExtensions": [
     "html", "css", "scss", "ts", "tsx", "js", "jsx",
     "vue", "md", "json", "yaml", "java", "py", "go", "rb"
-  ]
+  ],
+  "todo-board.searchPatterns": ["@TODO"],
+  "todo-board.maxTodoLines": 4
 }
 ```
+
+### Configurações Disponíveis
+
+- **`todo-board.fileExtensions`**: Lista de extensões de arquivo a serem escaneadas
+- **`todo-board.searchPatterns`**: Padrões customizáveis para busca de TODOs
+  - Padrão padrão: `["@TODO"]`
+  - Exemplos de uso: `["@TODO", "FIXME", "BUG"]` ou `["TODO", "FIXME"]` (sem @)
+  - **Nota**: Use apenas texto simples sem caracteres especiais de regex
+- **`todo-board.maxTodoLines`**: Número máximo de linhas a coletar por TODO (padrão: 4)
 
 ## ✅ Checklist de Funcionalidades
 

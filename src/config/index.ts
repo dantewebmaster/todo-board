@@ -1,5 +1,11 @@
 import * as vscode from "vscode";
 
+import {
+  buildPriorityPattern,
+  buildTodoPattern,
+  validateSearchPatterns,
+} from "@/utils/regex-builder";
+
 export function getTargetExtensions(): string[] {
   return vscode.workspace
     .getConfiguration("todo-board")
@@ -47,4 +53,22 @@ export function getMaxTodoLines(): number {
   return vscode.workspace
     .getConfiguration("todo-board")
     .get<number>("maxTodoLines", 4);
+}
+
+export function getSearchPatterns(): string[] {
+  const patterns = vscode.workspace
+    .getConfiguration("todo-board")
+    .get<string[]>("searchPatterns", ["@TODO"]);
+
+  return validateSearchPatterns(patterns);
+}
+
+export function getTodoPattern(): RegExp {
+  const patterns = getSearchPatterns();
+  return buildTodoPattern(patterns);
+}
+
+export function getPriorityPattern(): RegExp {
+  const patterns = getSearchPatterns();
+  return buildPriorityPattern(patterns);
 }

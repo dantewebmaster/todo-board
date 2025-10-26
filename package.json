@@ -115,6 +115,16 @@
           "minimum": 1,
           "maximum": 20,
           "description": "Número máximo de linhas a serem coletadas a partir do comentário @TODO (incluindo continuações)."
+        },
+        "todo-board.searchPatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "@TODO"
+          ],
+          "description": "Padrões de busca para TODOs. Exemplos: '@TODO', 'TODO', '@FIXME', 'FIXME', 'BUG'. Não inclua parênteses ou caracteres especiais de regex."
         }
       }
     }
