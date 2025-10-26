@@ -96,36 +96,72 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 
 ```
 src/
-├── commands/          # Comandos da extensão
-│   ├── insert-todo.ts
-│   ├── open-board.ts
-│   └── scan-todos.ts
-├── config/           # Configurações
-│   └── index.ts
-├── constants/        # Constantes e regex
-│   └── regex.ts
-├── services/         # Serviços core
-│   ├── cache.ts
-│   ├── persist.ts
-│   └── scanner.ts
-├── types/           # TypeScript types
-│   ├── cache.ts
-│   └── todo.ts
-├── ui/              # Interface do usuário
+├── __tests__/                    # Testes automatizados (129 testes ✅)
+│   ├── commands/
+│   │   ├── filter-by-label.test.ts
+│   │   ├── insert-todo.test.ts
+│   │   └── scan-todos.test.ts
+│   ├── config/
+│   │   └── index.test.ts
+│   ├── constants/
+│   │   └── regex.test.ts
+│   ├── helpers/
+│   │   └── test-helpers.ts
+│   ├── services/
+│   │   ├── cache.test.ts
+│   │   ├── persist.test.ts
+│   │   └── scanner.test.ts
+│   ├── utils/
+│   │   ├── generators.test.ts
+│   │   ├── label.test.ts
+│   │   ├── priority.test.ts
+│   │   └── sanitize.test.ts
+│   ├── extension.test.ts
+│   └── README.md                 # Documentação dos testes
+├── commands/                     # Comandos da extensão
+│   ├── filter-by-label.ts        # Filtrar TODOs por label
+│   ├── insert-todo.ts            # Inserir comentário TODO
+│   ├── open-board.ts             # Abrir quadro Kanban
+│   └── scan-todos.ts             # Escanear workspace
+├── config/                       # Configurações
+│   └── index.ts                  # Getters de configuração
+├── constants/                    # Constantes e regex
+│   └── regex.ts                  # Padrões regex
+├── services/                     # Serviços core
+│   ├── cache.ts                  # Cache de arquivos (mtime)
+│   ├── filter-state.ts           # Estado de filtros
+│   ├── persist.ts                # Persistência de TODOs
+│   └── scanner.ts                # Scanner de comentários
+├── types/                        # TypeScript types
+│   ├── cache.ts                  # Tipos de cache
+│   └── todo.ts                   # Tipos de TODO
+├── ui/                           # Interface do usuário
 │   ├── board/
-│   │   ├── board.ts      # Renderização principal
-│   │   ├── header.ts     # Componente header
-│   │   ├── icons.ts      # Ícones SVG
-│   │   ├── scripts.ts    # JavaScript
-│   │   └── styles.ts     # CSS
+│   │   ├── index.ts              # Renderização do board
+│   │   ├── scripts.ts            # JavaScript da webview
+│   │   ├── styles.ts             # CSS do board
+│   │   └── components/
+│   │       ├── board-card.ts      # Componente card
+│   │       ├── board-column.ts    # Componente coluna
+│   │       └── header.ts          # Componente header
+│   │   └── services/
+│   │       └── board-transformer.ts  # Transformação de dados
+│   ├── icons/
+│   │   └── index.ts              # Ícones SVG
 │   └── sidebar/
-│       └── todo-sidebar.ts
-├── utils/           # Utilitários
-│   ├── generators.ts
-│   ├── label.ts
-│   ├── priority.ts
-│   └── sanitize.ts
-└── extension.ts     # Entry point
+│       ├── index.ts              # Renderização sidebar
+│       ├── scripts.ts            # JavaScript sidebar
+│       ├── styles.ts             # CSS sidebar
+│       ├── components/
+│       │   └── labels-list.ts    # Componente lista de labels
+│       └── providers/
+│           └── render-sidebar.ts # Provider da sidebar
+├── utils/                        # Utilitários
+│   ├── generators.ts             # Geração de IDs e nonces
+│   ├── label.ts                  # Processamento de labels
+│   ├── priority.ts               # Parsing de prioridades
+│   └── sanitize.ts               # Sanitização de HTML
+└── extension.ts                  # Entry point da extensão
 ```
 
 ## 🎨 Sistema de Labels
