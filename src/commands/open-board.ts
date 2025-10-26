@@ -2,7 +2,11 @@ import * as vscode from "vscode";
 
 import { filterState } from "@/services/filter-state";
 import { loadPersistedTodos } from "@/services/persist";
-import { buildBoardItems, groupItems, renderBoard } from "@/ui/board/board";
+import { renderBoard } from "@/ui/board";
+import {
+  buildBoardItems,
+  groupItems,
+} from "@/ui/board/services/board-transformer";
 
 let currentPanel: vscode.WebviewPanel | undefined;
 

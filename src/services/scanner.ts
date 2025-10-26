@@ -3,16 +3,8 @@ import * as vscode from "vscode";
 import { getExcludeGlob, getIncludeGlob, getMaxTodoLines } from "@/config";
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
-import {
-  collectBlockContinuation,
-  collectContinuation,
-  collectHtmlBlockContinuation,
-  isBlockStartWithoutEnd,
-  isHtmlBlockStartWithoutEnd,
-  isTodoLine,
-  sanitizeTodoExtract,
-} from "@/utils";
 import { generateTodoId } from "@/utils/generators";
+import { sanitizeTodoExtract } from "@/utils/sanitize";
 import type { CacheData } from "@/types/cache";
 import type { ScanResult, TodoHit } from "@/types/todo";
 
@@ -191,4 +183,139 @@ export async function scanWorkspace(
   }
 
   return { hits, reused, scanned, filesProcessed };
+}
+
+// @TODO: talvez separar esses metodos em outro arquivo utils/scanner.ts
+// por enquanto são utilizados apenas aqui.
+function collectBlockContinuation(
+  doc: vscode.TextDocument,
+  startIndex: number,
+  matchPattern: RegExp,
+  maxLines = 4,
+): { combinedSuffix: string; endIndex: number } {
+  let j = startIndex;
+  const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
+
+  while (j < doc.lineCount && j < maxEndIndex) {
+    const nextText = doc.lineAt(j).text;
+    if (isTodoLine(nextText, matchPattern)) {
+      break;
+    }
+
+    const trimmed = nextText.trim();
+    if (trimmed.startsWith(REGEX.BLOCK_COMMENT_END)) {
+      j++;
+      break;
+    }
+
+    if (trimmed.includes(REGEX.BLOCK_COMMENT_END)) {
+      const before = trimmed.split(REGEX.BLOCK_COMMENT_END)[0] ?? "";
+      parts.push(sanitizeTodoExtract(stripBlockLinePrefix(before)));
+      j++;
+      break;
+    }
+
+    if (REGEX.BLOCK_CONTENT_LINE_REGEX.test(nextText)) {
+      const content = sanitizeTodoExtract(stripBlockLinePrefix(nextText));
+      parts.push(content);
+      j++;
+      continue;
+    }
+
+    break;
+  }
+
+  return { combinedSuffix: parts.join(REGEX.LINE_BREAK_TOKEN), endIndex: j };
+}
+
+function collectHtmlBlockContinuation(
+  doc: vscode.TextDocument,
+  startIndex: number,
+  matchPattern: RegExp,
+  maxLines = 4,
+): { combinedSuffix: string; endIndex: number } {
+  let j = startIndex;
+  const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
+
+  while (j < doc.lineCount && j < maxEndIndex) {
+    const nextText = doc.lineAt(j).text;
+    if (isTodoLine(nextText, matchPattern)) {
+      break;
+    }
+
+    const trimmed = nextText.trim();
+    if (trimmed.includes(REGEX.HTML_COMMENT_END)) {
+      const before = trimmed.split(REGEX.HTML_COMMENT_END)[0] ?? "";
+      parts.push(sanitizeTodoExtract(before));
+      j++;
+      break;
+    }
+
+    parts.push(sanitizeTodoExtract(nextText));
+    j++;
+  }
+
+  return { combinedSuffix: parts.join(REGEX.LINE_BREAK_TOKEN), endIndex: j };
+}
+
+function collectContinuation(
+  doc: vscode.TextDocument,
+  startIndex: number,
+  matchPattern: RegExp,
+  maxLines = 4,
+): { combinedSuffix: string; endIndex: number } {
+  let j = startIndex;
+  const parts: string[] = [];
+  const maxEndIndex = startIndex + maxLines;
+
+  while (j < doc.lineCount && j < maxEndIndex) {
+    const nextText = doc.lineAt(j).text;
+    if (isTodoLine(nextText, matchPattern)) {
+      break;
+    }
+    if (!isLineComment(nextText)) {
+      break;
+    }
+
+    const content = sanitizeTodoExtract(extractCommentContent(nextText));
+    parts.push(content);
+    j++;
+  }
+
+  const combinedSuffix = parts.join(REGEX.LINE_BREAK_TOKEN);
+  return { combinedSuffix, endIndex: j };
+}
+
+function stripBlockLinePrefix(text: string): string {
+  // Remove '/**', '/*' or leading '*' with one optional following space
+  // Prefer explicit pattern to handle both cases consistently
+  return text.replace(/^\s*(?:\/\*\*?|\*)\s?/, "");
+}
+
+function isHtmlBlockStartWithoutEnd(text: string): boolean {
+  return (
+    text.includes(REGEX.HTML_COMMENT_START) &&
+    !text.includes(REGEX.HTML_COMMENT_END)
+  );
+}
+
+function isBlockStartWithoutEnd(text: string): boolean {
+  return (
+    text.includes(REGEX.BLOCK_COMMENT_START) &&
+    !text.includes(REGEX.BLOCK_COMMENT_END)
+  );
+}
+
+function isTodoLine(text: string, matchPattern: RegExp): boolean {
+  return text.includes("@TODO") && matchPattern.test(text);
+}
+
+function extractCommentContent(text: string): string {
+  return text.replace(REGEX.LINE_COMMENT_PREFIX_REGEX, "").trim();
+}
+
+function isLineComment(text: string): boolean {
+  return REGEX.LINE_COMMENT_REGEX.test(text);
 }
