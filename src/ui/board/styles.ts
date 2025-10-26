@@ -27,8 +27,8 @@ export function getBoardStyles(): string {
       top: 0;
       background-color: var(--vscode-editor-background);
       z-index: 2;
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
 
     h1 {
@@ -79,7 +79,8 @@ export function getBoardStyles(): string {
       display: none;
       align-items: center;
       gap: 6px;
-      padding: 6px 10px;
+      padding: 6px;
+      padding-left: 10px;
       background-color: var(--vscode-button-secondaryBackground);
       color: var(--vscode-button-secondaryForeground);
       border-radius: 4px;
@@ -175,13 +176,13 @@ export function getBoardStyles(): string {
 
     .column__header {
       padding: 12px 16px;
-      border-bottom: 1px solid var(--vscode-widget-border);
+      border: 1px solid var(--vscode-widget-border);
       font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
-      top: 56px;
+      top: 60px;
       border-radius: 8px 8px 0 0;
       background-color: var(--vscode-sideBar-background);
       z-index: 1;
