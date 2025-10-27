@@ -220,6 +220,13 @@ export function getBoardStyles(): string {
       display: none;
     }
 
+    .card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
     .card__description {
       font-size: 14px;
       font-weight: 500;
@@ -271,6 +278,39 @@ export function getBoardStyles(): string {
       border-radius: 999px;
       padding: 2px 8px;
       font-size: 12px;
+    }
+
+    /* Age badges */
+    .age-badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .age-fresh {
+      background: #10b981;
+      color: white;
+    }
+
+    .age-recent {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .age-old {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .age-abandoned {
+      background: #ef4444;
+      color: white;
     }
 
     .empty {

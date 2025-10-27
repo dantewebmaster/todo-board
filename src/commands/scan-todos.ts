@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { getCurrentPanel, updateBoardContent } from "@/commands/open-board";
 import { persistResults } from "@/services/persist";
-import { scanWorkspace } from "@/services/scanner";
+import { enrichTodosWithGitInfo, scanWorkspace } from "@/services/scanner";
 
 export async function scanTodos(): Promise<void> {
   await vscode.window.withProgress(
@@ -15,14 +15,18 @@ export async function scanTodos(): Promise<void> {
       try {
         const { hits, filesProcessed } = await scanWorkspace(progress, token);
 
-        // Não abrir o output; vamos notificar o usuário com os totais
-
         if (token.isCancellationRequested) {
           void vscode.window.showWarningMessage("Operação cancelada.");
           return;
         }
 
-        await persistResults(hits);
+        // Enrich TODOs with Git information (date and age)
+        progress.report({
+          message: "Enriquecendo TODOs com informações do Git...",
+        });
+        const enrichedHits = await enrichTodosWithGitInfo(hits);
+
+        await persistResults(enrichedHits);
 
         // Refresh sidebar via command (will be handled by provider)
         await vscode.commands.executeCommand("todo-board.updateSidebar");
@@ -33,9 +37,9 @@ export async function scanTodos(): Promise<void> {
         }
 
         const message =
-          hits.length === 0
+          enrichedHits.length === 0
             ? `Nenhum @TODO encontrado | Arquivos processados: ${filesProcessed}`
-            : `@TODOs encontrados: ${hits.length} em ${filesProcessed} arquivos processados`;
+            : `@TODOs encontrados: ${enrichedHits.length} em ${filesProcessed} arquivos processados`;
 
         void vscode.window.showInformationMessage(message);
       } catch (err) {
