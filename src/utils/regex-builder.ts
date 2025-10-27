@@ -75,3 +75,29 @@ export function findFirstPatternIndex(
 
   return minIndex === text.length ? -1 : minIndex;
 }
+
+/**
+ * Checks if any search pattern appears at the start of a comment
+ * Removes common comment markers before checking
+ */
+export function hasPatternAtCommentStart(
+  text: string,
+  searchPatterns: string[],
+): boolean {
+  // Remove common comment markers to get clean content
+  let cleaned = text.trim();
+
+  // Remove line comment markers: //, #
+  cleaned = cleaned.replace(/^\s*(?:\/\/|#)\s*/, "");
+
+  // Remove block comment markers: /*, /***, <!--
+  cleaned = cleaned.replace(/^\s*(?:\/\*+|<!--)\s*/, "");
+
+  // Remove leading asterisks from block comments: *
+  cleaned = cleaned.replace(/^\s*\*+\s*/, "");
+
+  cleaned = cleaned.trim();
+
+  // Check if any pattern appears at the START of the cleaned content
+  return searchPatterns.some((pattern) => cleaned.startsWith(pattern));
+}

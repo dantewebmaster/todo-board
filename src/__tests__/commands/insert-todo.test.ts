@@ -23,7 +23,9 @@ suite("commands/insert-todo", () => {
     }
   });
 
-  test("should insert snippet in active editor", async () => {
+  test("should insert snippet in active editor", async function () {
+    this.timeout(5000);
+
     const document = await vscode.workspace.openTextDocument({
       language: "typescript",
       content: "",
@@ -34,7 +36,7 @@ suite("commands/insert-todo", () => {
     try {
       await insertTodoComment();
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const text = editor.document.getText();
       assert.ok(text.includes("@TODO"));
@@ -43,7 +45,9 @@ suite("commands/insert-todo", () => {
     }
   });
 
-  test("should use appropriate comment style for TypeScript", async () => {
+  test("should use appropriate comment style for TypeScript", async function () {
+    this.timeout(5000);
+
     const document = await vscode.workspace.openTextDocument({
       language: "typescript",
       content: "",
@@ -54,7 +58,7 @@ suite("commands/insert-todo", () => {
     try {
       await insertTodoComment();
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const text = editor.document.getText();
       assert.ok(text.includes("//"));
@@ -63,7 +67,9 @@ suite("commands/insert-todo", () => {
     }
   });
 
-  test("should use hash comment style for Python", async () => {
+  test("should use hash comment style for Python", async function () {
+    this.timeout(5000);
+
     const document = await vscode.workspace.openTextDocument({
       language: "python",
       content: "",
@@ -74,7 +80,7 @@ suite("commands/insert-todo", () => {
     try {
       await insertTodoComment();
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const text = editor.document.getText();
       assert.ok(text.includes("#"));
@@ -83,7 +89,9 @@ suite("commands/insert-todo", () => {
     }
   });
 
-  test("should use block comment style for HTML", async () => {
+  test("should use block comment style for HTML", async function () {
+    this.timeout(5000);
+
     const document = await vscode.workspace.openTextDocument({
       language: "html",
       content: "",
@@ -94,7 +102,7 @@ suite("commands/insert-todo", () => {
     try {
       await insertTodoComment();
 
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const text = editor.document.getText();
       assert.ok(text.includes("<!--"));

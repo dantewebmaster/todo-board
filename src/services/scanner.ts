@@ -10,7 +10,10 @@ import {
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
 import { generateTodoId } from "@/utils/generators";
-import { findFirstPatternIndex } from "@/utils/regex-builder";
+import {
+  findFirstPatternIndex,
+  hasPatternAtCommentStart,
+} from "@/utils/regex-builder";
 import { sanitizeTodoExtract } from "@/utils/sanitize";
 import type { CacheData } from "@/types/cache";
 import type { ScanResult, TodoHit } from "@/types/todo";
@@ -328,9 +331,8 @@ function isTodoLine(
   matchPattern: RegExp,
   patterns: string[],
 ): boolean {
-  // Check if any of the search patterns exist in the text
-  const hasPattern = patterns.some((pattern) => text.includes(pattern));
-  return hasPattern && matchPattern.test(text);
+  // Check if pattern appears at the start of comment (after removing markers)
+  return hasPatternAtCommentStart(text, patterns) && matchPattern.test(text);
 }
 
 function extractCommentContent(text: string): string {

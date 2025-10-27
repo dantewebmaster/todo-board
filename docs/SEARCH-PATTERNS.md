@@ -44,7 +44,7 @@ Compatível com diferentes estilos de comentários:
 #### 3. Combinação de estilos
 ```json
 {
-  "todo-board.searchPatterns": ["@TODO", "FIXME", "[URGENT]", "BLOCKED"]
+  "todo-board.searchPatterns": ["@TODO", "FIXME", "URGENT", "BLOCKED"]
 }
 ```
 
@@ -80,7 +80,7 @@ Se uma linha contiver múltiplos padrões, o primeiro encontrado será usado:
 ### ✅ Permitido
 - Texto simples: `@TODO`, `FIXME`, `BUG`, `HACK`
 - Símbolos especiais simples: `@`, `[`, `]` (como parte do texto)
-- Qualquer combinação: `[URGENT]`, `@FIXME`, `TODO+`
+- Qualquer combinação: `URGENT`, `@FIXME`, `TODO+`
 
 ### ❌ Não Permitido
 - Caracteres regex especiais usados como regex: `*`, `+`, `?`, `|`, `(`, `)`

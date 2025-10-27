@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 
 suite("Extension", () => {
   test("should be present and activated", async () => {
-    const extension = vscode.extensions.getExtension("undefined_publisher.todo-board");
+    const extension = vscode.extensions.getExtension("dantewebmaster.todo-board");
 
     assert.ok(extension, "Extension should be present");
 
@@ -15,7 +15,7 @@ suite("Extension", () => {
   });
 
   test("should register scanTodos command", async () => {
-    const extension = vscode.extensions.getExtension("undefined_publisher.todo-board");
+    const extension = vscode.extensions.getExtension("dantewebmaster.todo-board");
     if (extension && !extension.isActive) {
       await extension.activate();
     }
