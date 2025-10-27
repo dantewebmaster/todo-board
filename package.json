@@ -3,12 +3,34 @@
   "displayName": "TODO Board",
   "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
   "version": "1.0.0",
+  "publisher": "dantewebmaster",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dantewebmaster/todo-board.git"
+  },
+  "homepage": "https://github.com/dantewebmaster/todo-board#readme",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.103.0"
   },
   "categories": [
+    "Visualization",
     "Other"
   ],
+  "keywords": [
+    "todo",
+    "task",
+    "kanban",
+    "board",
+    "productivity",
+    "organizer",
+    "labels",
+    "priorities"
+  ],
+  "bugs": {
+    "url": "https://github.com/dantewebmaster/todo-board/issues"
+  },
+  "license": "MIT",
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
