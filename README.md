@@ -51,8 +51,6 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
 - Botões de ação rápida
 - Ícone customizado na Activity Bar
 
-![Visualização com sidebar](./images/view-with-sidebar.png)
-
 ## 🎬 Demonstrações
 
 ### 1. Escaneando TODOs
