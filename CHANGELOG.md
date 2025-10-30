@@ -4,6 +4,12 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.0.1] - 2025-10-30
+
+### 🎨 Melhorias Visuais
+
+- Ícones e logo da extensão aprimorados
+
 ## [1.0.0] - 2025-10-26
 
 ### 🎉 Lançamento Inicial
