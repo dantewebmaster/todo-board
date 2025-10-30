@@ -48,6 +48,10 @@
         "title": "TODO Board: Insert TODO Comment"
       },
       {
+        "command": "todo-board.clearCache",
+        "title": "TODO Board: Clear Age Cache"
+      },
+      {
         "command": "todo-board.refreshSidebar",
         "title": "TODO Board: Scan Workspace",
         "icon": "$(refresh)"
@@ -58,7 +62,7 @@
         {
           "id": "todo-board-sidebar",
           "title": "TODO Board",
-          "icon": "resources/list-checks-light.svg"
+          "icon": "resources/activity-bar-icon.svg"
         }
       ]
     },
@@ -68,7 +72,7 @@
           "type": "webview",
           "id": "todoBoard",
           "name": "TODO Board",
-          "icon": "resources/list-checks-light.svg",
+          "icon": "resources/activity-bar-icon.svg",
           "contextualTitle": "TODO Board"
         }
       ]

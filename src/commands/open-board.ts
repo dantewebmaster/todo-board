@@ -82,12 +82,12 @@ export async function openTodoBoard(
     const lightIconPath = vscode.Uri.joinPath(
       context.extensionUri,
       "resources",
-      "list-checks-light.svg",
+      "activity-bar-icon.svg",
     );
     const darkIconPath = vscode.Uri.joinPath(
       context.extensionUri,
       "resources",
-      "list-checks-dark.svg",
+      "activity-bar-icon.svg",
     );
     panel.iconPath = {
       light: lightIconPath,
