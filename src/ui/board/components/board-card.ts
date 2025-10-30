@@ -1,3 +1,4 @@
+import { iconsSvg } from "@/ui/icons";
 import { formatDate, formatDaysOld, getAgeBadgeClass } from "@/utils/git-info";
 import { getLabelColor } from "@/utils/label";
 import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
@@ -16,7 +17,7 @@ export function renderCard(item: BoardItem): string {
         class="age-badge ${getAgeBadgeClass(item.daysOld)}"
         title="Last modified: ${item.lastModified ? formatDate(item.lastModified) : "Unknown"}"
       >
-        🕐 ${formatDaysOld(item.daysOld)}
+        ${iconsSvg.clock} ${formatDaysOld(item.daysOld)}
       </span>
     `
       : "";

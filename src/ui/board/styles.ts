@@ -282,39 +282,43 @@ export function getBoardStyles(): string {
 
     /* Age badges */
     .age-badge {
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 11px;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.3px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      background: transparent;
+      color: var(--vscode-foreground);
+    }
+
+    .age-badge svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
     }
 
     .age-fresh {
-      background: #10b981;
-      color: white;
+      border: 1px solid #10b981;
     }
 
     .age-recent {
-      background: #3b82f6;
-      color: white;
+      border: 1px solid #3b82f6;
     }
 
     .age-old {
-      background: #f59e0b;
-      color: white;
+      border: 1px solid #f59e0b;
     }
 
     .age-abandoned {
-      background: #ef4444;
-      color: white;
+      border: 1px solid #ef4444;
     }
 
     .empty {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--vscode-descriptionForeground);
       text-align: center;
       padding: 20px;

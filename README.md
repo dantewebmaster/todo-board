@@ -19,6 +19,7 @@ O diretório `.todo-board` é salvo no projeto para permitir versionamento e com
   - [Escaneando TODOs](#1-escaneando-todos)
   - [Visualizando o Board](#2-visualizando-o-board)
   - [Inserindo Comentários TODO](#3-inserindo-comentários-todo)
+  - [Limpando Cache de Idade](#4-limpando-cache-de-idade)
 - [Padrões de Busca Customizáveis](#-padrões-de-busca-customizáveis)
 - [Configurações](#️-configurações)
 - [Sistema de Labels](#-sistema-de-labels)
@@ -162,6 +163,27 @@ Insira rapidamente comentários TODO formatados no estilo correto para cada ling
 ```typescript
 // @TODO(high): [bug] Corrigir vazamento de memória na função processData
 ```
+
+### 4. Limpando Cache de Idade
+
+Limpe o cache de idades de TODOs não commitados para recalcular as datas baseadas no momento atual.
+
+**Como usar:**
+1. Abra o Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+2. Digite e selecione `TODO Board: Clear Age Cache`
+3. Confirme a mensagem de sucesso
+4. Execute um novo scan para ver as datas atualizadas
+
+**O que acontece:**
+- Limpa o cache interno de datas para TODOs não commitados
+- TODOs em arquivos commitados não são afetados (mantêm a data do commit)
+- No próximo scan, TODOs não commitados terão suas idades recalculadas
+- Útil quando você quer resetar as datas de TODOs antigos não commitados
+
+**Quando usar:**
+- Após commitar alterações e querer que as datas reflitam o novo commit
+- Quando TODOs antigos não commitados precisam ser "resetados"
+- Para limpar dados de cache que podem estar desatualizados
 
 ---
 

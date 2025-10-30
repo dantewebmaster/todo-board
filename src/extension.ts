@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 
+import { clearCache } from "@/commands/clear-cache";
 import { filterByLabel } from "@/commands/filter-by-label";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
@@ -29,6 +30,11 @@ export function activate(context: vscode.ExtensionContext) {
     filterByLabel,
   );
 
+  const clearCacheCmd = vscode.commands.registerCommand(
+    "todo-board.clearCache",
+    clearCache,
+  );
+
   const { disposable: sidebarView, provider: sidebarProvider } =
     registerTodoSidebar(context);
 
@@ -51,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
     openBoardCmd,
     insertTodoCmd,
     filterByLabelCmd,
+    clearCacheCmd,
     refreshSidebarCmd,
     updateSidebarCmd,
     sidebarView,

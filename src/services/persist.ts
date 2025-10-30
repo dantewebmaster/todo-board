@@ -46,7 +46,17 @@ export async function loadPersistedTodos(): Promise<TodoHit[]> {
       return [];
     }
 
-    return parsed.filter(isValidTodoHit);
+    return parsed.filter(isValidTodoHit).map((todo) => {
+      // Convert lastModified string back to Date object if present
+      if (todo.lastModified && typeof todo.lastModified === "string") {
+        return {
+          ...todo,
+          lastModified: new Date(todo.lastModified),
+        };
+      }
+
+      return todo;
+    });
   } catch {
     return [];
   }
