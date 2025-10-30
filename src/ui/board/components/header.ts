@@ -4,7 +4,7 @@ export function getHeaderComponent(): string {
   return `
     <div class="header">
       <h1>
-        ${iconsSvg.listChecks}
+        ${iconsSvg.activityBar}
         TODO Board
       </h1>
       <div class="search-container">
