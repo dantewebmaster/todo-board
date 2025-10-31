@@ -4,6 +4,24 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.0.4] - 2025-10-31
+
+### 🎨 Melhorias Visuais
+
+- Ícone e logo da extensão agora com fundo transparente real
+
+## [1.0.3] - 2025-10-31
+
+### 🎨 Melhorias Visuais
+
+- Removida configuração de galleryBanner para usar comportamento padrão do Marketplace com ícone transparente
+
+## [1.0.2] - 2025-10-31
+
+### 🎨 Melhorias Visuais
+
+- Ajuste na cor de fundo do banner no Marketplace para melhor contraste com o ícone
+
 ## [1.0.1] - 2025-10-30
 
 ### 🎨 Melhorias Visuais
