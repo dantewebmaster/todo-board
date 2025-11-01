@@ -196,6 +196,56 @@ export function getBoardStyles(): string {
       transform: scale(0.95);
     }
 
+    .age-filter-container {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 4px 0 8px;
+      background-color: var(--vscode-input-background);
+      border: 1px solid var(--vscode-input-border);
+      border-radius: 4px;
+      gap: 4px;
+      flex-shrink: 0;
+      min-width: 180px;
+    }
+
+    .age-filter-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    .age-filter-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .age-filter-select {
+      flex: 1;
+      background: transparent;
+      color: var(--vscode-input-foreground);
+      border: none;
+      outline: none;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px;
+      min-width: 0;
+    }
+
+    .age-filter-select:focus {
+      outline: none;
+    }
+
+    .age-filter-select option {
+      background-color: var(--vscode-dropdown-background);
+      color: var(--vscode-dropdown-foreground);
+    }
+
     .board {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

@@ -8,11 +8,13 @@ export function getBoardScripts(): string {
     const filterLabel = document.getElementById('filterLabel');
     const clearFilterButton = document.getElementById('clearFilterButton');
     const sortButton = document.getElementById('sortButton');
+    const ageFilterSelect = document.getElementById('ageFilterSelect');
     const cards = document.querySelectorAll('[data-card="true"]');
     const labelBadges = document.querySelectorAll('[data-label]');
 
     let activeFilter = null;
     let sortDirection = 'desc'; // Default: most recent first
+    let ageFilter = 'all'; // Default: show all ages
 
     // Handle card clicks
     cards.forEach((element) => {
@@ -163,6 +165,14 @@ export function getBoardScripts(): string {
 
       // Notify extension to update sort state
       vscode.postMessage({ type: 'toggleSort', direction: sortDirection });
+    });
+
+    // Age filter dropdown event
+    ageFilterSelect.addEventListener('change', (e) => {
+      ageFilter = e.target.value;
+
+      // Notify extension to update age filter state
+      vscode.postMessage({ type: 'setAgeFilter', ageFilter });
     });
 
     // Update sort button icon and title

@@ -40,6 +40,22 @@ export function getHeaderComponent(): string {
             </button>
           </div>
         </div>
+        <div class="age-filter-container">
+          <span class="age-filter-icon" aria-hidden="true">
+            ${iconsSvg.clock}
+          </span>
+          <select
+            class="age-filter-select"
+            id="ageFilterSelect"
+            title="Filter by age"
+          >
+            <option value="all">All ages</option>
+            <option value="fresh">Fresh (≤7 days)</option>
+            <option value="recent">Recent (≤30 days)</option>
+            <option value="old">Old (≤90 days)</option>
+            <option value="abandoned">Abandoned (>90 days)</option>
+          </select>
+        </div>
         <button
           class="sort-button"
           id="sortButton"
