@@ -48,7 +48,7 @@
         "title": "TODO Board: Insert TODO Comment"
       },
       {
-        "command": "todo-board.clearCache",
+        "command": "todo-board.clearAgeCache",
         "title": "TODO Board: Clear Age Cache"
       },
       {

@@ -72,6 +72,7 @@ Escaneie todos os comentários TODO do seu workspace com um único comando. A ex
 - Identifica comentários com padrões configurados (`@TODO`, `FIXME`, etc)
 - Extrai prioridades (`low`, `medium`, `high`) e labels (`[bug]`, `[refactor]`, etc)
 - Salva resultados em `.todo-board/todos.json`
+- Salva cache de idades de TODOs não commitados em `.todo-board/uncommitted-cache.json`
 - Usa cache inteligente para não reprocessar arquivos inalterados
 
 **Exemplo de comentários detectados:**
@@ -175,8 +176,10 @@ Limpe o cache de idades de TODOs não commitados para recalcular as datas basead
 4. Execute um novo scan para ver as datas atualizadas
 
 **O que acontece:**
-- Limpa o cache interno de datas para TODOs não commitados
+- Limpa o cache persistente (`.todo-board/uncommitted-cache.json`)
+- Remove todas as datas armazenadas de TODOs não commitados
 - TODOs em arquivos commitados não são afetados (mantêm a data do commit)
+- No próximo scan, TODOs não commitados terão suas datas recalculadas baseadas no `mtime` do arquivo
 - No próximo scan, TODOs não commitados terão suas idades recalculadas
 - Útil quando você quer resetar as datas de TODOs antigos não commitados
 

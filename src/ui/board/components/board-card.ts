@@ -1,5 +1,9 @@
 import { iconsSvg } from "@/ui/icons";
-import { formatDate, formatDaysOld, getAgeBadgeClass } from "@/utils/git-info";
+import {
+  formatDate,
+  formatDaysOld,
+  getAgeBadgeClass,
+} from "@/utils/age-formatter";
 import { getLabelColor } from "@/utils/label";
 import { escapeAttribute, escapeHtml } from "@/utils/sanitize";
 import type { BoardItem } from "@/types/todo";

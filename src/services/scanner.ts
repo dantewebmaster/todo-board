@@ -9,8 +9,8 @@ import {
 } from "@/config";
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
+import { getLineInfo } from "@/services/git-line-info";
 import { generateTodoId } from "@/utils/generators";
-import { getLineInfo } from "@/utils/git-info";
 import {
   findFirstPatternIndex,
   hasPatternAtCommentStart,
