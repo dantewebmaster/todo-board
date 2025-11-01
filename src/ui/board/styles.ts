@@ -50,6 +50,14 @@ export function getBoardStyles(): string {
       stroke: var(--vscode-foreground);
     }
 
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
     .search-container {
       display: flex;
       align-items: center;
@@ -157,6 +165,35 @@ export function getBoardStyles(): string {
 
     .button-clear:disabled {
       opacity: 0;
+    }
+
+    .sort-button {
+      height: 40px;
+      width: 40px;
+      background-color: var(--vscode-button-secondaryBackground);
+      color: var(--vscode-button-secondaryForeground);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 120ms ease;
+      flex-shrink: 0;
+    }
+
+    .sort-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .sort-button:hover {
+      background-color: var(--vscode-button-secondaryHoverBackground);
+    }
+
+    .sort-button:active {
+      transform: scale(0.95);
     }
 
     .board {

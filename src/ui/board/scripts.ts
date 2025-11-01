@@ -7,10 +7,12 @@ export function getBoardScripts(): string {
     const filterIndicator = document.getElementById('filterIndicator');
     const filterLabel = document.getElementById('filterLabel');
     const clearFilterButton = document.getElementById('clearFilterButton');
+    const sortButton = document.getElementById('sortButton');
     const cards = document.querySelectorAll('[data-card="true"]');
     const labelBadges = document.querySelectorAll('[data-label]');
 
     let activeFilter = null;
+    let sortDirection = 'desc'; // Default: most recent first
 
     // Handle card clicks
     cards.forEach((element) => {
@@ -153,6 +155,30 @@ export function getBoardScripts(): string {
         applyFilters();
       }
     });
+
+    // Sort button event
+    sortButton.addEventListener('click', () => {
+      sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+      updateSortButton();
+
+      // Notify extension to update sort state
+      vscode.postMessage({ type: 'toggleSort', direction: sortDirection });
+    });
+
+    // Update sort button icon and title
+    function updateSortButton() {
+      const iconsSvg = {
+        sortAscending: \`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M128,128a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,128ZM48,72H184a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16Zm56,112H48a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm125.66-21.66a8,8,0,0,0-11.32,0L192,188.69V112a8,8,0,0,0-16,0v76.69l-26.34-26.35a8,8,0,0,0-11.32,11.32l40,40a8,8,0,0,0,11.32,0l40-40A8,8,0,0,0,229.66,162.34Z"></path></svg>\`,
+        sortDescending: \`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M128,128a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,128ZM48,72H184a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16Zm56,112H48a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm125.66-90.34-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L176,77.31V144a8,8,0,0,0,16,0V77.31l26.34,26.35a8,8,0,0,0,11.32-11.32Z"></path></svg>\`,
+      };
+
+      const icon = sortDirection === 'desc' ? iconsSvg.sortDescending : iconsSvg.sortAscending;
+      const title = sortDirection === 'desc' ? 'Sort by date (descending)' : 'Sort by date (ascending)';
+
+      sortButton.innerHTML = icon;
+      sortButton.setAttribute('title', title);
+      sortButton.setAttribute('data-direction', sortDirection);
+    }
 
     // Listen for messages from extension
     window.addEventListener('message', (event) => {
