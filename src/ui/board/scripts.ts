@@ -5,10 +5,11 @@ export function getBoardScripts(): string {
     const searchInput = document.getElementById('searchInput');
     const clearButton = document.getElementById('clearButton');
     const filterIndicator = document.getElementById('filterIndicator');
-    const filterLabel = document.getElementById('filterLabel');
+    const filterLabels = document.getElementById('filterLabels');
     const clearFilterButton = document.getElementById('clearFilterButton');
     const sortButton = document.getElementById('sortButton');
     const ageFilterSelect = document.getElementById('ageFilterSelect');
+    const resetFiltersButton = document.getElementById('resetFiltersButton');
     const cards = document.querySelectorAll('[data-card="true"]');
     const labelBadges = document.querySelectorAll('[data-label]');
 
@@ -51,6 +52,7 @@ export function getBoardScripts(): string {
       }
 
       updateFilterIndicator();
+      updateResetButtonVisibility();
       searchInput.value = '';
       applyFilters();
     }
@@ -58,7 +60,6 @@ export function getBoardScripts(): string {
     // Filter by label from user click (sends message to extension)
     function filterByLabelFromClick(label) {
       filterByLabel(label);
-      // Notify extension to update filter state
       vscode.postMessage({ type: 'setFilter', label });
     }
 
@@ -79,7 +80,9 @@ export function getBoardScripts(): string {
     // Update filter indicator to show active labels
     function updateFilterIndicator() {
       if (activeLabels.length > 0) {
-        filterLabel.textContent = 'Filtered by: ' + activeLabels.join(', ');
+        const labelsText = activeLabels.join(', ');
+        filterLabels.textContent = 'Labels: ' + activeLabels.join(', ');
+        filterLabels.setAttribute('title', labelsText);
         filterIndicator.style.display = 'flex';
       } else {
         filterIndicator.style.display = 'none';
@@ -100,6 +103,7 @@ export function getBoardScripts(): string {
     function clearLabelFilter() {
       activeLabels = [];
       updateFilterIndicator();
+      updateResetButtonVisibility();
       applyFilters();
 
       vscode.postMessage({ type: 'clearLabels' });
@@ -255,20 +259,53 @@ export function getBoardScripts(): string {
     sortButton.addEventListener('click', () => {
       sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
       updateSortButton();
-      applyFilters(); // Re-apply filters with new sort direction
+      updateResetButtonVisibility();
+      applyFilters();
 
-      // Notify extension to update sort state
       vscode.postMessage({ type: 'toggleSort', direction: sortDirection });
     });
 
     // Age filter dropdown event
     ageFilterSelect.addEventListener('change', (e) => {
       ageFilter = e.target.value;
-      applyFilters(); // Re-apply filters with new age filter
+      updateResetButtonVisibility();
+      applyFilters();
 
-      // Notify extension to update age filter state
       vscode.postMessage({ type: 'setAgeFilter', ageFilter });
-    }); // Update sort button icon and title
+    });
+
+    // Reset all filters button event
+    resetFiltersButton.addEventListener('click', () => {
+      resetAllFilters();
+    });
+
+    // Reset all filters and sorting to defaults
+    function resetAllFilters() {
+      activeLabels = [];
+      ageFilter = 'all';
+      sortDirection = 'desc';
+      searchInput.value = '';
+
+      ageFilterSelect.value = 'all';
+      updateSortButton();
+      updateFilterIndicator();
+      updateResetButtonVisibility();
+      applyFilters();
+
+      vscode.postMessage({ type: 'resetFilters' });
+    }
+
+    // Update reset button visibility based on active filters
+    function updateResetButtonVisibility() {
+      const hasActiveFilters =
+        activeLabels.length > 0 ||
+        ageFilter !== 'all' ||
+        sortDirection !== 'desc';
+
+      resetFiltersButton.style.display = hasActiveFilters ? 'flex' : 'none';
+    }
+
+    // Update sort button icon and title
     function updateSortButton() {
       const iconsSvg = {
         sortAscending: \`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M128,128a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,128ZM48,72H184a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16Zm56,112H48a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm125.66-21.66a8,8,0,0,0-11.32,0L192,188.69V112a8,8,0,0,0-16,0v76.69l-26.34-26.35a8,8,0,0,0-11.32,11.32l40,40a8,8,0,0,0,11.32,0l40-40A8,8,0,0,0,229.66,162.34Z"></path></svg>\`,
@@ -290,5 +327,8 @@ export function getBoardScripts(): string {
         filterByLabel(message.label);
       }
     });
+
+    // Initialize
+    updateResetButtonVisibility();
   `;
 }

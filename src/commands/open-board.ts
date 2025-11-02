@@ -59,20 +59,21 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
       // Remove a specific label from filter
       filterState.removeLabel(message.label);
     } else if (message?.type === "clearLabels") {
-      // Clear all label filters
       filterState.clearLabels();
     } else if (
       message?.type === "setAgeFilter" &&
       typeof message.ageFilter === "string"
     ) {
-      // Update age filter
       filterState.setAgeFilter(message.ageFilter);
     } else if (
       message?.type === "toggleSort" &&
       typeof message.direction === "string"
     ) {
-      // Update sort direction
       filterState.toggleSortDirection();
+    } else if (message?.type === "resetFilters") {
+      filterState.clearLabels();
+      filterState.setAgeFilter("all");
+      filterState.setSort({ direction: "desc" });
     }
   });
 }

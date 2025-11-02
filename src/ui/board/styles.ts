@@ -71,10 +71,10 @@ export function getBoardStyles(): string {
       display: flex;
       align-items: center;
       flex: 1;
-      width: 80px;
+      width: 60px;
       height: 40px;
       padding: 4px;
-      max-width: 280px;
+      max-width: 230px;
 
       background-color: var(--vscode-input-background);
       border: 1px solid var(--vscode-input-border);
@@ -87,7 +87,6 @@ export function getBoardStyles(): string {
       align-items: center;
       gap: 6px;
       padding: 6px;
-      padding-left: 10px;
       background-color: var(--vscode-button-secondaryBackground);
       color: var(--vscode-button-secondaryForeground);
       border-radius: 4px;
@@ -96,9 +95,14 @@ export function getBoardStyles(): string {
       height: 40px;
     }
 
-    .filter-label {
-      display: flex;
+    .filter-labels {
+      display: block;
       align-items: center;
+      max-width: 200px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .search-icon {
@@ -150,6 +154,7 @@ export function getBoardStyles(): string {
       justify-content: center;
       transition: opacity 300ms ease-in-out, background-color 120ms ease;
       flex-shrink: 0;
+      z-index: 100;
     }
 
     .button-clear svg {
@@ -195,6 +200,35 @@ export function getBoardStyles(): string {
       transform: scale(0.95);
     }
 
+    .reset-filters-button {
+      height: 40px;
+      width: 40px;
+      background-color: var(--vscode-button-secondaryBackground);
+      color: var(--vscode-button-secondaryForeground);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 120ms ease;
+      flex-shrink: 0;
+    }
+
+    .reset-filters-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .reset-filters-button:hover {
+      background-color: var(--vscode-button-secondaryHoverBackground);
+    }
+
+    .reset-filters-button:active {
+      transform: scale(0.95);
+    }
+
     .age-filter-container {
       display: flex;
       align-items: center;
@@ -205,7 +239,7 @@ export function getBoardStyles(): string {
       border-radius: 4px;
       gap: 4px;
       flex-shrink: 0;
-      min-width: 180px;
+      min-width: 160px;
     }
 
     .age-filter-icon {

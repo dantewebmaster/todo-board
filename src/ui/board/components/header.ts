@@ -9,8 +9,15 @@ export function getHeaderComponent(): string {
       </h1>
       <div class="header-controls">
         <div class="search-container">
+          <button
+            class="reset-filters-button"
+            id="resetFiltersButton"
+            title="Reset all filters and sorting"
+          >
+            ${iconsSvg.funnelX}
+          </button>
           <div class="filter-indicator" id="filterIndicator" style="display: none;">
-            <span class="filter-label" id="filterLabel"></span>
+            <span class="filter-labels" id="filterLabels"></span>
             <button
               class="filter-clear button-clear"
               id="clearFilterButton"
