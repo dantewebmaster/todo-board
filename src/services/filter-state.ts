@@ -99,26 +99,6 @@ class FilterStateManager {
     return { ...this.sort };
   }
 
-  // === Backward Compatibility ===
-
-  /**
-   * @deprecated Use setLabels([label]) or addLabel(label) instead
-   */
-  setActiveLabel(label: string | null): void {
-    if (label === null) {
-      this.clearLabels();
-    } else {
-      this.setLabels([label]);
-    }
-  }
-
-  /**
-   * @deprecated Use getFilters().labels instead
-   */
-  getActiveLabel(): string | null {
-    return this.filters.labels.length > 0 ? this.filters.labels[0] : null;
-  }
-
   // === Listeners ===
 
   /**
@@ -133,16 +113,6 @@ class FilterStateManager {
         this.listeners.splice(index, 1);
       }
     };
-  }
-
-  /**
-   * @deprecated Use onChange instead
-   */
-  onFilterChange(callback: (label: string | null) => void): () => void {
-    const wrappedCallback = () => {
-      callback(this.getActiveLabel());
-    };
-    return this.onChange(wrappedCallback);
   }
 
   private notifyListeners(): void {

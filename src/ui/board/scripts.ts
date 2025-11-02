@@ -12,7 +12,7 @@ export function getBoardScripts(): string {
     const cards = document.querySelectorAll('[data-card="true"]');
     const labelBadges = document.querySelectorAll('[data-label]');
 
-    let activeFilter = null;
+    let activeLabels = []; // Array of active label filters
     let sortDirection = 'desc'; // Default: most recent first
     let ageFilter = 'all'; // Default: show all ages
 
@@ -35,46 +35,95 @@ export function getBoardScripts(): string {
         e.stopPropagation(); // Prevent card click
         const label = badge.getAttribute('data-label');
         if (label) {
-          filterByLabel(label);
+          filterByLabelFromClick(label);
         }
       });
     });
 
     // Filter by label
     function filterByLabel(label) {
-      activeFilter = label;
-      filterLabel.textContent = 'Filtered by: ' + label;
-      filterIndicator.style.display = 'flex';
+      // Toggle label in activeLabels array
+      const index = activeLabels.indexOf(label);
+      if (index === -1) {
+        activeLabels.push(label);
+      } else {
+        activeLabels.splice(index, 1);
+      }
+
+      updateFilterIndicator();
       searchInput.value = '';
       applyFilters();
+    }
 
+    // Filter by label from user click (sends message to extension)
+    function filterByLabelFromClick(label) {
+      filterByLabel(label);
       // Notify extension to update filter state
       vscode.postMessage({ type: 'setFilter', label });
     }
 
-    // Clear label filter
-    function clearLabelFilter() {
-      activeFilter = null;
-      filterIndicator.style.display = 'none';
+    // Remove a specific label from filter
+    function removeLabel(label) {
+      const index = activeLabels.indexOf(label);
+      if (index !== -1) {
+        activeLabels.splice(index, 1);
+      }
+
+      updateFilterIndicator();
       applyFilters();
 
-      // Notify extension to clear filter state
-      vscode.postMessage({ type: 'clearFilter' });
+      // Notify extension to remove label
+      vscode.postMessage({ type: 'removeLabel', label });
     }
 
-    // Apply all filters (search + label)
+    // Update filter indicator to show active labels
+    function updateFilterIndicator() {
+      if (activeLabels.length > 0) {
+        filterLabel.textContent = 'Filtered by: ' + activeLabels.join(', ');
+        filterIndicator.style.display = 'flex';
+      } else {
+        filterIndicator.style.display = 'none';
+      }
+
+      // Update visual state of all label badges
+      for (const badge of labelBadges) {
+        const label = badge.getAttribute('data-label');
+        if (activeLabels.includes(label)) {
+          badge.classList.add('badge--active');
+        } else {
+          badge.classList.remove('badge--active');
+        }
+      }
+    }
+
+    // Clear label filter
+    function clearLabelFilter() {
+      activeLabels = [];
+      updateFilterIndicator();
+      applyFilters();
+
+      vscode.postMessage({ type: 'clearLabels' });
+    }
+
+    // Apply all filters (search + labels + age) and sorting
     function applyFilters() {
       const searchQuery = searchInput.value.toLowerCase().trim();
-      let visibleCount = 0;
+      let visibleCards = [];
 
       cards.forEach((card) => {
         let shouldShow = true;
 
-        // Apply label filter
-        if (activeFilter) {
+        // Apply label filter (OR logic: show if matches ANY active label)
+        if (activeLabels.length > 0) {
           const cardLabels = Array.from(card.querySelectorAll('[data-label]'))
             .map(badge => badge.getAttribute('data-label'));
-          shouldShow = cardLabels.includes(activeFilter);
+          shouldShow = activeLabels.some(label => cardLabels.includes(label));
+        }
+
+        // Apply age filter
+        if (shouldShow && ageFilter !== 'all') {
+          const daysOld = parseInt(card.getAttribute('data-days-old') || '0', 10);
+          shouldShow = matchesAgeFilter(daysOld, ageFilter);
         }
 
         // Apply search filter
@@ -91,17 +140,61 @@ export function getBoardScripts(): string {
 
         if (shouldShow) {
           card.classList.remove('hidden');
-          visibleCount++;
+          visibleCards.push(card);
         } else {
           card.classList.add('hidden');
         }
       });
+
+      // Apply sorting to visible cards
+      sortCards(visibleCards);
 
       // Update clear button state
       clearButton.disabled = !searchQuery;
 
       // Show/hide empty state for each column
       updateEmptyStates();
+    }
+
+    // Check if days old matches age filter
+    function matchesAgeFilter(daysOld, filter) {
+      switch (filter) {
+        case 'fresh':
+          return daysOld <= 7;
+        case 'recent':
+          return daysOld <= 30;
+        case 'old':
+          return daysOld <= 90;
+        case 'abandoned':
+          return daysOld > 90;
+        default:
+          return true;
+      }
+    }
+
+    // Sort visible cards by date
+    function sortCards(visibleCards) {
+      const columns = document.querySelectorAll('.column__content');
+
+      visibleCards.sort((a, b) => {
+        const daysA = parseInt(a.getAttribute('data-days-old') || '0', 10);
+        const daysB = parseInt(b.getAttribute('data-days-old') || '0', 10);
+
+        if (sortDirection === 'desc') {
+          return daysA - daysB; // Most recent first (lower daysOld)
+        } else {
+          return daysB - daysA; // Oldest first (higher daysOld)
+        }
+      });
+
+      // Re-append cards in sorted order within their columns
+      for (const card of visibleCards) {
+        const priority = card.getAttribute('data-priority');
+        const column = document.querySelector(\`[data-priority="\${priority}"] .column__content\`);
+        if (column) {
+          column.appendChild(card);
+        }
+      }
     }
 
     // Update empty state messages for columns
@@ -162,6 +255,7 @@ export function getBoardScripts(): string {
     sortButton.addEventListener('click', () => {
       sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
       updateSortButton();
+      applyFilters(); // Re-apply filters with new sort direction
 
       // Notify extension to update sort state
       vscode.postMessage({ type: 'toggleSort', direction: sortDirection });
@@ -170,12 +264,11 @@ export function getBoardScripts(): string {
     // Age filter dropdown event
     ageFilterSelect.addEventListener('change', (e) => {
       ageFilter = e.target.value;
+      applyFilters(); // Re-apply filters with new age filter
 
       // Notify extension to update age filter state
       vscode.postMessage({ type: 'setAgeFilter', ageFilter });
-    });
-
-    // Update sort button icon and title
+    }); // Update sort button icon and title
     function updateSortButton() {
       const iconsSvg = {
         sortAscending: \`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M128,128a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,128ZM48,72H184a8,8,0,0,0,0-16H48a8,8,0,0,0,0,16Zm56,112H48a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm125.66-21.66a8,8,0,0,0-11.32,0L192,188.69V112a8,8,0,0,0-16,0v76.69l-26.34-26.35a8,8,0,0,0-11.32,11.32l40,40a8,8,0,0,0,11.32,0l40-40A8,8,0,0,0,229.66,162.34Z"></path></svg>\`,

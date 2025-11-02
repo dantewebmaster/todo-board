@@ -53,16 +53,18 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
     });
 
     // Listen for filter changes
-    filterState.onFilterChange((activeLabel) => {
+    filterState.onChange(() => {
       if (this.webviewView) {
+        const filters = filterState.getFilters();
         this.webviewView.webview.postMessage({
-          type: "setActiveFilter",
-          label: activeLabel,
+          type: "updateFilters",
+          labels: filters.labels,
+          age: filters.age,
         });
       }
     });
 
-    webviewView.webview.onDidReceiveMessage((message) => {
+    webviewView.webview.onDidReceiveMessage(async (message) => {
       switch (message.type) {
         case "openBoard":
           void vscode.commands.executeCommand("todo-board.showBoard");
@@ -70,12 +72,13 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
         case "scanTodos":
           void vscode.commands.executeCommand("todo-board.scanTodos");
           break;
-        case "filterByLabel":
-          void vscode.commands.executeCommand(
+        case "filterByLabel": {
+          await vscode.commands.executeCommand(
             "todo-board.filterByLabel",
             message.label,
           );
           break;
+        }
       }
     });
   }
@@ -85,6 +88,7 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
     const todoCount = hits.length;
     const labelCounts = countLabels(hits);
     const nonce = generateNonce();
+    const filters = filterState.getFilters();
 
     webview.html = `
       <!DOCTYPE html>
@@ -134,7 +138,7 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
               <span class="section__badge">${labelCounts.size}</span>
             </div>
             <div class="label-list">
-              ${renderLabelsList(labelCounts)}
+              ${renderLabelsList(labelCounts, filters.labels)}
             </div>
           </div>
 

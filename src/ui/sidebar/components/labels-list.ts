@@ -1,7 +1,10 @@
 import { iconsSvg } from "@/ui/icons";
 import { getLabelIconSvg } from "@/utils/label";
 
-export function renderLabelsList(labelCounts: Map<string, number>): string {
+export function renderLabelsList(
+  labelCounts: Map<string, number>,
+  activeLabels: string[] = [],
+): string {
   if (labelCounts.size === 0) {
     return `
       <div class="empty-state">
@@ -13,11 +16,13 @@ export function renderLabelsList(labelCounts: Map<string, number>): string {
 
   return Array.from(labelCounts.entries())
     .sort((a, b) => b[1] - a[1])
-    .map(
-      ([label, count]) =>
-        `
+    .map(([label, count]) => {
+      const isActive = activeLabels.includes(label);
+      const activeClass = isActive ? " label-item--active" : "";
+
+      return `
           <div
-            class="label-item"
+            class="label-item ${activeClass}"
             data-label="${label}"
             title="Click to filter by '${label}'"
           >
@@ -29,7 +34,7 @@ export function renderLabelsList(labelCounts: Map<string, number>): string {
             </div>
             <span class="label-item__count">${count}</span>
           </div>
-        `,
-    )
+        `;
+    })
     .join("");
 }

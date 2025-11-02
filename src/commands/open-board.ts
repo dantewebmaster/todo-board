@@ -46,15 +46,33 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           `Unable to open TODO location: ${messageText}`,
         );
       }
-    } else if (message?.type === "clearFilter") {
-      // Clear the filter state
-      filterState.setActiveLabel(null);
     } else if (
       message?.type === "setFilter" &&
       typeof message.label === "string"
     ) {
-      // Update the filter state when a label is clicked in the board
-      filterState.setActiveLabel(message.label);
+      // Toggle label in filter state (supports multiple labels)
+      filterState.toggleLabel(message.label);
+    } else if (
+      message?.type === "removeLabel" &&
+      typeof message.label === "string"
+    ) {
+      // Remove a specific label from filter
+      filterState.removeLabel(message.label);
+    } else if (message?.type === "clearLabels") {
+      // Clear all label filters
+      filterState.clearLabels();
+    } else if (
+      message?.type === "setAgeFilter" &&
+      typeof message.ageFilter === "string"
+    ) {
+      // Update age filter
+      filterState.setAgeFilter(message.ageFilter);
+    } else if (
+      message?.type === "toggleSort" &&
+      typeof message.direction === "string"
+    ) {
+      // Update sort direction
+      filterState.toggleSortDirection();
     }
   });
 }

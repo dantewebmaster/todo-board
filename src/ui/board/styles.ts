@@ -64,18 +64,17 @@ export function getBoardStyles(): string {
       justify-content: flex-end;
       gap: 8px;
       flex: 1;
-      max-width: 600px;
       flex-wrap: wrap;
     }
 
-    .search-container > .custom-search-input {
+    .custom-search-input {
       display: flex;
       align-items: center;
       flex: 1;
-      min-width: 280px;
+      width: 80px;
       height: 40px;
       padding: 4px;
-      max-width: 344px;
+      max-width: 280px;
 
       background-color: var(--vscode-input-background);
       border: 1px solid var(--vscode-input-border);
@@ -300,7 +299,6 @@ export function getBoardStyles(): string {
 
     .card:hover {
       border-color: var(--vscode-focusBorder);
-      transform: translateY(-1px);
     }
 
     .card.hidden {
@@ -347,6 +345,7 @@ export function getBoardStyles(): string {
 
     .badge--clickable {
       cursor: pointer;
+      border: 1px solid transparent;
       transition: opacity 120ms ease, transform 120ms ease;
     }
 
@@ -357,6 +356,10 @@ export function getBoardStyles(): string {
 
     .badge--clickable:active {
       transform: scale(0.98);
+    }
+
+    .badge--active {
+      border-color: currentColor;
     }
 
     .badge {

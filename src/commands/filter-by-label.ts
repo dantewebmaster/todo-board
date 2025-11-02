@@ -18,7 +18,6 @@ export async function filterByLabel(label: string): Promise<void> {
       label,
     });
 
-    // Update filter state
-    filterState.setActiveLabel(label);
+    filterState.toggleLabel(label);
   }
 }

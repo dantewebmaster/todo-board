@@ -22,7 +22,7 @@ export function renderColumn(
     count === 0 ? renderEmptyColumn() : items.map(renderCard).join("");
 
   return `
-    <section class="column">
+    <section class="column" data-priority="${priority}">
       <header class="column__header">
         <span>${escapeHtml(title)}</span>
         <span class="badge">${count}</span>

@@ -55,6 +55,8 @@ export function renderCard(item: BoardItem): string {
       data-card="true"
       data-file="${escapeAttribute(item.filePath)}"
       data-line="${item.line}"
+      data-days-old="${item.daysOld !== undefined ? item.daysOld : 0}"
+      data-priority="${item.priority}"
     >
       <div class="card__header">
         ${ageBadgeHtml}
