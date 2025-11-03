@@ -4,6 +4,33 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.1.x] - 2025-11-03
+
+### ✨ Novas Funcionalidades
+
+#### 🕐 Sistema de Idade de TODOs
+- **Visualização de Idade** - Mostra há quanto tempo cada TODO foi criado usando git blame
+- **Cache Persistente** - Informações de idade armazenadas em `.todo-board/uncommitted-cache.json`
+- **Badges de Idade** - Indicadores visuais coloridos:
+  - 🟢 Fresh (≤7 dias)
+  - 🟡 Recent (≤30 dias)
+  - 🟠 Old (≤90 dias)
+  - 🔴 Abandoned (>90 dias)
+
+#### 🔍 Sistema de Filtros e Ordenação
+- **Filtro por Múltiplas Labels** - Selecione várias labels simultaneamente (lógica OR)
+- **Filtro por Idade** - Dropdown para filtrar por categorias de idade
+- **Ordenação por Data** - Toggle entre ordem ascendente/descendente
+- **Visual de Labels Ativas** - Borda de destaque nas labels filtradas nos cards
+- **Sincronização Sidebar** - Labels ativas destacadas na sidebar
+- **Botão Reset** - Limpa todos os filtros e ordenação de uma vez (aparece apenas quando há filtros ativos)
+
+### 🔧 Melhorias Técnicas
+- **FilterState Service** - Gerenciamento centralizado de estado de filtros
+- **Tipos TypeScript** - `AgeFilter`, `SortDirection`, `SortOptions`, `FilterOptions`
+- **Utilitários de Filtro** - `filterTodos()`, `sortTodos()`, `filterAndSortTodos()`
+- **Comunicação Webview** - Mensagens bidirecionais para sincronizar estado
+
 ## [1.0.0] - 2025-10-26
 
 ### 🎉 Lançamento Inicial
