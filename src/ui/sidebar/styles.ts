@@ -29,15 +29,16 @@ export function getSidebarStyles(): string {
     .btn {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      padding: 10px 12px;
+      padding: 8px;
       border: none;
       border-radius: 4px;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       transition: all 120ms ease;
-      text-align: left;
+      text-align: center;
       width: 100%;
     }
 
@@ -69,8 +70,8 @@ export function getSidebarStyles(): string {
     }
 
     .btn svg {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       flex-shrink: 0;
     }
 

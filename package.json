@@ -2,7 +2,7 @@
   "name": "todo-board",
   "displayName": "TODO Board",
   "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
-  "version": "1.0.4",
+  "version": "1.1.4",
   "publisher": "dantewebmaster",
   "repository": {
     "type": "git",
@@ -49,6 +49,10 @@
       {
         "command": "todo-board.insertTodo",
         "title": "TODO Board: Insert TODO Comment"
+      },
+      {
+        "command": "todo-board.clearAgeCache",
+        "title": "TODO Board: Clear Age Cache"
       },
       {
         "command": "todo-board.refreshSidebar",

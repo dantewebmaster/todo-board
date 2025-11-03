@@ -7,37 +7,70 @@ export function getHeaderComponent(): string {
         ${iconsSvg.activityBar}
         TODO Board
       </h1>
-      <div class="search-container">
-        <div class="filter-indicator" id="filterIndicator" style="display: none;">
-          <span class="filter-label" id="filterLabel"></span>
+      <div class="header-controls">
+        <div class="search-container">
           <button
-            class="filter-clear button-clear"
-            id="clearFilterButton"
-            title="Clear filter"
+            class="reset-filters-button"
+            id="resetFiltersButton"
+            title="Reset all filters and sorting"
           >
-            ${iconsSvg.close}
+            ${iconsSvg.funnelX}
           </button>
+          <div class="filter-indicator" id="filterIndicator" style="display: none;">
+            <span class="filter-labels" id="filterLabels"></span>
+            <button
+              class="filter-clear button-clear"
+              id="clearFilterButton"
+              title="Clear filter"
+            >
+              ${iconsSvg.close}
+            </button>
+          </div>
+          <div class="custom-search-input">
+            <span class="search-icon" aria-hidden="true">
+              ${iconsSvg.search}
+            </span>
+            <input
+              type="text"
+              class="search-input"
+              id="searchInput"
+              placeholder="Search TODOs..."
+              autocomplete="off"
+            />
+            <button
+              class="search-clear button-clear"
+              id="clearButton"
+              title="Clear search"
+              disabled
+            >
+              ${iconsSvg.close}
+            </button>
+          </div>
         </div>
-        <div class="custom-search-input">
-          <span class="search-icon" aria-hidden="true">
-            ${iconsSvg.search}
+        <div class="age-filter-container">
+          <span class="age-filter-icon" aria-hidden="true">
+            ${iconsSvg.clock}
           </span>
-          <input
-            type="text"
-            class="search-input"
-            id="searchInput"
-            placeholder="Search TODOs..."
-            autocomplete="off"
-          />
-          <button
-            class="search-clear button-clear"
-            id="clearButton"
-            title="Clear search"
-            disabled
+          <select
+            class="age-filter-select"
+            id="ageFilterSelect"
+            title="Filter by age"
           >
-            ${iconsSvg.close}
-          </button>
+            <option value="all">All ages</option>
+            <option value="fresh">Fresh (≤7 days)</option>
+            <option value="recent">Recent (≤30 days)</option>
+            <option value="old">Old (≤90 days)</option>
+            <option value="abandoned">Abandoned (>90 days)</option>
+          </select>
         </div>
+        <button
+          class="sort-button"
+          id="sortButton"
+          title="Sort by date (descending)"
+          data-direction="desc"
+        >
+          ${iconsSvg.sortDescending}
+        </button>
       </div>
     </div>
   `;

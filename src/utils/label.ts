@@ -1,27 +1,7 @@
 import { REGEX } from "@/constants/regex";
 import { iconsSvg } from "@/ui/icons";
+import type { CommonLabels } from "@/types/label";
 import type { TodoHit } from "@/types/todo";
-
-type CommonLabels =
-  | "bug"
-  | "feature"
-  | "refactor"
-  | "cleanup"
-  | "docs"
-  | "ui"
-  | "ux"
-  | "database"
-  | "api"
-  | "security"
-  | "performance"
-  | "lint"
-  | "dead-code"
-  | "unused-code"
-  | "docs"
-  | "test"
-  | "improvement"
-  | "optimization"
-  | "config";
 
 function extractLabels(text: string): string[] {
   const match = text.match(REGEX.LABEL_PATTERN);

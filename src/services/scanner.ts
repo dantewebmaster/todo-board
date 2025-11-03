@@ -9,6 +9,7 @@ import {
 } from "@/config";
 import { REGEX } from "@/constants/regex";
 import { readCache, writeCache } from "@/services/cache";
+import { getLineInfo } from "@/services/git-line-info";
 import { generateTodoId } from "@/utils/generators";
 import {
   findFirstPatternIndex,
@@ -198,6 +199,43 @@ export async function scanWorkspace(
   }
 
   return { hits, reused, scanned, filesProcessed };
+}
+
+/**
+ * Enrich TODO hits with Git information (last modified date and age)
+ * This runs after the initial scan to add temporal context to TODOs
+ * @param hits - Array of TODO hits to enrich
+ * @returns Promise that resolves when enrichment is complete
+ */
+export async function enrichTodosWithGitInfo(
+  hits: TodoHit[],
+): Promise<TodoHit[]> {
+  const enrichedHits: TodoHit[] = [];
+
+  // Process in batches to avoid overwhelming the system
+  const batchSize = 10;
+  for (let i = 0; i < hits.length; i += batchSize) {
+    const batch = hits.slice(i, i + batchSize);
+    const enrichedBatch = await Promise.all(
+      batch.map(async (hit) => {
+        const gitInfo = await getLineInfo(hit.file, hit.line + 1); // Git uses 1-based line numbers
+
+        if (gitInfo) {
+          return {
+            ...hit,
+            lastModified: gitInfo.date,
+            daysOld: gitInfo.daysOld,
+          };
+        }
+
+        return hit;
+      }),
+    );
+
+    enrichedHits.push(...enrichedBatch);
+  }
+
+  return enrichedHits;
 }
 
 // @TODO: talvez separar esses metodos em outro arquivo utils/scanner.ts

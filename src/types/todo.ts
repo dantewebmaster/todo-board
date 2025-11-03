@@ -1,3 +1,5 @@
+import type { CommonLabels } from "./label";
+
 export type TodoPriority = "low" | "medium" | "high";
 
 export interface BoardItem {
@@ -7,7 +9,9 @@ export interface BoardItem {
   filePath: string;
   relativePath: string;
   line: number;
-  labels?: string[];
+  labels: CommonLabels[] | string[] | undefined;
+  lastModified?: Date;
+  daysOld?: number;
 }
 
 export interface TodoGroups {
@@ -21,6 +25,8 @@ export interface TodoHit {
   file: string;
   line: number;
   text: string;
+  lastModified?: Date;
+  daysOld?: number;
 }
 
 export interface ScanResult {

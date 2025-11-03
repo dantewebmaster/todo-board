@@ -36,6 +36,8 @@ function toBoardItem(hit: TodoHit, relativePath: string): BoardItem {
     relativePath,
     line: hit.line,
     labels,
+    lastModified: hit.lastModified,
+    daysOld: hit.daysOld,
   };
 }
 
