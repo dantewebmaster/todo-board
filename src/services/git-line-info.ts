@@ -3,6 +3,7 @@ import { stat } from "node:fs/promises";
 import { promisify } from "node:util";
 import * as vscode from "vscode";
 
+import { readJsonFile, writeJsonFile } from "@/services/storage";
 import { hashContent } from "@/utils/generators";
 import type { GitLineInfo, UncommittedLineInfo } from "@/types/git-info";
 
@@ -14,7 +15,7 @@ const execAsync = promisify(exec);
  * How it works:
  * - For committed lines: Uses git blame to get exact commit date
  * - For uncommitted lines: Uses file mtime (modification time) and content hash
- * - Cache persists to disk (.todo-board/uncommitted-cache.json)
+ * - Cache persists to VS Code's workspace storage
  * - If line content changes, cache updates with new mtime
  * - If line is committed, cache entry is removed automatically
  *
@@ -37,25 +38,15 @@ async function loadUncommittedLineCache(): Promise<void> {
   }
 
   try {
-    const folders = vscode.workspace.workspaceFolders;
-    if (!folders || folders.length === 0) {
-      cacheLoaded = true;
-      return;
-    }
-
-    const folder = folders[0].uri;
-    const cacheFile = vscode.Uri.joinPath(
-      folder,
-      ".todo-board",
+    const cacheData = await readJsonFile<Record<string, UncommittedLineInfo>>(
       "uncommitted-cache.json",
     );
 
-    const data = await vscode.workspace.fs.readFile(cacheFile);
-    const cacheData = JSON.parse(new TextDecoder().decode(data));
-
-    uncommittedLineCache.clear();
-    for (const [key, value] of Object.entries(cacheData)) {
-      uncommittedLineCache.set(key, value as UncommittedLineInfo);
+    if (cacheData) {
+      uncommittedLineCache.clear();
+      for (const [key, value] of Object.entries(cacheData)) {
+        uncommittedLineCache.set(key, value);
+      }
     }
   } catch {
     // Cache file doesn't exist or is invalid, start fresh
@@ -69,27 +60,12 @@ async function loadUncommittedLineCache(): Promise<void> {
  */
 async function saveUncommittedLineCache(): Promise<void> {
   try {
-    const folders = vscode.workspace.workspaceFolders;
-    if (!folders || folders.length === 0) {
-      return;
-    }
-
-    const folder = folders[0].uri;
-    const dir = vscode.Uri.joinPath(folder, ".todo-board");
-    const cacheFile = vscode.Uri.joinPath(dir, "uncommitted-cache.json");
-
-    await vscode.workspace.fs.createDirectory(dir);
-
     const cacheData: Record<string, UncommittedLineInfo> = {};
     for (const [key, value] of uncommittedLineCache.entries()) {
       cacheData[key] = value;
     }
 
-    const encoder = new TextEncoder();
-    await vscode.workspace.fs.writeFile(
-      cacheFile,
-      encoder.encode(JSON.stringify(cacheData, null, 2)),
-    );
+    await writeJsonFile("uncommitted-cache.json", cacheData);
   } catch {
     // Ignore errors when saving cache
   }

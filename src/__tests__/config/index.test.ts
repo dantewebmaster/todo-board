@@ -81,12 +81,6 @@ suite("config", () => {
       assert.ok(glob.includes("**/node_modules/**"));
     });
 
-    test("should exclude .todo-board directory", () => {
-      const glob = getExcludeGlob();
-
-      assert.ok(glob.includes("**/.todo-board/**"));
-    });
-
     test("should exclude common build directories", () => {
       const glob = getExcludeGlob();
 

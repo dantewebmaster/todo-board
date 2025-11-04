@@ -5,6 +5,19 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 
+## [Unreleased]
+
+### 🔧 Melhoria no armazenamento
+
+- **Armazenamento Otimizado** - Migração do armazenamento de `.todo-board/` (no workspace) para o diretório de storage gerenciado pelo VS Code
+  - Não polui mais o projeto do usuário
+  - Storage isolado por workspace em `~/Library/Application Support/Code/User/workspaceStorage/{workspace-id}/`
+  - Não é mais necessário adicionar `.todo-board` ao `.gitignore`
+  - Melhor performance e segurança
+  - Gerenciamento automático pelo VS Code
+
+**OBS: A pasta `.todo-board/` antiga pode ser removida manualmente**
+
 ## [1.1.5] - 2025-11-04
 
 ### 🎨 Melhorias
@@ -18,7 +31,7 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 #### 🕐 Sistema de Idade de TODOs
 - **Visualização de Idade** - Mostra há quanto tempo cada TODO foi criado usando git blame
-- **Cache Persistente** - Informações de idade armazenadas em `.todo-board/uncommitted-cache.json`
+- **Cache Persistente** - Informações de idade armazenadas no storage do VS Code
 - **Badges de Idade** - Indicadores visuais coloridos:
   - 🟢 Fresh (≤7 dias)
   - 🟡 Recent (≤30 dias)
@@ -104,7 +117,7 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 - Exclusões automáticas (node_modules, .git, dist, etc)
 - Limite de 6000 linhas por arquivo
 - Concorrência de 25 arquivos simultâneos
-- Cache persistente em `.todo-board/`
+- Cache persistente no storage do VS Code
 
 #### 🧪 Qualidade
 
@@ -119,9 +132,3 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 - Guia de padrões de busca customizáveis
 - 10+ exemplos de configuração
 - Documentação técnica de implementação
-
-## [Unreleased]
-
-- Watcher para atualizações incrementais
-- Filtros avançados por arquivo e data
-- Exportação de relatórios

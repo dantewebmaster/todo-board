@@ -1,15 +1,12 @@
-import * as vscode from "vscode";
-
+import { readJsonFile, writeJsonFile } from "@/services/storage";
 import { generateTodoId } from "@/utils/generators";
 import type { CacheData } from "@/types/cache";
 
-export async function readCache(root: vscode.Uri): Promise<CacheData> {
-  const cacheFile = vscode.Uri.joinPath(root, ".todo-board", "cache.json");
-
+export async function readCache(): Promise<CacheData> {
   try {
-    const data = await vscode.workspace.fs.readFile(cacheFile);
-    const parsed = JSON.parse(new TextDecoder().decode(data));
+    const parsed = await readJsonFile<unknown>("cache.json");
     const maybeNormalized = normalizeParsedCache(parsed);
+
     if (maybeNormalized) {
       return maybeNormalized;
     }
@@ -20,25 +17,10 @@ export async function readCache(root: vscode.Uri): Promise<CacheData> {
   return { version: 2, files: {} };
 }
 
-export async function writeCache(
-  root: vscode.Uri,
-  cache: CacheData,
-): Promise<void> {
-  const dir = vscode.Uri.joinPath(root, ".todo-board");
-
-  await vscode.workspace.fs.createDirectory(dir);
-
-  const cacheFile = vscode.Uri.joinPath(dir, "cache.json");
-
-  await vscode.workspace.fs.writeFile(
-    cacheFile,
-    new TextEncoder().encode(
-      JSON.stringify(
-        cache.version === 2 ? cache : { version: 2, files: cache.files },
-        null,
-        2,
-      ),
-    ),
+export async function writeCache(cache: CacheData): Promise<void> {
+  await writeJsonFile(
+    "cache.json",
+    cache.version === 2 ? cache : { version: 2, files: cache.files },
   );
 }
 

@@ -5,10 +5,14 @@ import { filterByLabel } from "@/commands/filter-by-label";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
+import { initializeStorage } from "@/services/storage";
 import { registerTodoSidebar } from "@/ui/sidebar";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "todo-board" is now active!');
+
+  // Initialize storage service
+  initializeStorage(context);
 
   const scanCmd = vscode.commands.registerCommand(
     "todo-board.scanTodos",

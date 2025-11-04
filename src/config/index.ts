@@ -46,7 +46,7 @@ export function getIncludeGlob(): string {
 }
 
 export function getExcludeGlob(): string {
-  return "{**/node_modules/**,**/assets/**,**/.git/**,**/.svn/**,**/.hg/**,**/.DS_Store,**/.idea/**,**/.vscode/**,**/.angular/**,**/dist/**,**/out/**,**/build/**,**/coverage/**,**/tmp/**,**/.cache/**,**/.todo-board/**}";
+  return "{**/node_modules/**,**/assets/**,**/.git/**,**/.svn/**,**/.hg/**,**/.DS_Store,**/.idea/**,**/.vscode/**,**/.angular/**,**/dist/**,**/out/**,**/build/**,**/coverage/**,**/tmp/**,**/.cache/**}";
 }
 
 export function getMaxTodoLines(): number {

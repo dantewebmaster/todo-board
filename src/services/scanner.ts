@@ -35,10 +35,7 @@ export async function scanWorkspace(
   const exclude = getExcludeGlob();
   const uris = await vscode.workspace.findFiles(include, exclude, 12000);
 
-  const root = vscode.workspace.workspaceFolders?.[0]?.uri;
-  const cache: CacheData = root
-    ? await readCache(root)
-    : ({ version: 2, files: {} } as CacheData);
+  const cache: CacheData = await readCache();
 
   const updated: string[] = [];
 
@@ -194,8 +191,8 @@ export async function scanWorkspace(
     return { hits, reused, scanned, filesProcessed };
   }
 
-  if (root && updated.length) {
-    writeCache(root, cache).catch(() => undefined);
+  if (updated.length) {
+    writeCache(cache).catch(() => undefined);
   }
 
   return { hits, reused, scanned, filesProcessed };
