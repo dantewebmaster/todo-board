@@ -2,12 +2,12 @@
 
 # TODO Board
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/dantewebmaster.todo-board?style=flat-square&logo=visual-studio-code&logoColor=white&color=blue)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/dantewebmaster.todo-board?style=flat-square&logo=visual-studio-code&logoColor=white&color=success)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/dantewebmaster.todo-board?style=flat-square&logo=visual-studio-code&logoColor=white&color=yellow)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Version](https://vsmarketplacebadges.dev/version/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Installs](https://vsmarketplacebadges.dev/installs/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Rating](https://vsmarketplacebadges.dev/rating/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
 [![License](https://img.shields.io/github/license/dantewebmaster/todo-board?style=flat-square&color=green)](https://github.com/dantewebmaster/todo-board/blob/master/LICENSE)
 
-**Organize seus TODOs em um quadro Kanban visual com prioridades, labels, filtros e rastreamento de idade**
+**Faça um scan automático no seu workspace. Organize seus TODOs em um quadro Kanban visual com prioridades, labels, filtros, texto e rastreamento de idade**
 
 [Instalação](#-instalação) • [Funcionalidades](#-funcionalidades) • [Uso Rápido](#-uso-rápido) • [Configuração](#️-configuração) • [Contribuir](./CONTRIBUTING.md)
 
@@ -28,58 +28,118 @@ Ou instale diretamente: [VS Code Marketplace](https://marketplace.visualstudio.c
 
 ### 📊 Quadro Kanban Visual
 
-Organize TODOs em 3 colunas por prioridade. Cards clicáveis abrem o arquivo na linha exata.
+Visualize todos os seus TODOs organizados em um quadro Kanban com 3 colunas de prioridade:
+- **High**: Tarefas urgentes e críticas
+- **Medium**: Tarefas importantes mas não urgentes
+- **Low**: Tarefas de baixa prioridade
 
-![Board Kanban](./images/demo-all-features-and-settings.gif)
+Os cards são clicáveis e abrem o arquivo diretamente na linha exata do TODO.
+
+![Board Kanban](./images/demo-todo-board.gif)
+
+---
 
 ### 🕐 Rastreamento de Idade
 
-Veja há quanto tempo cada TODO foi criado com o filtro por idade.
+Acompanhe há quanto tempo cada TODO foi criado e identifique tarefas esquecidas:
 
-- 🟢 **Fresh** (≤7 dias)
-- 🟡 **Recent** (≤30 dias)
-- 🟠 **Old** (≤90 dias)
-- 🔴 **Abandoned** (>90 dias)
+- 🟢 **Fresh** (≤7 dias) - TODOs recém-criados
+- 🟡 **Recent** (≤30 dias) - TODOs do último mês
+- 🟠 **Old** (≤90 dias) - TODOs antigos que precisam atenção
+- 🔴 **Abandoned** (>90 dias) - TODOs abandonados
+
+![Filtro por idade do TODO](./images/demo-age-filter.gif)
+
+---
 
 ### 🔍 Filtros Avançados
 
-Filtre por múltiplas labels, idade e ordenação. Visual claro de filtros ativos com botão reset.
+Sistema completo de filtros para encontrar exatamente o que você precisa:
+
+- **Filtro por Texto**: Encontre rapidamente TODOs com base em texto digitado
+- **Filtro por Labels**: Selecione múltiplas labels simultaneamente
+- **Filtro por Idade**: Filtre por categoria de tempo
+- **Ordenação**: Organize por data de criação ou prioridade
+- **Indicadores Visuais**: Veja filtros ativos com botão de reset rápido
+
+![Filtros avançados e reset](./images/demo-advanced-filters-todo.gif)
+
+---
 
 ### 🏷️ Labels Customizadas
 
-Labels com cores automáticas e ícones especiais:
+Categorize seus TODOs com labels inteligentes que incluem cores e ícones automáticos. Existem labels predefinidas, porém é possível nomear a vontade suas próprias labels:
 
-| Label | Cor | Ícone | Label | Cor | Ícone |
-|-------|-----|-------|-------|-----|-------|
-| bug | 🔴 | 🐛 | feature | 🟢 | ✨ |
-| refactor | 🔵 | 🔄 | docs | 🟡 | 📝 |
-| test | 🔵 | 🧪 | security | 🩷 | 🔒 |
-| performance | 🟣 | 🚀 | ui/ux | 🔵 | 🎨 |
+#### Lista de labels predefinidas:
+- refactor
+- bug
+- feature
+- cleanup
+- docs
+- ui
+- ux
+- database
+- api
+- security
+- performance
+- lint
+- dead-code
+- unused-code
+- docs
+- test
+- improvement
+- optimization
+- config
+
+Você pode usar labels customizadas no formato: `@TODO: [labe1, label2] descrição`
+
+![Labels customizadas e predefinidas](./images/demo-labels.gif)
+
+---
 
 ### 📊 Sidebar Integrada
 
-Estatísticas, filtro rápido por labels e sincronização visual
+Painel lateral com visão geral completa do seu workspace:
+
+- **Estatísticas em Tempo Real**: Total de TODOs, distribuição por prioridade
+- **Filtro Rápido por Label**: Clique para filtrar instantaneamente
+- **Sincronização Visual**: Atualizações automáticas com o quadro principal
+
+![Sidebar integrada ao board](./images/demo-sidebar.gif)
+
+---
+
+### ⌨️ Inserção Rápida de TODOs
+
+Insira TODOs formatados automaticamente com um único atalho (`Cmd/Ctrl+Shift+T`) ou usando comando **TODO board Insert TODO Comment**:
+
+- Detecta automaticamente a linguagem do arquivo
+- Usa o formato de comentário correto
+- Permite adicionar prioridade e labels interativamente
+
+![Atalho inserindo TODO](./images/demo-insert-todo.gif)
 
 
 ## 📖 Uso Rápido
 
 ### Escanear Workspace
 
-`Cmd/Ctrl + Shift + P` → **"TODO Board: Scan @TODO"**
+`Cmd/Ctrl + Shift + P` → **"TODO Board: Scan @TODO"**.
+O primeiro scan levará alguns segundos, os próximos serão praticamente instantâneos.
 
 ### Abrir Board
 
-`Cmd/Ctrl + Shift + P` → **"TODO Board: Open Board"**
-
+`Cmd/Ctrl + Shift + P` → **"TODO Board: Open Board"**.
 Ou clique no ícone na Activity Bar.
 
-### Inserir TODO
+### Inserir TODO Comment
 
-`Cmd/Ctrl + Shift + T`
-
-Insere comentário formatado automaticamente para cada linguagem.
+`Cmd/Ctrl + Shift + P` → **"TODO Board: Insert TODO Comment"**
 
 ## ⚙️ Configuração
+
+![Configurações](./images/demo-settings.gif)
+
 
 ```json
 {
