@@ -2,9 +2,9 @@
 
 # TODO Board
 
-[![Version](https://vsmarketplacebadges.dev/version/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
-[![Installs](https://vsmarketplacebadges.dev/installs/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
-[![Rating](https://vsmarketplacebadges.dev/rating/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Version](https://vsmarketplacebadges.dev/version/dantewebmaster.todo-board.png)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Installs](https://vsmarketplacebadges.dev/installs/dantewebmaster.todo-board.png)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
+[![Rating](https://vsmarketplacebadges.dev/rating/dantewebmaster.todo-board.png)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
 [![License](https://img.shields.io/github/license/dantewebmaster/todo-board?style=flat-square&color=green)](https://github.com/dantewebmaster/todo-board/blob/master/LICENSE)
 
 
