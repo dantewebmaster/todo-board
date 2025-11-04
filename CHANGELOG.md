@@ -4,6 +4,14 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
+
+## [1.1.5] - 2025-11-04
+
+### 🎨 Melhorias
+
+- Snippet para inserir comentário melhorado para outras linguagens.
+- Melhorias no README para melhor entendimento das funcionalidades e gifs simplificados.
+
 ## [1.1.4] - 2025-11-03
 
 ### ✨ Novas Funcionalidades
