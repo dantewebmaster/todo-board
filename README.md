@@ -7,6 +7,7 @@
 [![Rating](https://vsmarketplacebadges.dev/rating/dantewebmaster.todo-board.svg)](https://marketplace.visualstudio.com/items?itemName=dantewebmaster.todo-board)
 [![License](https://img.shields.io/github/license/dantewebmaster/todo-board?style=flat-square&color=green)](https://github.com/dantewebmaster/todo-board/blob/master/LICENSE)
 
+
 **Faça um scan automático no seu workspace. Organize seus TODOs em um quadro Kanban visual com prioridades, labels, filtros, texto e rastreamento de idade**
 
 [Instalação](#-instalação) • [Funcionalidades](#-funcionalidades) • [Uso Rápido](#-uso-rápido) • [Configuração](#️-configuração) • [Contribuir](./CONTRIBUTING.md)
