@@ -1,62 +1,57 @@
 import * as vscode from "vscode";
 
-const COMMENT_STYLES: Record<
-  string,
-  { start: string; middle?: string; end?: string }
-> = {
-  // Single-line comments
-  javascript: { start: "//" },
-  typescript: { start: "//" },
-  javascriptreact: { start: "//" },
-  typescriptreact: { start: "//" },
-  java: { start: "//" },
-  go: { start: "//" },
-  rust: { start: "//" },
-  php: { start: "//" },
-  swift: { start: "//" },
-  kotlin: { start: "//" },
-  dart: { start: "//" },
-  csharp: { start: "//" },
-  vue: { start: "//" },
+const COMMENT_STYLES: Record<string, { prefix: string; suffix?: string }> = {
+  // Slash-style comments
+  javascript: { prefix: "//" },
+  typescript: { prefix: "//" },
+  javascriptreact: { prefix: "//" },
+  typescriptreact: { prefix: "//" },
+  java: { prefix: "//" },
+  go: { prefix: "//" },
+  rust: { prefix: "//" },
+  php: { prefix: "//" },
+  swift: { prefix: "//" },
+  kotlin: { prefix: "//" },
+  dart: { prefix: "//" },
+  csharp: { prefix: "//" },
+  c: { prefix: "//" },
+  cpp: { prefix: "//" },
+
+  // Vue comments
+  vue: { prefix: "<!--", suffix: "-->" },
 
   // Hash-style comments
-  python: { start: "#" },
-  ruby: { start: "#" },
-  yaml: { start: "#" },
-  shell: { start: "#" },
+  python: { prefix: "#" },
+  ruby: { prefix: "#" },
+  yaml: { prefix: "#" },
+  shell: { prefix: "#" },
+  bash: { prefix: "#" },
 
-  // Block comments
-  html: { start: "<!--", end: "-->" },
-  xml: { start: "<!--", end: "-->" },
-  markdown: { start: "<!--", end: "-->" },
-  css: { start: "/*", middle: " *", end: " */" },
-  scss: { start: "/*", middle: " *", end: " */" },
-  sass: { start: "/*", middle: " *", end: " */" },
-  less: { start: "/*", middle: " *", end: " */" },
+  // HTML-style comments
+  html: { prefix: "<!--", suffix: "-->" },
+  xml: { prefix: "<!--", suffix: "-->" },
+  markdown: { prefix: "<!--", suffix: "-->" },
+
+  // CSS-style comments
+  css: { prefix: "/*", suffix: "*/" },
+  scss: { prefix: "/*", suffix: "*/" },
+  sass: { prefix: "/*", suffix: "*/" },
+  less: { prefix: "/*", suffix: "*/" },
 };
 
-function getCommentStyle(languageId: string) {
-  return COMMENT_STYLES[languageId] || { start: "//" };
+function getCommentStyle(languageId: string): {
+  prefix: string;
+  suffix?: string;
+} {
+  return COMMENT_STYLES[languageId] || { prefix: "//" };
 }
 
-function buildTodoComment(style: {
-  start: string;
-  middle?: string;
-  end?: string;
-}): string {
-  if (style.end) {
-    /**
-     * Block comment style
-     */
-    const mid = style.middle || "";
-    return `${style.start} @TODO(\${1|low,medium,high|}): \${2:description}\n${mid} Labels: [\${3|refactor,optimization,cleanup|}] ${style.end}`;
+function buildTodoComment(style: { prefix: string; suffix?: string }): string {
+  if (style.suffix) {
+    return `${style.prefix} @TODO(\${1|low,medium,high|}): \${2:description} [\${3|refactor,optimization,cleanup,security,lint|}] ${style.suffix}`;
   }
 
-  /**
-   * Single-line comment style
-   * ex: // @TODO(priority): description [labels]
-   */
-  return `${style.start} @TODO(\${1|low,medium,high|}): \${2:description} [\${3|refactor,optimization,cleanup|}]`;
+  return `${style.prefix} @TODO(\${1|low,medium,high|}): \${2:description} [\${3|refactor,optimization,cleanup,security,lint|}]`;
 }
 
 export async function insertTodoComment() {
