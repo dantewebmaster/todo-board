@@ -5,9 +5,9 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 
-## [Unreleased]
+## [1.2.0] - 2025-11-04
 
-### 🔧 Melhoria no armazenamento
+### 🔧 Refatoração
 
 - **Armazenamento Otimizado** - Migração do armazenamento de `.todo-board/` (no workspace) para o diretório de storage gerenciado pelo VS Code
   - Não polui mais o projeto do usuário
@@ -15,6 +15,8 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
   - Não é mais necessário adicionar `.todo-board` ao `.gitignore`
   - Melhor performance e segurança
   - Gerenciamento automático pelo VS Code
+
+## [1.1.5] - 2025-11-04
 
 **OBS: A pasta `.todo-board/` antiga pode ser removida manualmente**
 

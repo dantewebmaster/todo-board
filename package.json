@@ -2,7 +2,7 @@
   "name": "todo-board",
   "displayName": "TODO Board",
   "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "publisher": "dantewebmaster",
   "repository": {
     "type": "git",
