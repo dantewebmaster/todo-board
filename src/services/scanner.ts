@@ -75,7 +75,7 @@ export async function scanWorkspace(
         return { text: combined, endIndex };
       }
 
-      if (isBlockStartWithoutEnd(lineText)) {
+      if (isBlockStartWithoutEnd(lineText) || isInsideBlock(lineText)) {
         const { combinedSuffix, endIndex } = collectBlockContinuation(
           doc,
           index + 1,
@@ -342,9 +342,9 @@ function collectContinuation(
 }
 
 function stripBlockLinePrefix(text: string): string {
-  // Remove '/**', '/*' or leading '*' with one optional following space
-  // Prefer explicit pattern to handle both cases consistently
-  return text.replace(/^\s*(?:\/\*\*?|\*)\s?/, "");
+  // Remove '/**', '/*' or leading '*' with all following spaces
+  // This ensures labels like [tag] are preserved in block comments
+  return text.replace(/^\s*(?:\/\*\*?|\*)\s*/, "");
 }
 
 function isHtmlBlockStartWithoutEnd(text: string): boolean {
@@ -358,6 +358,16 @@ function isBlockStartWithoutEnd(text: string): boolean {
   return (
     text.includes(REGEX.BLOCK_COMMENT_START) &&
     !text.includes(REGEX.BLOCK_COMMENT_END)
+  );
+}
+
+function isInsideBlock(text: string): boolean {
+  // Detect if line is inside a block comment (starts with * but not /* or */)
+  const trimmed = text.trimStart();
+  return (
+    trimmed.startsWith("*") &&
+    !trimmed.startsWith("/*") &&
+    !trimmed.startsWith("*/")
   );
 }
 

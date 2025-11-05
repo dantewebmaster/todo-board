@@ -1,6 +1,6 @@
 // Centralized regex and markers for scanners
 const TODO_PATTERN: RegExp = /@TODO(?:\([^)]*\))?/;
-const LABEL_PATTERN: RegExp = /\[(.*?)\]/;
+const LABEL_PATTERN: RegExp = /\[([^\]]*)\]/s; // Added 's' flag to match across newlines
 const PRIORITY_REGEX: RegExp = /^@TODO(?:\(([^)]+)\))?/i;
 
 const LINE_BREAK_REGEX: RegExp = /\r\n|\n/g;

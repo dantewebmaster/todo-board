@@ -2,7 +2,7 @@
   "name": "todo-board",
   "displayName": "TODO Board",
   "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "publisher": "dantewebmaster",
   "repository": {
     "type": "git",
@@ -154,6 +154,26 @@
             "@TODO"
           ],
           "description": "Padrões de busca para TODOs. Exemplos: '@TODO', 'TODO', '@FIXME', 'FIXME', 'BUG'. Não inclua parênteses ou caracteres especiais de regex."
+        },
+        "todo-board.highlight.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Ativar destaque visual de comentários TODO no editor"
+        },
+        "todo-board.highlight.highPriorityColor": {
+          "type": "string",
+          "default": "#e74c3c",
+          "description": "Cor para TODOs de alta prioridade (@TODO(high))"
+        },
+        "todo-board.highlight.mediumPriorityColor": {
+          "type": "string",
+          "default": "#ffa94d",
+          "description": "Cor para TODOs de média prioridade (@TODO(medium))"
+        },
+        "todo-board.highlight.lowPriorityColor": {
+          "type": "string",
+          "default": "#4dabf7",
+          "description": "Cor para TODOs de baixa prioridade ou sem prioridade (@TODO(low) ou @TODO)"
         }
       }
     }

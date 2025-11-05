@@ -5,6 +5,20 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 
+## [1.3.0] - 2025-11-05
+
+### ✨ Novas Funcionalidades
+
+- **Destaque de TODOs no Editor** - Comentários TODO agora são destacados visualmente no código
+  - Cores baseadas em prioridade:
+    - 🔴 **Alta** (`@TODO(high)`) - Vermelho
+    - 🟠 **Média** (`@TODO(medium)`) - Laranja
+    - 🔵 **Baixa/Padrão** (`@TODO(low)` ou `@TODO`) - Azul
+  - Configurável: ative/desative ou customize as cores
+  - Funciona com todos os patterns de busca configurados
+  - Atualização em tempo real conforme você digita
+  - Indicadores na barra de rolagem (overview ruler)
+
 ## [1.2.0] - 2025-11-04
 
 ### 🔧 Refatoração

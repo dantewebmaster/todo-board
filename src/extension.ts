@@ -6,6 +6,7 @@ import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
 import { initializeStorage } from "@/services/storage";
+import { initializeTodoDecorator } from "@/services/todo-decorator";
 import { registerTodoSidebar } from "@/ui/sidebar";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -13,6 +14,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Initialize storage service
   initializeStorage(context);
+
+  // Initialize TODO comment highlighting
+  initializeTodoDecorator(context);
 
   const scanCmd = vscode.commands.registerCommand(
     "todo-board.scanTodos",
