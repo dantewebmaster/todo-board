@@ -98,6 +98,20 @@ Você pode usar labels customizadas no formato: `@TODO: [labe1, label2] descriç
 
 ---
 
+### 🎨 Highlight de TODOs no Editor
+
+Destaque visual de TODOs diretamente no código com cores baseadas em prioridade e com configuração adiconal para customizar cores ou desativar:
+
+- **🔴 High Priority**: Destaque em vermelho para tarefas urgentes
+- **🟠 Medium Priority**: Destaque em laranja para tarefas importantes
+- **🔵 Low Priority**: Destaque em azul para tarefas de baixa prioridade
+
+O highlight funciona com comentários de linha única (`//`, `#`) e blocos (`/* */`, `/** */`), respeitando a configuração de `maxTodoLines` para limitar quantas linhas são destacadas.
+
+![Highlight de TODOs no editor](./images/demo-highlight.gif)
+
+---
+
 ### 📊 Sidebar Integrada
 
 Painel lateral com visão geral completa do seu workspace:

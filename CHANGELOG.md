@@ -9,7 +9,7 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 ### ✨ Novas Funcionalidades
 
-- **Destaque de TODOs no Editor** - Comentários TODO agora são destacados visualmente no código
+- **Destaque de TODOs no Editor** - Comentários TODO agora são destacados visualmente no código, é possível configurar e desativar nas configurações
   - Cores baseadas em prioridade:
     - 🔴 **Alta** (`@TODO(high)`) - Vermelho
     - 🟠 **Média** (`@TODO(medium)`) - Laranja
@@ -18,6 +18,14 @@ O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
   - Funciona com todos os patterns de busca configurados
   - Atualização em tempo real conforme você digita
   - Indicadores na barra de rolagem (overview ruler)
+
+![Destaque de TODOs no Editor](./images/demo-highlight.gif)
+
+### 🐛 Correções
+
+- Corrigido detecção de labels em comentários de bloco (`/* */`, `/** */`)
+- Melhorado regex de labels para capturar através de quebras de linha
+- Adicionado suporte para TODOs dentro de blocos JSDoc
 
 ## [1.2.0] - 2025-11-04
 
