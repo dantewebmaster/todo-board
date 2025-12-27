@@ -12,6 +12,7 @@ export function renderCard(item: BoardItem): string {
   const description = item.description;
   const formattedDescription = escapeHtml(description).replace(/\n/g, "<br />");
   const location = `${escapeHtml(item.relativePath)}:${item.line + 1}`;
+  const issueButtonHtml = `<button class="card__create-issue-btn" data-create-issue title="Criar issue para este TODO">Abrir Issue</button>`;
 
   // Age badge (if available)
   const ageBadgeHtml =
@@ -57,12 +58,16 @@ export function renderCard(item: BoardItem): string {
       data-line="${item.line}"
       data-days-old="${item.daysOld !== undefined ? item.daysOld : 0}"
       data-priority="${item.priority}"
+      data-location="${location}"
     >
       <div class="card__header">
         ${ageBadgeHtml}
       </div>
       <h2 class="card__description">${formattedDescription}</h2>
-      <p class="card__meta">${location}</p>
+      <p class="card__meta">
+        <span class="card__meta-location">${location}</span>
+        ${issueButtonHtml}
+      </p>
       ${labelsHtml}
     </article>
   `;

@@ -1,5 +1,7 @@
+// Importação dinâmica do node-fetch para evitar erro de CommonJS/ESM
 import * as vscode from "vscode";
 
+import { getAuthToken } from "@/services/auth";
 import { filterState } from "@/services/filter-state";
 import { loadPersistedTodos } from "@/services/persist";
 import { renderBoard } from "@/ui/board";
@@ -74,6 +76,85 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
       filterState.clearLabels();
       filterState.setAgeFilter("all");
       filterState.setSort({ direction: "desc" });
+    } else if (message?.type === "createIssue") {
+      // Chamada real à API para criar issue
+      try {
+        const token = await getAuthToken();
+        if (!token) {
+          void vscode.window.showErrorMessage(
+            "Você precisa estar autenticado para criar uma issue.",
+          );
+          return;
+        }
+
+        // Monta o payload básico
+        const adfDescription = {
+          type: "doc",
+          version: 1,
+          content: [
+            {
+              type: "paragraph",
+              content: [
+                {
+                  type: "text",
+                  text: `Arquivo: ${message.location} | Linha: ${message.line}`,
+                },
+                { type: "text", text: "\n" },
+                {
+                  type: "text",
+                  text: message.description || "TODO sem descrição",
+                },
+              ],
+            },
+          ],
+        };
+        const payload = {
+          fields: {
+            project: { key: "SMS" },
+            summary: message.description || "TODO sem descrição",
+            issuetype: { name: "Task" },
+            description: adfDescription,
+          },
+        };
+
+        // Importação dinâmica do node-fetch
+        const fetchModule = await import("node-fetch");
+        const fetch = fetchModule.default;
+
+        const response = await fetch(
+          "https://todo-board.dantewebmaster.com.br/issue",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          },
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          // Log detalhado para debug
+          console.error("[TODO Board] Erro ao criar issue:", {
+            status: response.status,
+            errorText,
+            token,
+            payload,
+          });
+          throw new Error(
+            `Erro ao criar issue: ${response.status} - ${errorText}\nToken usado: ${token}`,
+          );
+        }
+
+        void vscode.window.showInformationMessage("Issue criada com sucesso!");
+      } catch (err) {
+        // Loga o erro e o token para debug
+        console.error("[TODO Board] Falha ao criar issue:", err);
+        void vscode.window.showErrorMessage(
+          `Erro ao criar issue: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
     }
   });
 }

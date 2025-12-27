@@ -11,17 +11,18 @@ export function getBoardScripts(): string {
     const ageFilterSelect = document.getElementById('ageFilterSelect');
     const resetFiltersButton = document.getElementById('resetFiltersButton');
     const cards = document.querySelectorAll('[data-card="true"]');
+    const createIssueButtons = document.querySelectorAll('.card__create-issue-btn');
     const labelBadges = document.querySelectorAll('[data-label]');
 
     let activeLabels = []; // Array of active label filters
     let sortDirection = 'desc'; // Default: most recent first
     let ageFilter = 'all'; // Default: show all ages
 
-    // Handle card clicks
+    // Handle card clicks (agora só no card, não no rodapé)
     cards.forEach((element) => {
       element.addEventListener('click', (e) => {
-        // Don't trigger card click if clicking on a label badge
-        if (e.target.hasAttribute('data-label')) {
+        // Não aciona se clicar no botão de criar issue ou em label
+        if (e.target.hasAttribute('data-label') || e.target.hasAttribute('data-create-issue')) {
           return;
         }
         const file = element.getAttribute('data-file');
@@ -29,6 +30,25 @@ export function getBoardScripts(): string {
         vscode.postMessage({ type: 'open', file, line });
       });
     });
+
+    // Handle create issue button click
+      createIssueButtons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('[data-card="true"]');
+          if (!card) return;
+          // Usa exatamente o valor exibido no card (data-file)
+          const location = card.getAttribute('data-location');
+          const line = Number(card.getAttribute('data-line') ?? '0');
+          const description = card.querySelector('.card__description')?.textContent || '';
+          vscode.postMessage({
+            type: 'createIssue',
+            location,
+            line,
+            description
+          });
+        });
+      });
 
     // Handle label badge clicks
     labelBadges.forEach((badge) => {
