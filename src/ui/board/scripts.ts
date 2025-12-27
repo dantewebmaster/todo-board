@@ -11,7 +11,7 @@ export function getBoardScripts(): string {
     const ageFilterSelect = document.getElementById('ageFilterSelect');
     const resetFiltersButton = document.getElementById('resetFiltersButton');
     const cards = document.querySelectorAll('[data-card="true"]');
-    const createIssueButtons = document.querySelectorAll('.card__create-issue-btn');
+    const kebabMenus = document.querySelectorAll('.card__menu');
     const labelBadges = document.querySelectorAll('[data-label]');
 
     let activeLabels = []; // Array of active label filters
@@ -31,13 +31,37 @@ export function getBoardScripts(): string {
       });
     });
 
-    // Handle create issue button click
-      createIssueButtons.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+    // Kebab menu: abrir/fechar e ação de criar issue
+    kebabMenus.forEach((menu) => {
+      const btn = menu.querySelector('.card__menu-btn');
+      const list = menu.querySelector('.card__menu-list');
+      if (!btn || !list) return;
+
+      // Toggle menu
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Fecha outros menus abertos
+        document.querySelectorAll('.card__menu-list').forEach((el) => {
+          if (el !== list) el.setAttribute('hidden', '');
+        });
+        list.toggleAttribute('hidden');
+      });
+
+      // Fecha menu ao clicar fora
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+          list.setAttribute('hidden', '');
+        }
+      });
+
+      // Ação: criar issue
+      const createIssueItem = list.querySelector('[data-menu-create-issue]');
+      if (createIssueItem) {
+        createIssueItem.addEventListener('click', (e) => {
           e.stopPropagation();
-          const card = btn.closest('[data-card="true"]');
+          list.setAttribute('hidden', '');
+          const card = menu.closest('[data-card="true"]');
           if (!card) return;
-          // Usa exatamente o valor exibido no card (data-file)
           const location = card.getAttribute('data-location');
           const line = Number(card.getAttribute('data-line') ?? '0');
           const description = card.querySelector('.card__description')?.textContent || '';
@@ -48,7 +72,8 @@ export function getBoardScripts(): string {
             description
           });
         });
-      });
+      }
+    });
 
     // Handle label badge clicks
     labelBadges.forEach((badge) => {

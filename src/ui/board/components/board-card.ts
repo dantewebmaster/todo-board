@@ -12,7 +12,17 @@ export function renderCard(item: BoardItem): string {
   const description = item.description;
   const formattedDescription = escapeHtml(description).replace(/\n/g, "<br />");
   const location = `${escapeHtml(item.relativePath)}:${item.line + 1}`;
-  const issueButtonHtml = `<button class="card__create-issue-btn" data-create-issue title="Criar issue para este TODO">Abrir Issue</button>`;
+  // Kebab menu (3 pontinhos)
+  const kebabMenuHtml = `
+    <div class="card__menu">
+      <button class="card__menu-btn" title="Mais opções" tabindex="0">
+        <span class="card__menu-icon">&#8942;</span>
+      </button>
+      <ul class="card__menu-list" hidden>
+        <li class="card__menu-item" data-menu-create-issue>Criar issue no Jira</li>
+      </ul>
+    </div>
+  `;
 
   // Age badge (if available)
   const ageBadgeHtml =
@@ -62,11 +72,11 @@ export function renderCard(item: BoardItem): string {
     >
       <div class="card__header">
         ${ageBadgeHtml}
+        ${kebabMenuHtml}
       </div>
       <h2 class="card__description">${formattedDescription}</h2>
       <p class="card__meta">
         <span class="card__meta-location">${location}</span>
-        ${issueButtonHtml}
       </p>
       ${labelsHtml}
     </article>

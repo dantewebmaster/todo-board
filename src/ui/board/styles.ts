@@ -331,10 +331,6 @@ export function getBoardStyles(): string {
       overflow-wrap: break-word;
     }
 
-    .card:hover {
-      border-color: var(--vscode-focusBorder);
-    }
-
     .card.hidden {
       display: none;
     }
@@ -357,6 +353,11 @@ export function getBoardStyles(): string {
     .card__meta {
       font-size: 12px;
       color: var(--vscode-descriptionForeground);
+    }
+
+    .card__meta:hover {
+      text-decoration: underline;
+      color: var(--vscode-foreground);
     }
 
     .card__labels {
@@ -447,6 +448,56 @@ export function getBoardStyles(): string {
       text-align: center;
       padding: 20px;
       margin: 0;
+    }
+
+    .card__menu {
+      position: relative;
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    .card__menu-btn {
+      background: transparent;
+      border: 1px solid var(--vscode-foreground);
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--vscode-foreground);
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .card__menu-list {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: var(--vscode-sideBar-background);
+      border: 1px solid var(--vscode-foreground);
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+      min-width: 160px;
+      list-style: none;
+      margin-top: 2px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .card__menu-item {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--vscode-foreground);
+      cursor: pointer;
+      transition: background-color 120ms ease;
+    }
+
+    .card__menu-item:hover {
+      background-color: var(--vscode-list-hoverBackground);
+    }
+
+    .card__menu-item:active {
+      background-color: var(--vscode-list-activeSelectionBackground);
     }
   `;
 }
