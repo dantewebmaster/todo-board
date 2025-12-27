@@ -33,7 +33,8 @@
   "license": "MIT",
   "main": "./out/extension.js",
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onUri"
   ],
   "contributes": {
     "commands": [
@@ -58,6 +59,10 @@
         "command": "todo-board.refreshSidebar",
         "title": "TODO Board: Scan Workspace",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "todo-board.authenticate",
+        "title": "TODO Board: Connect to Jira"
       }
     ],
     "viewsContainers": {

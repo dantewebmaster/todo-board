@@ -72,6 +72,9 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
         case "scanTodos":
           void vscode.commands.executeCommand("todo-board.scanTodos");
           break;
+        case "authenticate":
+          void vscode.commands.executeCommand("todo-board.authenticate");
+          break;
         case "filterByLabel": {
           await vscode.commands.executeCommand(
             "todo-board.filterByLabel",
@@ -106,6 +109,10 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
               <button class="btn btn--primary" id="openBoardBtn" data-action="openBoard">
                 ${iconsSvg.board}
                 <span>Open Board</span>
+              </button>
+              <button class="btn btn--secondary" id="authBtn" data-action="authenticate">
+                ${iconsSvg.rocket}
+                <span>Connect to Jira</span>
               </button>
               <button class="btn btn--secondary" id="scanTodosBtn" data-action="scanTodos">
                 ${iconsSvg.scanFiles}
