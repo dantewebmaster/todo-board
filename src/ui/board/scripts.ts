@@ -17,6 +17,7 @@ export function getBoardScripts(): string {
     const issueForm = document.getElementById('issueForm');
     const modalClose = document.getElementById('modalClose');
     const modalCancel = document.getElementById('modalCancel');
+    const issueProjectSelect = document.getElementById('issueProject');
     const issueSummaryInput = document.getElementById('issueSummary');
     const issueDescriptionInput = document.getElementById('issueDescription');
     const issueLocationInput = document.getElementById('issueLocation');
@@ -25,6 +26,7 @@ export function getBoardScripts(): string {
     let sortDirection = 'desc'; // Default: most recent first
     let ageFilter = 'all'; // Default: show all ages
     let currentIssueData = null; // Dados da issue sendo criada
+    let jiraProjects = []; // Lista de projetos do Jira
 
     // Handle card clicks (agora só no card, não no rodapé)
     cards.forEach((element) => {
@@ -379,16 +381,57 @@ export function getBoardScripts(): string {
       const message = event.data;
       if (message.type === 'filterByLabel') {
         filterByLabel(message.label);
+      } else if (message.type === 'projectsLoaded') {
+        populateProjectSelect(message.projects);
       }
     });
 
+    // Função para buscar projetos do Jira
+    async function fetchJiraProjects() {
+      try {
+        vscode.postMessage({ type: 'fetchProjects' });
+      } catch (err) {
+        console.error('[TODO Board] Erro ao buscar projetos:', err);
+        issueProjectSelect.innerHTML = '<option value="">Erro ao carregar projetos</option>';
+      }
+    }
+
+    // Função para popular o select de projetos
+    function populateProjectSelect(projects) {
+      jiraProjects = projects;
+      issueProjectSelect.innerHTML = '';
+
+      if (projects.length === 0) {
+        issueProjectSelect.innerHTML = '<option value="">Nenhum projeto disponível</option>';
+        return;
+      }
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Selecione um projeto';
+      issueProjectSelect.appendChild(defaultOption);
+
+      projects.forEach(project => {
+        const option = document.createElement('option');
+        option.value = project.key;
+        option.textContent = \`\${project.key} - \${project.name}\`;
+        issueProjectSelect.appendChild(option);
+      });
+    }
+
     // Função para abrir o modal de criação de issue
-    function openIssueModal(data) {
+    async function openIssueModal(data) {
       currentIssueData = data;
       issueSummaryInput.value = data.description || '';
       issueDescriptionInput.value = data.description || '';
       issueLocationInput.value = \`\${data.location} (Linha \${data.line})\`;
       issueModal.removeAttribute('hidden');
+
+      // Busca projetos se ainda não foram carregados
+      if (jiraProjects.length === 0) {
+        await fetchJiraProjects();
+      }
+
       issueSummaryInput.focus();
       issueSummaryInput.select();
     }

@@ -46,6 +46,12 @@ export function renderBoard(
             </div>
             <form class="modal__form" id="issueForm">
               <div class="form-group">
+                <label for="issueProject">Projeto *</label>
+                <select id="issueProject" name="project" required>
+                  <option value="">Carregando projetos...</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="issueSummary">Título *</label>
                 <input type="text" id="issueSummary" name="summary" required maxlength="255" />
               </div>

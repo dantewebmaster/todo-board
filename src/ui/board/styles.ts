@@ -597,7 +597,8 @@ export function getBoardStyles(): string {
     }
 
     .form-group input[type="text"],
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 10px 12px;
       font-size: 14px;
@@ -611,7 +612,8 @@ export function getBoardStyles(): string {
     }
 
     .form-group input[type="text"]:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       border-color: var(--vscode-focusBorder);
     }
 

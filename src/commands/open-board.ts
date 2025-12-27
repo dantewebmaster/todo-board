@@ -76,6 +76,56 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
       filterState.clearLabels();
       filterState.setAgeFilter("all");
       filterState.setSort({ direction: "desc" });
+    } else if (message?.type === "fetchProjects") {
+      // Buscar projetos do Jira
+      try {
+        const token = await getAuthToken();
+        if (!token) {
+          panel.webview.postMessage({
+            type: "projectsLoaded",
+            projects: [],
+          });
+          return;
+        }
+
+        const fetchModule = await import("node-fetch");
+        const fetch = fetchModule.default;
+
+        const response = await fetch(
+          "https://todo-board.dantewebmaster.com.br/projects",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        if (!response.ok) {
+          console.error(
+            "[TODO Board] Erro ao buscar projetos:",
+            response.status,
+          );
+          panel.webview.postMessage({
+            type: "projectsLoaded",
+            projects: [],
+          });
+          return;
+        }
+
+        const projects = await response.json();
+        panel.webview.postMessage({
+          type: "projectsLoaded",
+          projects: projects,
+        });
+      } catch (err) {
+        console.error("[TODO Board] Falha ao buscar projetos:", err);
+        panel.webview.postMessage({
+          type: "projectsLoaded",
+          projects: [],
+        });
+      }
     } else if (message?.type === "createIssue") {
       // Chamada real à API para criar issue
       try {
@@ -110,7 +160,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
         };
         const payload = {
           fields: {
-            project: { key: "SMS" },
+            project: { key: message.projectKey || "" },
             summary: message.summary || "TODO sem descrição",
             issuetype: { name: "Task" },
             description: adfDescription,
