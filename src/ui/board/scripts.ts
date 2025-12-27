@@ -13,10 +13,18 @@ export function getBoardScripts(): string {
     const cards = document.querySelectorAll('[data-card="true"]');
     const kebabMenus = document.querySelectorAll('.card__menu');
     const labelBadges = document.querySelectorAll('[data-label]');
+    const issueModal = document.getElementById('issueModal');
+    const issueForm = document.getElementById('issueForm');
+    const modalClose = document.getElementById('modalClose');
+    const modalCancel = document.getElementById('modalCancel');
+    const issueSummaryInput = document.getElementById('issueSummary');
+    const issueDescriptionInput = document.getElementById('issueDescription');
+    const issueLocationInput = document.getElementById('issueLocation');
 
     let activeLabels = []; // Array of active label filters
     let sortDirection = 'desc'; // Default: most recent first
     let ageFilter = 'all'; // Default: show all ages
+    let currentIssueData = null; // Dados da issue sendo criada
 
     // Handle card clicks (agora só no card, não no rodapé)
     cards.forEach((element) => {
@@ -54,7 +62,7 @@ export function getBoardScripts(): string {
         }
       });
 
-      // Ação: criar issue
+      // Ação: abrir modal para criar issue
       const createIssueItem = list.querySelector('[data-menu-create-issue]');
       if (createIssueItem) {
         createIssueItem.addEventListener('click', (e) => {
@@ -65,8 +73,9 @@ export function getBoardScripts(): string {
           const location = card.getAttribute('data-location');
           const line = Number(card.getAttribute('data-line') ?? '0');
           const description = card.querySelector('.card__description')?.textContent || '';
-          vscode.postMessage({
-            type: 'createIssue',
+
+          // Abre modal com dados preenchidos
+          openIssueModal({
             location,
             line,
             description
@@ -371,6 +380,60 @@ export function getBoardScripts(): string {
       if (message.type === 'filterByLabel') {
         filterByLabel(message.label);
       }
+    });
+
+    // Função para abrir o modal de criação de issue
+    function openIssueModal(data) {
+      currentIssueData = data;
+      issueSummaryInput.value = data.description || '';
+      issueDescriptionInput.value = data.description || '';
+      issueLocationInput.value = \`\${data.location} (Linha \${data.line})\`;
+      issueModal.removeAttribute('hidden');
+      issueSummaryInput.focus();
+      issueSummaryInput.select();
+    }
+
+    // Função para fechar o modal
+    function closeIssueModal() {
+      issueModal.setAttribute('hidden', '');
+      issueForm.reset();
+      currentIssueData = null;
+    }
+
+    // Eventos do modal
+    modalClose.addEventListener('click', closeIssueModal);
+    modalCancel.addEventListener('click', closeIssueModal);
+
+    // Fechar modal ao clicar no overlay
+    issueModal.querySelector('.modal__overlay').addEventListener('click', closeIssueModal);
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !issueModal.hasAttribute('hidden')) {
+        closeIssueModal();
+      }
+    });
+
+    // Submit do formulário
+    issueForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!currentIssueData) return;
+
+      const formData = new FormData(issueForm);
+      const summary = formData.get('summary');
+      const description = formData.get('description');
+
+      // Envia mensagem para criar issue
+      vscode.postMessage({
+        type: 'createIssue',
+        location: currentIssueData.location,
+        line: currentIssueData.line,
+        summary,
+        description: description ?? summary
+      });
+
+      closeIssueModal();
     });
 
     // Initialize

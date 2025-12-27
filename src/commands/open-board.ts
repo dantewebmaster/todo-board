@@ -97,12 +97,12 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
               content: [
                 {
                   type: "text",
-                  text: `Arquivo: ${message.location} | Linha: ${message.line}`,
+                  text: message.description || "TODO sem descrição",
                 },
                 { type: "text", text: "\n" },
                 {
                   type: "text",
-                  text: message.description || "TODO sem descrição",
+                  text: `Arquivo: ${message.location} | Linha: ${message.line}`,
                 },
               ],
             },
@@ -111,7 +111,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
         const payload = {
           fields: {
             project: { key: "SMS" },
-            summary: message.description || "TODO sem descrição",
+            summary: message.summary || "TODO sem descrição",
             issuetype: { name: "Task" },
             description: adfDescription,
           },

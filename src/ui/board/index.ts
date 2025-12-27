@@ -35,6 +35,36 @@ export function renderBoard(
         <div class="board">
           ${columns}
         </div>
+
+        <!-- Modal de criação de issue -->
+        <div id="issueModal" class="modal" hidden>
+          <div class="modal__overlay"></div>
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Criar Issue no Jira</h2>
+              <button class="modal__close" id="modalClose" title="Fechar">×</button>
+            </div>
+            <form class="modal__form" id="issueForm">
+              <div class="form-group">
+                <label for="issueSummary">Título *</label>
+                <input type="text" id="issueSummary" name="summary" required maxlength="255" />
+              </div>
+              <div class="form-group">
+                <label for="issueDescription">Descrição</label>
+                <textarea id="issueDescription" name="description" rows="6"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="issueLocation">Localização</label>
+                <input type="text" id="issueLocation" name="location" readonly />
+              </div>
+              <div class="modal__actions">
+                <button type="button" class="button button--secondary" id="modalCancel">Cancelar</button>
+                <button type="submit" class="button button--primary">Criar Issue</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <script nonce="${nonce}">
           ${getBoardScripts()}
         </script>
