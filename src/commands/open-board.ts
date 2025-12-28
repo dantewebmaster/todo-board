@@ -1,7 +1,6 @@
-// Importação dinâmica do node-fetch para evitar erro de CommonJS/ESM
 import * as vscode from "vscode";
 
-import { getAuthToken } from "@/services/auth";
+import { getAuthToken, setAuthToken } from "@/services/auth";
 import { filterState } from "@/services/filter-state";
 import { loadPersistedTodos } from "@/services/persist";
 import { renderBoard } from "@/ui/board";
@@ -11,6 +10,64 @@ import {
 } from "@/ui/board/services/board-transformer";
 
 let currentPanel: vscode.WebviewPanel | undefined;
+
+// Helper para fazer requisições com refresh token automático
+async function fetchWithTokenRefresh(
+  url: string,
+  options: any,
+  retryCount = 0,
+): Promise<any> {
+  const fetchModule = await import("node-fetch");
+  const fetch = fetchModule.default;
+
+  const response = await fetch(url, options);
+
+  // Verificar se há um novo token e salva atualizado
+  const newToken = response.headers.get("X-New-Token");
+  if (newToken) {
+    await setAuthToken(newToken);
+  }
+
+  // Se retornou 401 e ainda não tentou refresh, tenta renovar o token
+  if (response.status === 401 && retryCount === 0) {
+    try {
+      const currentToken = await getAuthToken();
+      if (!currentToken) {
+        return response;
+      }
+
+      // Tenta refresh do token
+      const refreshResponse = await fetch(
+        "https://todo-board.dantewebmaster.com.br/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (refreshResponse.ok) {
+        const refreshData = (await refreshResponse.json()) as { token: string };
+        const newToken = refreshData.token;
+
+        // Atualiza o token armazenado
+        await setAuthToken(newToken);
+
+        // Atualiza o header da requisição original com o novo token
+        options.headers.Authorization = `Bearer ${newToken}`;
+
+        // Retenta a requisição original
+        return fetchWithTokenRefresh(url, options, retryCount + 1);
+      }
+    } catch (err) {
+      console.error("[TODO Board] Erro ao fazer refresh do token:", err);
+    }
+  }
+
+  return response;
+}
 
 export async function updateBoardContent(
   webview: vscode.Webview,
@@ -88,10 +145,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           return;
         }
 
-        const fetchModule = await import("node-fetch");
-        const fetch = fetchModule.default;
-
-        const response = await fetch(
+        const response = await fetchWithTokenRefresh(
           "https://todo-board.dantewebmaster.com.br/projects",
           {
             method: "GET",
@@ -119,15 +173,14 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           type: "projectsLoaded",
           projects: projects,
         });
-      } catch (err) {
-        console.error("[TODO Board] Falha ao buscar projetos:", err);
+      } catch (error) {
+        console.error("[TODO Board] Falha ao buscar projetos:", error);
         panel.webview.postMessage({
           type: "projectsLoaded",
           projects: [],
         });
       }
     } else if (message?.type === "createIssue") {
-      // Chamada real à API para criar issue
       try {
         const token = await getAuthToken();
         if (!token) {
@@ -137,7 +190,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           return;
         }
 
-        // Monta o payload básico
+        // Construir descrição no formato ADF
         const adfDescription = {
           type: "doc",
           version: 1,
@@ -158,6 +211,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
             },
           ],
         };
+
         const payload = {
           fields: {
             project: { key: message.projectKey || "" },
@@ -167,11 +221,8 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           },
         };
 
-        // Importação dinâmica do node-fetch
-        const fetchModule = await import("node-fetch");
-        const fetch = fetchModule.default;
-
-        const response = await fetch(
+        // Faz requisição com refresh automático de token
+        const response = await fetchWithTokenRefresh(
           "https://todo-board.dantewebmaster.com.br/issue",
           {
             method: "POST",

@@ -406,15 +406,14 @@ export function getBoardScripts(): string {
         return;
       }
 
-      const defaultOption = document.createElement('option');
-      defaultOption.value = '';
-      defaultOption.textContent = 'Selecione um projeto';
-      issueProjectSelect.appendChild(defaultOption);
-
-      projects.forEach(project => {
+      projects.forEach((project, index) => {
         const option = document.createElement('option');
         option.value = project.key;
         option.textContent = \`\${project.key} - \${project.name}\`;
+        // Seleciona o primeiro item automaticamente
+        if (index === 0) {
+          option.selected = true;
+        }
         issueProjectSelect.appendChild(option);
       });
     }
@@ -466,14 +465,21 @@ export function getBoardScripts(): string {
       const formData = new FormData(issueForm);
       const summary = formData.get('summary');
       const description = formData.get('description');
+      const projectKey = formData.get('project');
+
+      if (!projectKey) {
+        alert('Por favor, selecione um projeto');
+        return;
+      }
 
       // Envia mensagem para criar issue
       vscode.postMessage({
         type: 'createIssue',
         location: currentIssueData.location,
         line: currentIssueData.line,
+        description: description ?? summary,
         summary,
-        description: description ?? summary
+        projectKey,
       });
 
       closeIssueModal();
