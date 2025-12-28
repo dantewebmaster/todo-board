@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { getCurrentPanel, updateBoardContent } from "@/commands/open-board";
-import { persistResults } from "@/services/persist";
+import { mergeWithPersistedIssues, persistResults } from "@/services/persist";
 import { enrichTodosWithGitInfo, scanWorkspace } from "@/services/scanner";
 
 export async function scanTodos(): Promise<void> {
@@ -26,7 +26,13 @@ export async function scanTodos(): Promise<void> {
         });
         const enrichedHits = await enrichTodosWithGitInfo(hits);
 
-        await persistResults(enrichedHits);
+        // Merge com informações de issues já criadas
+        progress.report({
+          message: "Mesclando com informações de issues...",
+        });
+        const mergedHits = await mergeWithPersistedIssues(enrichedHits);
+
+        await persistResults(mergedHits);
 
         // Refresh sidebar via command (will be handled by provider)
         await vscode.commands.executeCommand("todo-board.updateSidebar");

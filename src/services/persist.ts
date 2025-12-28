@@ -1,6 +1,48 @@
 import { readJsonFile, writeJsonFile } from "@/services/storage";
 import type { TodoHit } from "@/types/todo";
 
+/**
+ * Mescla novos TODOs escaneados com informações de issues já criadas.
+ * Se um TODO já existia e tinha issue associada, mantém essas informações.
+ */
+export async function mergeWithPersistedIssues(
+  newTodos: TodoHit[],
+): Promise<TodoHit[]> {
+  try {
+    const persistedTodos = await loadPersistedTodos();
+
+    // Cria um mapa de TODOs antigos por file:line para rápida consulta
+    const persistedMap = new Map<string, TodoHit>();
+    for (const todo of persistedTodos) {
+      const key = `${todo.file}:${todo.line}`;
+      persistedMap.set(key, todo);
+    }
+
+    // Mescla informações de issues nos novos TODOs
+    const mergedTodos = newTodos.map((newTodo) => {
+      const key = `${newTodo.file}:${newTodo.line}`;
+      const persistedTodo = persistedMap.get(key);
+
+      // Se o TODO já existia e tinha issue, mantém as informações
+      if (persistedTodo?.issueId) {
+        return {
+          ...newTodo,
+          issueId: persistedTodo.issueId,
+          issueKey: persistedTodo.issueKey,
+          issueLink: persistedTodo.issueLink,
+        };
+      }
+
+      return newTodo;
+    });
+
+    return mergedTodos;
+  } catch {
+    // Se houver erro ao carregar TODOs antigos, retorna os novos sem merge
+    return newTodos;
+  }
+}
+
 export async function persistResults(results: TodoHit[]): Promise<void> {
   try {
     await writeJsonFile("todos.json", results);
