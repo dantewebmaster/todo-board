@@ -38,6 +38,9 @@ function toBoardItem(hit: TodoHit, relativePath: string): BoardItem {
     labels,
     lastModified: hit.lastModified,
     daysOld: hit.daysOld,
+    issueId: hit.issueId,
+    issueKey: hit.issueKey,
+    issueLink: hit.issueLink,
   };
 }
 

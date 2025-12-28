@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { getAuthToken, setAuthToken } from "@/services/auth";
 import { filterState } from "@/services/filter-state";
-import { loadPersistedTodos } from "@/services/persist";
+import { loadPersistedTodos, updateTodoWithIssue } from "@/services/persist";
 import { renderBoard } from "@/ui/board";
 import {
   buildBoardItems,
@@ -21,6 +21,15 @@ async function fetchWithTokenRefresh(
   const fetch = fetchModule.default;
 
   const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("[TODO Board] Erro ao criar issue:", {
+      status: response.status,
+      errorText,
+    });
+    throw new Error(`Erro ao criar issue: ${response.status} - ${errorText}`);
+  }
 
   // Verificar se há um novo token e salva atualizado
   const newToken = response.headers.get("X-New-Token");
@@ -66,7 +75,9 @@ async function fetchWithTokenRefresh(
     }
   }
 
-  return response;
+  const jsonResponse = await response.json();
+
+  return jsonResponse;
 }
 
 export async function updateBoardContent(
@@ -156,11 +167,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           },
         );
 
-        if (!response.ok) {
-          console.error(
-            "[TODO Board] Erro ao buscar projetos:",
-            response.status,
-          );
+        if (!response) {
           panel.webview.postMessage({
             type: "projectsLoaded",
             projects: [],
@@ -168,10 +175,9 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           return;
         }
 
-        const projects = await response.json();
         panel.webview.postMessage({
           type: "projectsLoaded",
-          projects: projects,
+          projects: response,
         });
       } catch (error) {
         console.error("[TODO Board] Falha ao buscar projetos:", error);
@@ -234,26 +240,54 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           },
         );
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          // Log detalhado para debug
-          console.error("[TODO Board] Erro ao criar issue:", {
-            status: response.status,
-            errorText,
-            token,
-            payload,
-          });
-          throw new Error(
-            `Erro ao criar issue: ${response.status} - ${errorText}\nToken usado: ${token}`,
-          );
-        }
+        const issueData = await response;
 
-        void vscode.window.showInformationMessage("Issue criada com sucesso!");
+        // Atualiza o TODO persistido com informações da issue
+        console.log("Atualizando TODO:", {
+          filePath: message.filePath,
+          line: message.line,
+          issueData,
+        });
+
+        await updateTodoWithIssue(message.filePath, message.line, {
+          id: issueData.id,
+          key: issueData.key,
+          link: issueData.link,
+        });
+
+        // Envia dados da issue criada de volta ao webview
+        panel.webview.postMessage({
+          type: "issueCreated",
+          issueData: {
+            id: issueData.id,
+            key: issueData.key,
+            link: issueData.link,
+            location: message.location,
+            line: message.line,
+          },
+        });
+
+        void vscode.window.showInformationMessage(
+          `Issue [${issueData.key}] criada com sucesso!`,
+        );
       } catch (err) {
         // Loga o erro e o token para debug
         console.error("[TODO Board] Falha ao criar issue:", err);
         void vscode.window.showErrorMessage(
           `Erro ao criar issue: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    } else if (
+      message?.type === "openExternal" &&
+      typeof message.url === "string"
+    ) {
+      // Abrir URL externa (issue do Jira)
+      try {
+        const externalUri = vscode.Uri.parse(message.url);
+        await vscode.env.openExternal(externalUri);
+      } catch (err) {
+        void vscode.window.showErrorMessage(
+          `Erro ao abrir link: ${err instanceof Error ? err.message : String(err)}`,
         );
       }
     }

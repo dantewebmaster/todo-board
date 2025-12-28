@@ -342,6 +342,25 @@ export function getBoardStyles(): string {
       margin-bottom: 8px;
     }
 
+    .issue-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px;
+      background-color: var(--vscode-button-background);
+      color: var(--vscode-button-foreground);
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .issue-badge:hover {
+      opacity: 0.8;
+    }
+
     .card__description {
       font-size: 14px;
       font-weight: 500;

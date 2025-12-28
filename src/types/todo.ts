@@ -12,6 +12,9 @@ export interface BoardItem {
   labels: CommonLabels[] | string[] | undefined;
   lastModified?: Date;
   daysOld?: number;
+  issueId?: string;
+  issueKey?: string;
+  issueLink?: string;
 }
 
 export interface TodoGroups {
@@ -27,6 +30,9 @@ export interface TodoHit {
   text: string;
   lastModified?: Date;
   daysOld?: number;
+  issueId?: string;
+  issueKey?: string;
+  issueLink?: string;
 }
 
 export interface ScanResult {

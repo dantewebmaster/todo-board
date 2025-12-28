@@ -72,16 +72,33 @@ export function getBoardScripts(): string {
           list.setAttribute('hidden', '');
           const card = menu.closest('[data-card="true"]');
           if (!card) return;
+          const filePath = card.getAttribute('data-file');
           const location = card.getAttribute('data-location');
           const line = Number(card.getAttribute('data-line') ?? '0');
           const description = card.querySelector('.card__description')?.textContent || '';
 
           // Abre modal com dados preenchidos
           openIssueModal({
+            filePath,
             location,
             line,
             description
           });
+        });
+      }
+
+      // Ação: abrir issue no Jira
+      const viewIssueItem = list.querySelector('[data-menu-view-issue]');
+      if (viewIssueItem) {
+        viewIssueItem.addEventListener('click', (e) => {
+          e.stopPropagation();
+          list.setAttribute('hidden', '');
+          const card = menu.closest('[data-card="true"]');
+          if (!card) return;
+          const issueLink = card.getAttribute('data-issue-link');
+          if (issueLink) {
+            vscode.postMessage({ type: 'openExternal', url: issueLink });
+          }
         });
       }
     });
@@ -93,6 +110,18 @@ export function getBoardScripts(): string {
         const label = badge.getAttribute('data-label');
         if (label) {
           filterByLabelFromClick(label);
+        }
+      });
+    });
+
+    // Handle issue badge clicks (para badges que já existem no load)
+    const issueBadges = document.querySelectorAll('.issue-badge');
+    issueBadges.forEach((badge) => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const issueLink = badge.getAttribute('data-issue-link');
+        if (issueLink) {
+          vscode.postMessage({ type: 'openExternal', url: issueLink });
         }
       });
     });
@@ -383,6 +412,8 @@ export function getBoardScripts(): string {
         filterByLabel(message.label);
       } else if (message.type === 'projectsLoaded') {
         populateProjectSelect(message.projects);
+      } else if (message.type === 'issueCreated') {
+        updateCardWithIssue(message.issueData);
       }
     });
 
@@ -418,12 +449,54 @@ export function getBoardScripts(): string {
       });
     }
 
+    // Função para atualizar card com informações da issue criada
+    function updateCardWithIssue(issueData) {
+      // Encontra o card pela localização e linha
+      const targetCard = Array.from(cards).find(card => {
+        const cardLocation = card.getAttribute('data-location');
+        const cardLine = Number(card.getAttribute('data-line'));
+        return cardLocation === issueData.location && cardLine === issueData.line;
+      });
+
+      if (!targetCard) return;
+
+      // Atualiza data attributes com informações da issue
+      targetCard.setAttribute('data-issue-id', issueData.id);
+      targetCard.setAttribute('data-issue-key', issueData.key);
+      targetCard.setAttribute('data-issue-link', issueData.link);
+
+      // Atualiza menu do card
+      const createIssueOption = targetCard.querySelector('[data-menu-create-issue]');
+      const viewIssueOption = targetCard.querySelector('[data-menu-view-issue]');
+
+      if (createIssueOption) {
+        createIssueOption.setAttribute('hidden', '');
+      }
+      if (viewIssueOption) {
+        viewIssueOption.removeAttribute('hidden');
+      }
+
+      // Adiciona badge visual no card
+      const header = targetCard.querySelector('.card__header');
+      if (header && !header.querySelector('.issue-badge')) {
+        const badge = document.createElement('span');
+        badge.className = 'issue-badge';
+        badge.textContent = issueData.key;
+        badge.title = 'Clique para abrir a issue no Jira';
+        badge.addEventListener('click', (e) => {
+          e.stopPropagation();
+          vscode.postMessage({ type: 'openExternal', url: issueData.link });
+        });
+        header.insertBefore(badge, header.firstChild);
+      }
+    }
+
     // Função para abrir o modal de criação de issue
     async function openIssueModal(data) {
       currentIssueData = data;
       issueSummaryInput.value = data.description || '';
       issueDescriptionInput.value = data.description || '';
-      issueLocationInput.value = \`\${data.location} (Linha \${data.line})\`;
+      issueLocationInput.value = data.location || '';
       issueModal.removeAttribute('hidden');
 
       // Busca projetos se ainda não foram carregados
@@ -475,6 +548,7 @@ export function getBoardScripts(): string {
       // Envia mensagem para criar issue
       vscode.postMessage({
         type: 'createIssue',
+        filePath: currentIssueData.filePath,
         location: currentIssueData.location,
         line: currentIssueData.line,
         description: description ?? summary,
