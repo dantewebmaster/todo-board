@@ -8,15 +8,17 @@ import {
   buildBoardItems,
   groupItems,
 } from "@/ui/board/services/board-transformer";
+import type { CreateIssueResponse, IssueTypeResponse } from "@/types/issue";
+import type { ProjectResponse } from "@/types/project";
 
 let currentPanel: vscode.WebviewPanel | undefined;
 
 // Helper para fazer requisições com refresh token automático
-async function fetchWithTokenRefresh(
+async function fetchWithTokenRefresh<T>(
   url: string,
   options: any,
   retryCount = 0,
-): Promise<any> {
+): Promise<T> {
   const fetchModule = await import("node-fetch");
   const fetch = fetchModule.default;
 
@@ -33,7 +35,7 @@ async function fetchWithTokenRefresh(
     try {
       const currentToken = await getAuthToken();
       if (!currentToken) {
-        return response;
+        throw new Error("No authentication token available");
       }
 
       // Tenta refresh do token
@@ -77,7 +79,7 @@ async function fetchWithTokenRefresh(
 
   const jsonResponse = await response.json();
 
-  return jsonResponse;
+  return jsonResponse as T;
 }
 
 export async function updateBoardContent(
@@ -156,7 +158,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           return;
         }
 
-        const response = await fetchWithTokenRefresh(
+        const response = await fetchWithTokenRefresh<ProjectResponse[]>(
           "https://todo-board.dantewebmaster.com.br/projects",
           {
             method: "GET",
@@ -201,7 +203,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
         const projectId = message.projectId || "";
         const url = `https://todo-board.dantewebmaster.com.br/issue-types?projectId=${projectId}`;
 
-        const response = await fetchWithTokenRefresh(url, {
+        const response = await fetchWithTokenRefresh<IssueTypeResponse[]>(url, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -283,7 +285,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
         };
 
         // Faz requisição com refresh automático de token
-        const response = await fetchWithTokenRefresh(
+        const response = await fetchWithTokenRefresh<CreateIssueResponse>(
           "https://todo-board.dantewebmaster.com.br/issue",
           {
             method: "POST",
@@ -295,35 +297,26 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           },
         );
 
-        const issueData = await response;
-
-        // Atualiza o TODO persistido com informações da issue
-        console.log("Atualizando TODO:", {
-          filePath: message.filePath,
-          line: message.line,
-          issueData,
-        });
-
         await updateTodoWithIssue(message.filePath, message.line, {
-          id: issueData.id,
-          key: issueData.key,
-          link: issueData.link,
+          id: response.id,
+          key: response.key,
+          link: response.link,
         });
 
         // Envia dados da issue criada de volta ao webview
         panel.webview.postMessage({
           type: "issueCreated",
           issueData: {
-            id: issueData.id,
-            key: issueData.key,
-            link: issueData.link,
+            id: response.id,
+            key: response.key,
+            link: response.link,
             location: message.location,
             line: message.line,
           },
         });
 
         void vscode.window.showInformationMessage(
-          `Issue [${issueData.key}] criada com sucesso!`,
+          `Issue [${response.key}] criada com sucesso!`,
         );
       } catch (err) {
         // Loga o erro e o token para debug
