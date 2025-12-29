@@ -5,6 +5,41 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 
+## [1.4.0] - 2025-12-29
+
+### ✨ Novas Funcionalidades
+
+#### 🔗 Integração com Jira
+- **Criação de Issues Direto do Board** - Crie issues no Jira a partir dos cards de TODO com autenticação OAuth 2.0 segura
+  - Autenticação OAuth 2.0 (3LO) com modal explicativo
+  - Armazenamento seguro de tokens no VS Code Secret Storage
+  - Refresh automático de token em caso de expiração
+  - Menu kebab em cada card com opções contextuais
+  - Modal de criação com formulário de revisão
+  - Seleção dinâmica de projetos acessíveis
+  - Seleção de tipos de issue baseado no projeto
+  - Inclusão automática de metadados (localização, prioridade, idade)
+  - Badge visual com link para issue criada
+  - Persistência de associações entre TODOs e issues
+
+![Integração com Jira](./images/demo-jira-integration.gif)
+
+### 🔧 Melhorias Técnicas
+- **Merge Inteligente** - Preserva associações de issues durante rescan
+- **Filtro de Subtasks** - Remove subtasks da lista de tipos de issue
+- **Data Attributes** - Cards incluem atributos para issue-id, issue-key, issue-link
+- **Formatação de Idade** - Descrições de issues com idade formatada (hoje/1 dia/X dias)
+- **Menu Contextual** - Opções dinâmicas baseadas em associação com issue
+- **Docs** - Adicionando configurações do highlight ao readme
+
+### 📋 Novos Comandos
+
+| Comando | Descrição |
+|---------|----------|
+| `TODO Board: Connect to Jira` | Conecta com sua conta Jira |
+| `TODO Board: Logout from Jira` | Desconecta da conta Jira |
+
+
 ## [1.3.0] - 2025-11-05
 
 ### ✨ Novas Funcionalidades

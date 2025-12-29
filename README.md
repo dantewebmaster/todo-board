@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/github/license/dantewebmaster/todo-board?style=flat-square&color=green)](https://github.com/dantewebmaster/todo-board/blob/master/LICENSE)
 
 
-**Faça um scan automático no seu workspace. Organize seus TODOs em um quadro Kanban visual com prioridades, labels, filtros, texto e rastreamento de idade**
+**Faça um scan automático no seu workspace. Organize seus TODOs em um quadro Kanban visual com prioridades, labels, filtros, texto e rastreamento de idade, destaque visual em comentários com 'TODO' e agora com integração para criar issue no Jira direto pelo card**
 
 [Instalação](#-instalação) • [Funcionalidades](#-funcionalidades) • [Uso Rápido](#-uso-rápido) • [Configuração](#️-configuração) • [Contribuir](./CONTRIBUTING.md)
 
@@ -98,6 +98,42 @@ Você pode usar labels customizadas no formato: `@TODO: [labe1, label2] descriç
 
 ---
 
+### 🔗 Integração com Jira
+
+Crie issues no Jira diretamente do board, mantendo sincronização perfeita entre seus TODOs e o gerenciamento de projetos:
+
+- **Autenticação OAuth 2.0**: Conexão segura com modal explicativo do processo
+- **Menu Kebab**: Acesse opções contextuais em cada card
+- **Criação de Issues**: Modal com formulário de revisão e campos customizáveis
+- **Seleção Dinâmica**: Escolha entre seus projetos e tipos de issue disponíveis
+- **Metadados Automáticos**: Localização do arquivo, prioridade e idade incluídos na descrição
+- **Badge com Link**: Visualize e acesse a issue criada diretamente do card
+- **Persistência**: Associações mantidas entre rescans
+- **Refresh Automático**: Token atualizado automaticamente em caso de expiração
+
+![Integração com Jira](./images/demo-jira-integration.gif)
+
+#### Configuração para Ambientes Corporativos
+Se sua empresa restringe OAuth apps, peça ao administrador Jira para:
+
+1. Acessar: **Jira Settings** → **Security** → **OAuth 2.0 (3LO) apps**
+2. Clicar em **"Add approved app"**
+3. Adicionar o Client ID: `4WRKzqlFEaHBQYAZyyI9VgjZ8w5dxa5F`
+4. Salvar
+
+Após aprovação, todos os usuários poderão conectar a extensão.
+
+**Nota**: Nenhuma outra configuração é necessária. Usuários não precisam ser administradores.
+
+#### Como usar:
+
+1. **Autenticar**: `Cmd/Ctrl + Shift + P` → **"TODO Board: Authenticate with Jira"**
+2. **Criar Issue**: Clique no menu kebab (⋮) no card → **"Criar issue no Jira"**
+3. **Preencher Formulário**: Selecione projeto, tipo e revise os dados
+4. **Acessar Issue**: Clique na badge da issue para abrir no navegador
+
+---
+
 ### 🎨 Highlight de TODOs no Editor
 
 Destaque visual de TODOs diretamente no código com cores baseadas em prioridade e com configuração adiconal para customizar cores ou desativar:
@@ -134,7 +170,6 @@ Insira TODOs formatados automaticamente com um único atalho (`Cmd/Ctrl+Shift+T`
 
 ![Atalho inserindo TODO](./images/demo-insert-todo.gif)
 
-
 ## 📖 Uso Rápido
 
 ### Escanear Workspace
@@ -155,19 +190,24 @@ Ou clique no ícone na Activity Bar.
 
 ![Configurações](./images/demo-settings.gif)
 
-
 ```json
 {
   // Extensões de arquivo para escanear
   "todo-board.fileExtensions": [
-    "ts", "tsx", "js", "jsx", "vue", "py", "go", "rb"
+    "ts", "tsx", "js", "jsx", "vue", "py", "go", "rb", "php", "rs", "swift"
   ],
 
   // Padrões de busca customizáveis
   "todo-board.searchPatterns": ["@TODO", "FIXME", "BUG"],
 
   // Máximo de linhas por TODO
-  "todo-board.maxTodoLines": 4
+  "todo-board.maxTodoLines": 4,
+
+  // Highlight de TODOs no editor
+  "todo-board.highlight.enabled": true,
+  "todo-board.highlight.highPriorityColor": "#e74c3c",
+  "todo-board.highlight.mediumPriorityColor": "#ffa94d",
+  "todo-board.highlight.lowPriorityColor": "#4dabf7"
 }
 ```
 
@@ -185,8 +225,8 @@ Ou clique no ícone na Activity Bar.
 | `TODO Board: Scan @TODO` | - | Escaneia workspace |
 | `TODO Board: Open Board` | - | Abre quadro Kanban |
 | `TODO Board: Insert TODO Comment` | `Cmd/Ctrl+Shift+T` | Insere TODO formatado |
-| `TODO Board: Clear Age Cache` | - | Limpa cache de idades |
-
+| `TODO Board: Clear Age Cache` | - | Limpa cache de idades || `TODO Board: Connect to Jira` | - | Conecta com sua conta Jira |
+| `TODO Board: Logout from Jira` | - | Desconecta da conta Jira |
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Veja o [guia de contribuição](./CONTRIBUTING.md).
