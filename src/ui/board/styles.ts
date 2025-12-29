@@ -599,6 +599,12 @@ export function getBoardStyles(): string {
       padding: 24px;
     }
 
+    .form-group-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
     .form-group {
       margin-bottom: 20px;
     }

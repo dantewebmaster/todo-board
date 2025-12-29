@@ -18,6 +18,7 @@ export function getBoardScripts(): string {
     const modalClose = document.getElementById('modalClose');
     const modalCancel = document.getElementById('modalCancel');
     const issueProjectSelect = document.getElementById('issueProject');
+    const issueTypeSelect = document.getElementById('issueType');
     const issueSummaryInput = document.getElementById('issueSummary');
     const issueDescriptionInput = document.getElementById('issueDescription');
     const issueLocationInput = document.getElementById('issueLocation');
@@ -27,6 +28,7 @@ export function getBoardScripts(): string {
     let ageFilter = 'all'; // Default: show all ages
     let currentIssueData = null; // Dados da issue sendo criada
     let jiraProjects = []; // Lista de projetos do Jira
+    let jiraIssueTypes = []; // Lista de tipos de issue do Jira
 
     // Handle card clicks (agora só no card, não no rodapé)
     cards.forEach((element) => {
@@ -415,6 +417,8 @@ export function getBoardScripts(): string {
         filterByLabel(message.label);
       } else if (message.type === 'projectsLoaded') {
         populateProjectSelect(message.projects);
+      } else if (message.type === 'issueTypesLoaded') {
+        populateIssueTypeSelect(message.issueTypes);
       } else if (message.type === 'issueCreated') {
         updateCardWithIssue(message.issueData);
       } else if (message.type === 'openIssueModal') {
@@ -432,6 +436,16 @@ export function getBoardScripts(): string {
       }
     }
 
+    // Função para buscar tipos de issue do Jira
+    async function fetchJiraIssueTypes(projectId) {
+      try {
+        vscode.postMessage({ type: 'fetchIssueTypes', projectId });
+      } catch (err) {
+        console.error('[TODO Board] Erro ao buscar tipos de issue:', err);
+        issueTypeSelect.innerHTML = '<option value="">Erro ao carregar tipos</option>';
+      }
+    }
+
     // Função para popular o select de projetos
     function populateProjectSelect(projects) {
       jiraProjects = projects;
@@ -445,12 +459,55 @@ export function getBoardScripts(): string {
       projects.forEach((project, index) => {
         const option = document.createElement('option');
         option.value = project.key;
+        option.setAttribute('data-project-id', project.id);
         option.textContent = \`\${project.key} - \${project.name}\`;
         // Seleciona o primeiro item automaticamente
         if (index === 0) {
           option.selected = true;
         }
         issueProjectSelect.appendChild(option);
+      });
+
+      // Busca issue types do primeiro projeto automaticamente
+      if (projects.length > 0) {
+        fetchJiraIssueTypes(projects[0].id);
+      }
+    }
+
+    // Listener para mudança de projeto - atualiza tipos de issue
+    if (issueProjectSelect) {
+      issueProjectSelect.addEventListener('change', (e) => {
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        const projectId = selectedOption.getAttribute('data-project-id');
+        if (projectId) {
+          issueTypeSelect.innerHTML = '<option value="">Carregando tipos...</option>';
+          fetchJiraIssueTypes(projectId);
+        }
+      });
+    }
+
+    // Função para popular o select de tipos de issue
+    function populateIssueTypeSelect(issueTypes) {
+      jiraIssueTypes = issueTypes;
+      issueTypeSelect.innerHTML = '';
+
+      // Filtra tipos que não são subtasks
+      const nonSubtaskTypes = issueTypes.filter(type => !type.subtask);
+
+      if (nonSubtaskTypes.length === 0) {
+        issueTypeSelect.innerHTML = '<option value="">Nenhum tipo disponível</option>';
+        return;
+      }
+
+      nonSubtaskTypes.forEach((type, index) => {
+        const option = document.createElement('option');
+        option.value = type.id;
+        option.textContent = type.name;
+        // Seleciona o primeiro item automaticamente
+        if (index === 0) {
+          option.selected = true;
+        }
+        issueTypeSelect.appendChild(option);
       });
     }
 
@@ -505,8 +562,16 @@ export function getBoardScripts(): string {
       issueModal.removeAttribute('hidden');
 
       // Busca projetos se ainda não foram carregados
+      // Issue types serão carregados automaticamente quando o projeto for selecionado
       if (jiraProjects.length === 0) {
         await fetchJiraProjects();
+      } else if (issueProjectSelect.selectedIndex >= 0) {
+        // Se já tem projetos carregados, busca tipos do projeto selecionado
+        const selectedOption = issueProjectSelect.options[issueProjectSelect.selectedIndex];
+        const projectId = selectedOption.getAttribute('data-project-id');
+        if (projectId) {
+          fetchJiraIssueTypes(projectId);
+        }
       }
 
       issueSummaryInput.focus();
@@ -544,9 +609,15 @@ export function getBoardScripts(): string {
       const summary = formData.get('summary');
       const description = formData.get('description');
       const projectKey = formData.get('project');
+      const issueTypeId = formData.get('issueType');
 
       if (!projectKey) {
         alert('Por favor, selecione um projeto');
+        return;
+      }
+
+      if (!issueTypeId) {
+        alert('Por favor, selecione um tipo de issue');
         return;
       }
 
@@ -559,6 +630,7 @@ export function getBoardScripts(): string {
         description: description ?? summary,
         summary,
         projectKey,
+        issueTypeId,
       });
 
       closeIssueModal();

@@ -45,11 +45,19 @@ export function renderBoard(
               <button class="modal__close" id="modalClose" title="Fechar">×</button>
             </div>
             <form class="modal__form" id="issueForm">
-              <div class="form-group">
-                <label for="issueProject">Projeto *</label>
-                <select id="issueProject" name="project" required>
-                  <option value="">Carregando projetos...</option>
-                </select>
+              <div class="form-group-row">
+                <div class="form-group">
+                  <label for="issueProject">Projeto *</label>
+                  <select id="issueProject" name="project" required>
+                    <option value="">Carregando projetos...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="issueType">Tipo *</label>
+                  <select id="issueType" name="issueType" required>
+                    <option value="">Carregando tipos...</option>
+                  </select>
+                </div>
               </div>
               <div class="form-group">
                 <label for="issueSummary">Título *</label>

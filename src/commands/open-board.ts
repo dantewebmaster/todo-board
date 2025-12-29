@@ -186,6 +186,48 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           projects: [],
         });
       }
+    } else if (message?.type === "fetchIssueTypes") {
+      // Buscar tipos de issue do Jira
+      try {
+        const token = await getAuthToken();
+        if (!token) {
+          panel.webview.postMessage({
+            type: "issueTypesLoaded",
+            issueTypes: [],
+          });
+          return;
+        }
+
+        const projectId = message.projectId || "";
+        const url = `https://todo-board.dantewebmaster.com.br/issue-types?projectId=${projectId}`;
+
+        const response = await fetchWithTokenRefresh(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response) {
+          panel.webview.postMessage({
+            type: "issueTypesLoaded",
+            issueTypes: [],
+          });
+          return;
+        }
+
+        panel.webview.postMessage({
+          type: "issueTypesLoaded",
+          issueTypes: response,
+        });
+      } catch (error) {
+        console.error("[TODO Board] Falha ao buscar tipos de issue:", error);
+        panel.webview.postMessage({
+          type: "issueTypesLoaded",
+          issueTypes: [],
+        });
+      }
     } else if (message?.type === "createIssue") {
       try {
         const token = await getAuthToken();
@@ -222,7 +264,7 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
           fields: {
             project: { key: message.projectKey || "" },
             summary: message.summary || "TODO sem descrição",
-            issuetype: { name: "Task" },
+            issuetype: { id: message.issueTypeId },
             description: adfDescription,
           },
         };
