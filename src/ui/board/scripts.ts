@@ -77,6 +77,7 @@ export function getBoardScripts(): string {
           const filePath = card.getAttribute('data-file');
           const location = card.getAttribute('data-location');
           const line = Number(card.getAttribute('data-line') ?? '0');
+          const daysOld = Number(card.getAttribute('data-days-old') ?? '0');
           const description = card.querySelector('.card__description')?.textContent || '';
 
           // Verifica autenticação antes de abrir modal
@@ -86,6 +87,7 @@ export function getBoardScripts(): string {
               filePath,
               location,
               line,
+              daysOld,
               description
             }
           });
@@ -627,6 +629,7 @@ export function getBoardScripts(): string {
         filePath: currentIssueData.filePath,
         location: currentIssueData.location,
         line: currentIssueData.line,
+        daysOld: currentIssueData.daysOld,
         description: description ?? summary,
         summary,
         projectKey,

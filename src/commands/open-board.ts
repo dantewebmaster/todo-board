@@ -239,6 +239,14 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
         }
 
         // Construir descrição no formato ADF
+        const ageTextMap: Record<number, string> = {
+          0: "hoje",
+          1: "1 dia",
+        };
+
+        const ageText =
+          ageTextMap[message.daysOld] || `${message.daysOld} dias`;
+
         const adfDescription = {
           type: "doc",
           version: 1,
@@ -249,6 +257,11 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
                 {
                   type: "text",
                   text: message.description || "TODO sem descrição",
+                },
+                { type: "text", text: "\n" },
+                {
+                  type: "text",
+                  text: `Adicionado no código: ${ageText}`,
                 },
                 { type: "text", text: "\n" },
                 {
