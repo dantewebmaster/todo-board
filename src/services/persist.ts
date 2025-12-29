@@ -99,14 +99,6 @@ export async function updateTodoWithIssue(
     const todos = await loadPersistedTodos();
 
     const updatedTodos = todos.map((todo) => {
-      console.log("[updateTodoWithIssue] Comparando:", {
-        todoFile: todo.file,
-        todoLine: todo.line,
-        searchFile: filePath,
-        searchLine: line,
-        match: todo.file === filePath && todo.line === line,
-      });
-
       if (todo.file === filePath && todo.line === line) {
         return {
           ...todo,

@@ -77,12 +77,15 @@ export function getBoardScripts(): string {
           const line = Number(card.getAttribute('data-line') ?? '0');
           const description = card.querySelector('.card__description')?.textContent || '';
 
-          // Abre modal com dados preenchidos
-          openIssueModal({
-            filePath,
-            location,
-            line,
-            description
+          // Verifica autenticação antes de abrir modal
+          vscode.postMessage({
+            type: 'checkAuthBeforeCreateIssue',
+            data: {
+              filePath,
+              location,
+              line,
+              description
+            }
           });
         });
       }
@@ -414,6 +417,8 @@ export function getBoardScripts(): string {
         populateProjectSelect(message.projects);
       } else if (message.type === 'issueCreated') {
         updateCardWithIssue(message.issueData);
+      } else if (message.type === 'openIssueModal') {
+        openIssueModal(message.data);
       }
     });
 

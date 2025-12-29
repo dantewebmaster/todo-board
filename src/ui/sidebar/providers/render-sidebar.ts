@@ -110,10 +110,6 @@ export class TodoSidebarProvider implements vscode.WebviewViewProvider {
                 ${iconsSvg.board}
                 <span>Open Board</span>
               </button>
-              <button class="btn btn--secondary" id="authBtn" data-action="authenticate">
-                ${iconsSvg.rocket}
-                <span>Connect to Jira</span>
-              </button>
               <button class="btn btn--secondary" id="scanTodosBtn" data-action="scanTodos">
                 ${iconsSvg.scanFiles}
                 <span>Scan Workspace</span>

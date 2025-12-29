@@ -22,15 +22,6 @@ async function fetchWithTokenRefresh(
 
   const response = await fetch(url, options);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("[TODO Board] Erro ao criar issue:", {
-      status: response.status,
-      errorText,
-    });
-    throw new Error(`Erro ao criar issue: ${response.status} - ${errorText}`);
-  }
-
   // Verificar se há um novo token e salva atualizado
   const newToken = response.headers.get("X-New-Token");
   if (newToken) {
@@ -73,6 +64,15 @@ async function fetchWithTokenRefresh(
     } catch (err) {
       console.error("[TODO Board] Erro ao fazer refresh do token:", err);
     }
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("[TODO Board] Erro ao criar issue:", {
+      status: response.status,
+      errorText,
+    });
+    throw new Error(`Erro ao criar issue: ${response.status} - ${errorText}`);
   }
 
   const jsonResponse = await response.json();
@@ -288,6 +288,30 @@ function setupWebviewMessageHandler(panel: vscode.WebviewPanel): void {
       } catch (err) {
         void vscode.window.showErrorMessage(
           `Erro ao abrir link: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+    } else if (message?.type === "checkAuthBeforeCreateIssue") {
+      // Verificar se está autenticado antes de abrir modal
+      try {
+        const token = await getAuthToken();
+
+        if (!token) {
+          // Não está autenticado, inicia fluxo de autenticação
+          void vscode.window.showInformationMessage(
+            "Você precisa se conectar ao Jira primeiro. Iniciando autenticação...",
+          );
+          await vscode.commands.executeCommand("todo-board.authenticate");
+          return;
+        }
+
+        // Está autenticado, envia mensagem para abrir modal
+        panel.webview.postMessage({
+          type: "openIssueModal",
+          data: message.data,
+        });
+      } catch (err) {
+        void vscode.window.showErrorMessage(
+          `Erro ao verificar autenticação: ${err instanceof Error ? err.message : String(err)}`,
         );
       }
     }
