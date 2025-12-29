@@ -63,6 +63,10 @@
       {
         "command": "todo-board.authenticate",
         "title": "TODO Board: Connect to Jira"
+      },
+      {
+        "command": "todo-board.logout",
+        "title": "TODO Board: Logout from Jira"
       }
     ],
     "viewsContainers": {

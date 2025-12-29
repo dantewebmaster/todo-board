@@ -5,7 +5,7 @@ import { filterByLabel } from "@/commands/filter-by-label";
 import { insertTodoComment } from "@/commands/insert-todo";
 import { openTodoBoard } from "@/commands/open-board";
 import { scanTodos } from "@/commands/scan-todos";
-import { initializeAuth, setAuthToken } from "@/services/auth";
+import { clearAuthToken, initializeAuth, setAuthToken } from "@/services/auth";
 import { initializeStorage } from "@/services/storage";
 import { initializeTodoDecorator } from "@/services/todo-decorator";
 import { registerTodoSidebar } from "@/ui/sidebar";
@@ -50,11 +50,35 @@ export function activate(context: vscode.ExtensionContext) {
   const authenticateCmd = vscode.commands.registerCommand(
     "todo-board.authenticate",
     async () => {
-      // Open external OAuth start URL
-      const url = vscode.Uri.parse(
-        "https://todo-board.dantewebmaster.com.br/oauth/start",
+      // Mostra modal explicativo antes de iniciar autenticação
+      const continuar = await vscode.window.showInformationMessage(
+        "Autenticação com Jira\n\n" +
+          "Você será redirecionado para fazer login no Jira usando OAuth 2.0 (3LO), " +
+          "um protocolo seguro de autenticação.\n\n" +
+          "Após autorizar o acesso, você será redirecionado de volta ao VS Code automaticamente.\n\n" +
+          "Deseja continuar?",
+        { modal: true },
+        "Continuar",
+        "Cancelar",
       );
-      await vscode.env.openExternal(url);
+
+      if (continuar === "Continuar") {
+        // Open external OAuth start URL
+        const url = vscode.Uri.parse(
+          "https://todo-board.dantewebmaster.com.br/oauth/start",
+        );
+        await vscode.env.openExternal(url);
+      }
+    },
+  );
+
+  const logoutCmd = vscode.commands.registerCommand(
+    "todo-board.logout",
+    async () => {
+      await clearAuthToken();
+      void vscode.window.showInformationMessage(
+        "TODO Board: Desconectado do Jira com sucesso.",
+      );
     },
   );
 
@@ -121,6 +145,8 @@ export function activate(context: vscode.ExtensionContext) {
     insertTodoCmd,
     filterByLabelCmd,
     clearAgeCacheCmd,
+    authenticateCmd,
+    logoutCmd,
     refreshSidebarCmd,
     updateSidebarCmd,
     sidebarView,
