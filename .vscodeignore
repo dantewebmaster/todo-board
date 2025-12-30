@@ -1,22 +1,55 @@
+# Desenvolvimento
 .vscode/**
 .vscode-test/**
+.vscode-test.mjs
 src/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
+
+# Configuração
 **/tsconfig.json
 **/eslint.config.mjs
-**/*.map
-**/*.ts
-**/.vscode-test.*
-.github/**
-docs/**
 **/.eslintrc.json
 biome.json
 eslint.config.js
-.git
+
+# Source maps e TypeScript
+**/*.map
+**/*.ts
+
+# Testes (IMPORTANTE!)
+out/__tests__/**
+**/__tests__/**
+**/test/**
+**/*.test.js
+**/*.test.ts
+
+# Git e GitHub
+.git/**
+.github/**
 .gitignore
+
+# Documentação de desenvolvimento
+docs/**
+CONTRIBUTING.md
+vsc-extension-quickstart.md
+
+# Arquivos do sistema
 **/.DS_Store
+**/.vscode-test.*
+
+# Node modules (mantém apenas o necessário)
+node_modules/**/test/**
+node_modules/**/tests/**
+node_modules/**/*.md
 node_modules/**/.bin/**
+node_modules/**/LICENSE
+node_modules/**/CHANGELOG.md
+node_modules/**/.npmignore
+node_modules/**/.travis.yml
+node_modules/**/.github/**
 **/*.vsix
-.vscode-test.mjs
+
+# Recursos de desenvolvimento
+resources/**
