@@ -8,6 +8,7 @@ import {
   buildBoardItems,
   groupItems,
 } from "@/ui/board/services/board-transformer";
+import type { FetchOptions } from "@/types/fetch";
 import type { CreateIssueResponse, IssueTypeResponse } from "@/types/issue";
 import type { ProjectResponse } from "@/types/project";
 
@@ -16,7 +17,7 @@ let currentPanel: vscode.WebviewPanel | undefined;
 // Helper para fazer requisições com refresh token automático
 async function fetchWithTokenRefresh<T>(
   url: string,
-  options: any,
+  options: FetchOptions,
   retryCount = 0,
 ): Promise<T> {
   const fetchModule = await import("node-fetch");
