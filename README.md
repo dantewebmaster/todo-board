@@ -121,9 +121,10 @@ Se sua empresa restringe OAuth apps, peça ao administrador Jira para:
 3. Adicionar o Client ID: `4WRKzqlFEaHBQYAZyyI9VgjZ8w5dxa5F`
 4. Salvar
 
-Após aprovação, todos os usuários poderão conectar a extensão.
+#### Ou outra forma mais prática de permitir o app:
+Acessar a [Url de autorização](https://todo-board.dantewebmaster.com.br/oauth/start) do app exibirá a tela de autorização, ao aceitar o admin irá permitir a instalação por outros usuários.
 
-**Nota**: Nenhuma outra configuração é necessária. Usuários não precisam ser administradores.
+Após aprovação, todos os usuários poderão conectar a extensão.
 
 #### Como usar:
 
