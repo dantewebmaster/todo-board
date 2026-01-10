@@ -54,6 +54,58 @@ function createDecorationTypes(): void {
 }
 
 /**
+ * Check if a line is a comment
+ */
+function isCommentLine(line: string): boolean {
+  const trimmed = line.trimStart();
+  return (
+    trimmed.startsWith("//") ||
+    trimmed.startsWith("/*") ||
+    trimmed.startsWith("*") ||
+    trimmed.startsWith("#") ||
+    trimmed.startsWith("<!--")
+  );
+}
+
+/**
+ * Check if TODO pattern appears at the start of a comment (not in the middle of text)
+ */
+function isTodoInComment(lineText: string, patterns: string[]): boolean {
+  const trimmed = lineText.trimStart();
+
+  // Check if line is a comment
+  if (!isCommentLine(lineText)) {
+    return false;
+  }
+
+  // Remove comment markers to get the actual comment content
+  let commentContent = trimmed;
+
+  // Remove line comment markers: //, #
+  if (commentContent.startsWith("//")) {
+    commentContent = commentContent.substring(2).trimStart();
+  } else if (commentContent.startsWith("#")) {
+    commentContent = commentContent.substring(1).trimStart();
+  }
+  // Remove block comment markers: /*, /***, <!--
+  else if (commentContent.startsWith("<!--")) {
+    commentContent = commentContent.substring(4).trimStart();
+  } else if (commentContent.startsWith("/*")) {
+    // Remove leading asterisks (/* or /** or /***)
+    commentContent = commentContent.replace(/^\/\*+\s*/, "");
+  }
+  // Remove leading asterisks from block comment continuation lines
+  else if (commentContent.startsWith("*")) {
+    commentContent = commentContent.replace(/^\*+\s*/, "");
+  }
+
+  // Check if any pattern appears at the start of the comment content
+  return patterns.some((pattern) =>
+    commentContent.toUpperCase().startsWith(pattern.toUpperCase()),
+  );
+}
+
+/**
  * Decorate TODO comments in the active editor
  */
 function decorateTodos(editor: vscode.TextEditor | undefined): void {
@@ -83,12 +135,8 @@ function decorateTodos(editor: vscode.TextEditor | undefined): void {
       continue;
     }
 
-    // Check if line contains any of the configured patterns
-    const hasPattern = patterns.some((pattern) =>
-      lineText.toUpperCase().includes(pattern.toUpperCase()),
-    );
-
-    if (!hasPattern) {
+    // Check if TODO pattern is actually in a comment
+    if (!isTodoInComment(lineText, patterns)) {
       continue;
     }
 

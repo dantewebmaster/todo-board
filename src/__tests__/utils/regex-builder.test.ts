@@ -144,9 +144,9 @@ suite("regex-builder", () => {
       assert.strictEqual(index, -1); // should not match lowercase
     });
 
-    test("should use @TODO fallback for empty patterns array", () => {
+    test("should use TODO fallback for empty patterns array", () => {
       const index = findFirstPatternIndex("// @TODO: description", []);
-      assert.strictEqual(index, 3);
+      assert.strictEqual(index, 4);
     });
 
     test("should handle patterns with special characters", () => {

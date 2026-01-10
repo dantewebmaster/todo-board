@@ -5,10 +5,11 @@ Todas as mudanças notáveis do "TODO Board" serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](http://keepachangelog.com/).
 
 
-## [1.4.1] - 2026-01-09
+## [1.4.2] - 2026-01-09
 
 ### 🔧 Melhorias Técnicas
-Adicionando "TODO" aos padrões de busca para melhor compatibilidade entre projetos sem precisar atualizar nas configurações da extensão
+- **Padrão de busca** - Adicionando "TODO" aos padrões de busca para melhor compatibilidade entre projetos sem precisar atualizar nas configurações da extensão
+- **TODO highlight** - Melhoria para destacar apenas linhas de comentários
 
 ## [1.4.0] - 2025-12-29
 
