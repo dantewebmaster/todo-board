@@ -11,7 +11,7 @@ Para customizar os padrões de busca, edite o `settings.json` do VS Code:
 ### Padrão Padrão
 ```json
 {
-  "todo-board.searchPatterns": ["@TODO"]
+  "todo-board.searchPatterns": ["TODO", "@TODO"]
 }
 ```
 
@@ -20,7 +20,7 @@ Para customizar os padrões de busca, edite o `settings.json` do VS Code:
 #### 1. Buscar múltiplos padrões
 ```json
 {
-  "todo-board.searchPatterns": ["@TODO", "@FIXME", "BUG"]
+  "todo-board.searchPatterns": ["TODO", "@TODO", "@FIXME", "BUG"]
 }
 ```
 
@@ -44,7 +44,7 @@ Compatível com diferentes estilos de comentários:
 #### 3. Combinação de estilos
 ```json
 {
-  "todo-board.searchPatterns": ["@TODO", "FIXME", "URGENT", "BLOCKED"]
+  "todo-board.searchPatterns": ["TODO", "@TODO", "FIXME", "URGENT", "BLOCKED"]
 }
 ```
 
@@ -116,7 +116,7 @@ Os padrões respeitam maiúsculas/minúsculas:
 ### Para Equipes
 ```json
 {
-  "todo-board.searchPatterns": ["@TODO", "@FIXME", "@REVIEW", "@OPTIMIZE"]
+  "todo-board.searchPatterns": ["TODO", "@TODO", "@FIXME", "@REVIEW", "@OPTIMIZE"]
 }
 ```
 

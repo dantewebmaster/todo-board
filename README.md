@@ -199,7 +199,7 @@ Ou clique no ícone na Activity Bar.
   ],
 
   // Padrões de busca customizáveis
-  "todo-board.searchPatterns": ["@TODO", "FIXME", "BUG"],
+  "todo-board.searchPatterns": ["TODO", "@TODO", "FIXME", "BUG"],
 
   // Máximo de linhas por TODO
   "todo-board.maxTodoLines": 4,

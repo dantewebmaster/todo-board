@@ -63,7 +63,7 @@ export function findFirstPatternIndex(
   searchPatterns: string[],
 ): number {
   // Use first pattern as fallback if array is empty
-  const patterns = searchPatterns.length > 0 ? searchPatterns : ["@TODO"];
+  const patterns = searchPatterns.length > 0 ? searchPatterns : ["TODO"];
 
   let minIndex = text.length;
   for (const pattern of patterns) {

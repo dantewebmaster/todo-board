@@ -2,7 +2,7 @@
   "name": "todo-board",
   "displayName": "TODO Board",
   "description": "Organize seus TODOs em um quadro Kanban visual com prioridades, labels e busca customizável",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "publisher": "dantewebmaster",
   "repository": {
     "type": "git",
@@ -160,9 +160,10 @@
             "type": "string"
           },
           "default": [
+            "TODO",
             "@TODO"
           ],
-          "description": "Padrões de busca para TODOs. Exemplos: '@TODO', 'TODO', '@FIXME', 'FIXME', 'BUG'. Não inclua parênteses ou caracteres especiais de regex."
+          "description": "Padrões de busca para TODOs (case sensitive). Exemplos: '@TODO', 'TODO', '@FIXME', 'FIXME', 'BUG'. Não inclua parênteses ou caracteres especiais de regex."
         },
         "todo-board.highlight.enabled": {
           "type": "boolean",

@@ -58,7 +58,7 @@ export function getMaxTodoLines(): number {
 export function getSearchPatterns(): string[] {
   const patterns = vscode.workspace
     .getConfiguration("todo-board")
-    .get<string[]>("searchPatterns", ["@TODO"]);
+    .get<string[]>("searchPatterns", ["TODO", "@TODO"]);
 
   return validateSearchPatterns(patterns);
 }
